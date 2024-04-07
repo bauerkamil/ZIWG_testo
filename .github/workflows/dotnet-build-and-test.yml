@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  usos-test:
+  dotnet-test:
     runs-on: ubuntu-latest
     defaults:
       run:
