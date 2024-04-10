@@ -77,7 +77,7 @@ public class CallbackTrigger
             ["oauth_version"] = "1.0",
         };
 
-        var coursesEndpoint = apiUrl + "/services/courses/user";
+        var coursesEndpoint = apiUrl + UsosEndpoints.UserCourses;
         var coursesKey = consumerSecret + "&" + accessTokenResult.OAuthTokenSecret;
         coursesQuery["oauth_signature"] = OAuthHelper.GetSignature(coursesQuery, coursesEndpoint, coursesKey);
 
@@ -110,7 +110,7 @@ public class CallbackTrigger
             ["oauth_verifier"] = verifier,
         };
 
-        var accessTokenUrl = apiUrl + "/services/oauth/access_token";
+        var accessTokenUrl = apiUrl + UsosEndpoints.AccessToken;
         var key = consumerSecret + "&" + parsedResult.OAuthTokenSecret;
         query["oauth_signature"] = OAuthHelper.GetSignature(query, accessTokenUrl, key);
 

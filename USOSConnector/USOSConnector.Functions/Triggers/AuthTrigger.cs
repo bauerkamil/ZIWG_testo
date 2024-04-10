@@ -50,7 +50,7 @@ public class AuthTrigger
             ["oauth_version"] = "1.0",
         };
 
-        var requestTokenUrl = apiUrl + "/services/oauth/request_token";
+        var requestTokenUrl = apiUrl + UsosEndpoints.RequestToken;
         var key = consumerSecret + "&";
         query["oauth_signature"] = OAuthHelper.GetSignature(query, requestTokenUrl, key);
 
@@ -76,7 +76,7 @@ public class AuthTrigger
 
         _cache.Set(CacheKeys.TokenResult, requestTokenResult);
 
-        var authorizeUri = $"{apiUrl}/services/oauth/authorize?oauth_token={requestTokenResult.OAuthToken}";
+        var authorizeUri = $"{apiUrl}{UsosEndpoints.Authorize}?oauth_token={requestTokenResult.OAuthToken}";
 
         var redirectResponse = req.CreateResponse(HttpStatusCode.Redirect);
         redirectResponse.Headers.Add("Location", authorizeUri);
