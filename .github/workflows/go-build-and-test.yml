@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./Backend
+        working-directory: ./Backend/src
         
     steps:
     - uses: actions/checkout@v3
