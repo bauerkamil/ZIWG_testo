@@ -2,6 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using USOSConnector.Functions.Extensions;
 using USOSConnector.Functions.Options;
+using USOSConnector.Functions.Services.JwtService;
+using USOSConnector.Functions.Services.UsosService;
 using USOSConnector.Middleware;
 
 var host = new HostBuilder()
@@ -9,12 +11,20 @@ var host = new HostBuilder()
     {
         builder.UseMiddleware<JwtAuthorizationMiddleware>();
     })
-    .ConfigureServices(services =>
+    .ConfigureServices((builder, services) =>
     {
+        // Options
         services.AddOptionsWithValidation<USOSOptions>(USOSOptions.SectionName);
         services.AddOptionsWithValidation<JwtOptions>(JwtOptions.SectionName);
-        services.AddHttpClient();
+
+        // Other
+        services.AddHttpClient<IUsosService>();
         services.AddMemoryCache();
+        services.AddSingleton(TimeProvider.System);
+
+        // Services
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IUsosService, UsosService>();
     })
     .Build();
 
