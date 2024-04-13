@@ -2,85 +2,82 @@ using System.Net;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using USOSConnector.Functions.Constants;
-using USOSConnector.Functions.Dtos;
-using USOSConnector.Functions.Helpers;
-using USOSConnector.Functions.Options;
+using USOSConnector.Functions.Services.JwtService;
+using USOSConnector.Functions.Services.JwtService.Dtos;
+using USOSConnector.Functions.Services.UsosService;
 
 namespace USOSConnector.Functions.Triggers;
 
 public class CallbackTrigger
 {
-    private readonly IHttpClientFactory _clientFactory;
+    private readonly IUsosService _usosService;
+    private readonly IJwtService _jwtService;
     private readonly IMemoryCache _cache;
-    private readonly USOSOptions _options;
-    private readonly ILogger<CallbackTrigger> _logger;
 
     public CallbackTrigger(
-        IHttpClientFactory clientFactory,
-        IMemoryCache cache,
-        IOptions<USOSOptions> options,
-        ILogger<CallbackTrigger> logger)
+        IUsosService usosService,
+        IJwtService jwtService,
+        IMemoryCache cache)
     {
-        _clientFactory = clientFactory;
+        _usosService = usosService;
+        _jwtService = jwtService;
         _cache = cache;
-        _options = options.Value;
-        _logger = logger;
     }
 
     [Function(nameof(CallbackTrigger))]
     public async Task<HttpResponseData> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "callback")] 
-        HttpRequestData req)
+        HttpRequestData req,
+        CancellationToken cancellationToken)
     {
         var token = req.Query["oauth_token"];
-        ArgumentNullException.ThrowIfNull(token, "oauth_token");
 
         var verifier = req.Query["oauth_verifier"];
-        ArgumentNullException.ThrowIfNull(verifier, "oauth_verifier");
 
-        var (consumerKey, consumerSecret, _, _, _, accessTokenUrl) = _options;
+        var cacheKey = req.Query["key"];
 
-        var parsedResult = _cache.Get<OAuthResponseDto>(CacheKeys.TokenResult);
-        ArgumentNullException.ThrowIfNull(parsedResult);
-
-        var query = new Dictionary<string, string>
+        if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(verifier) || string.IsNullOrEmpty(cacheKey))
         {
-            ["oauth_consumer_key"] = consumerKey,
-            ["oauth_nonce"] = Guid.NewGuid().ToString(),
-            ["oauth_timestamp"] = DateTimeOffset.Now.ToUnixTimeSeconds().ToString(),
-            ["oauth_signature_method"] = "HMAC-SHA1",
-            ["oauth_token"] = token,
-            ["oauth_version"] = "1.0",
-            ["oauth_verifier"] = verifier,
-        };
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }
 
-        var key = consumerSecret + "&" + parsedResult.OAuthTokenSecret;
-        query["oauth_signature"] = OAuthHelper.GetSignature(query, accessTokenUrl, key);
-
-        var accessTokenUri = accessTokenUrl + "?" + string.Join("&", query.OrderBy(x => x.Key).Select(x => $"{x.Key}={x.Value}"));
-
-        var client = _clientFactory.CreateClient(HttpClientNames.USOS);
-
-        var response = await client.GetAsync(accessTokenUri);
-
-        var result = await response.Content.ReadAsStringAsync();
-
-        var parts = result.Split('&')
-            .Select(x => x.Split('='))
-            .ToDictionary(x => x[0], x => x[1]);
-
-        var accessTokenResult = new OAuthResponseDto
+        var secret = _cache.Get<string>(cacheKey);
+        
+        if (string.IsNullOrEmpty(secret))
         {
-            OAuthToken = parts["oauth_token"],
-            OAuthTokenSecret = parts["oauth_token_secret"],
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }
+
+        var accessTokenResult = await _usosService.GetAccessTokenAsync(
+            token, 
+            verifier, 
+            secret, 
+            cancellationToken);
+        
+        var userInfoResult = await _usosService.GetCurrentUserAsync(
+            accessTokenResult.Token, 
+            accessTokenResult.Secret, 
+            cancellationToken);
+
+        _cache.Remove(cacheKey);
+        _cache.Set(
+            userInfoResult.Id, 
+            accessTokenResult.Secret, 
+            TimeSpan.FromMinutes(Usos.AccessTokenExpiryMinutes));
+
+        var userClaims = new UserClaimsDto
+        {
+            UserId = userInfoResult.Id,
+            FirstName = userInfoResult.FirstName,
+            LastName = userInfoResult.LastName,
+            UsosToken = accessTokenResult.Token,
         };
+        var jwtToken = _jwtService.GenerateToken(userClaims);
 
         var okResponse = req.CreateResponse(HttpStatusCode.OK);
 
-        await okResponse.WriteAsJsonAsync(accessTokenResult);
+        await okResponse.WriteAsJsonAsync(new { Token = jwtToken });
 
         return okResponse;
     }
