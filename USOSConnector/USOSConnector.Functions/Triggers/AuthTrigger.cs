@@ -11,20 +11,17 @@ namespace USOSConnector.Functions.Triggers;
 
 public class AuthTrigger
 {
-    private readonly IHttpClientFactory _clientFactory;
     private readonly IMemoryCache _cache;
     private readonly IUsosService _usosService;
     private readonly USOSOptions _options;
     private readonly ILogger<AuthTrigger> _logger;
 
     public AuthTrigger(
-        IHttpClientFactory clientFactory,
         IMemoryCache cache,
         IUsosService usosService,
         IOptions<USOSOptions> options,
         ILogger<AuthTrigger> logger)
     {
-        _clientFactory = clientFactory;
         _cache = cache;
         _usosService = usosService;
         _options = options.Value;
