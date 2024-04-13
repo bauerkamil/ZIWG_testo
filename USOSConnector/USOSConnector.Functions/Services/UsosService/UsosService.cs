@@ -25,20 +25,23 @@ public class UsosService : IUsosService
     }
 
     public async Task<RequestTokenDto> GetRequestTokenAsync(
+        string? clientUrl = null,
         string? callbackKey = null, 
         string callbackKeyName = "key",
         CancellationToken cancellationToken = default)
     {
         var (consumerKey, consumerSecret, callbackUrl, apiUrl) = _options;
 
+        clientUrl ??= callbackUrl;
+
         if (callbackKey is not null)
         {
-            callbackUrl = callbackUrl + $"?{callbackKeyName}={callbackKey}";
+            clientUrl = clientUrl + $"?{callbackKeyName}={callbackKey}";
         }
 
         var query = new Dictionary<string, string>
         {
-            ["oauth_callback"] = Uri.EscapeDataString(callbackUrl),
+            ["oauth_callback"] = Uri.EscapeDataString(clientUrl),
         };
 
         var response = await CallEndpointAsync(

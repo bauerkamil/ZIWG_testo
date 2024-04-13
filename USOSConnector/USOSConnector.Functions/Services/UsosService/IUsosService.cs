@@ -5,6 +5,7 @@ namespace USOSConnector.Functions.Services.UsosService;
 public interface IUsosService
 {
     Task<RequestTokenDto> GetRequestTokenAsync(
+        string? clientUrl = null,
         string? callbackKey = null, 
         string callbackKeyName = "key",
         CancellationToken cancellationToken = default);

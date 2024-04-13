@@ -34,9 +34,14 @@ public class AuthTrigger
         HttpRequestData req,
         CancellationToken cancellationToken)
     {
+        var callbackUrl = req.Query["callback_url"];
+
         var cacheKey = Guid.NewGuid().ToString();
 
-        var requestTokenResult = await _usosService.GetRequestTokenAsync(cacheKey, cancellationToken: cancellationToken);
+        var requestTokenResult = await _usosService.GetRequestTokenAsync(
+            callbackUrl,
+            cacheKey, 
+            cancellationToken: cancellationToken);
 
         _cache.Set(cacheKey, requestTokenResult.Secret, TimeSpan.FromMinutes(5));
 

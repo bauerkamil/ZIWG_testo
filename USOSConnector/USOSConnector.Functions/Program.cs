@@ -11,7 +11,7 @@ var host = new HostBuilder()
     {
         builder.UseMiddleware<JwtAuthorizationMiddleware>();
     })
-    .ConfigureServices((builder, services) =>
+    .ConfigureServices(services =>
     {
         // Options
         services.AddOptionsWithValidation<USOSOptions>(USOSOptions.SectionName);
