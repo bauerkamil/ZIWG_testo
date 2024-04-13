@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using USOSConnector.Functions.Constants;
 using USOSConnector.Functions.Options;
 using USOSConnector.Functions.Services.JwtService.Dtos;
 
@@ -55,7 +56,7 @@ public class JwtService : IJwtService
             new Claim(ClaimTypes.NameIdentifier, userClaims.UserId),
             new Claim(ClaimTypes.Name, userClaims.FirstName),
             new Claim(ClaimTypes.Surname, userClaims.LastName),
-            new Claim(ClaimTypes.Hash, userClaims.UsosToken)
+            new Claim(CustomClaims.UsosToken, userClaims.UsosToken)
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor
