@@ -41,13 +41,13 @@ public class UsosService : IUsosService
             ["oauth_callback"] = Uri.EscapeDataString(callbackUrl),
         };
 
-        var coursesResponse = await CallEndpointAsync(
+        var response = await CallEndpointAsync(
             Usos.Endpoints.RequestToken,
             query,
             string.Empty, 
             cancellationToken);
 
-        var result = await coursesResponse.Content.ReadAsStringAsync(cancellationToken);
+        var result = await response.Content.ReadAsStringAsync(cancellationToken);
 
         var parts = result.Split('&')
             .Select(x => x.Split('='))
@@ -73,13 +73,13 @@ public class UsosService : IUsosService
             ["oauth_verifier"] = verifier,
         };
 
-        var coursesResponse = await CallEndpointAsync(
+        var response = await CallEndpointAsync(
             Usos.Endpoints.AccessToken,
             query,
             secret, 
             cancellationToken);
 
-        var result = await coursesResponse.Content.ReadAsStringAsync(cancellationToken);
+        var result = await response.Content.ReadAsStringAsync(cancellationToken);
 
         var parts = result.Split('&')
             .Select(x => x.Split('='))
