@@ -1,15 +1,11 @@
 package db
 
-import "github.com/gofrs/uuid"
+import (
+	"github.com/gofrs/uuid"
+	"src/model"
+)
 
-type Question struct {
-	Id      uuid.UUID `json:"id"`
-	Body    string    `json:"body"`
-	ImgFile string    `json:"img_file"`
-	TestId  uuid.UUID `json:"test_id"`
-}
-
-func AddQuestionToDB(question *Question) error {
+func AddQuestionToDB(question *model.Question) error {
 	dbC := DB
 	result := dbC.Create(question)
 	if result.Error != nil {
@@ -18,9 +14,9 @@ func AddQuestionToDB(question *Question) error {
 	return nil
 }
 
-func GetQuestionsFromDB() ([]Question, error) {
+func GetQuestionsFromDB() ([]model.Question, error) {
 	dbC := DB
-	var questions []Question
+	var questions []model.Question
 	result := dbC.Find(&questions)
 	if result.Error != nil {
 		return nil, result.Error
@@ -28,9 +24,9 @@ func GetQuestionsFromDB() ([]Question, error) {
 	return questions, nil
 }
 
-func GetQuestionFromDB(id uuid.UUID) (*Question, error) {
+func GetQuestionFromDB(id uuid.UUID) (*model.Question, error) {
 	dbC := DB
-	var question Question
+	var question model.Question
 	result := dbC.First(&question, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -38,9 +34,9 @@ func GetQuestionFromDB(id uuid.UUID) (*Question, error) {
 	return &question, nil
 }
 
-func UpdateQuestionInDB(newQuestion *Question) error {
+func UpdateQuestionInDB(newQuestion *model.Question) error {
 	dbC := DB
-	var Question Question
+	var Question model.Question
 	result := dbC.First(&Question, newQuestion.Id)
 	if result.Error != nil {
 		return result.Error
@@ -54,7 +50,7 @@ func UpdateQuestionInDB(newQuestion *Question) error {
 
 func DeleteQuestionFromDB(id uuid.UUID) error {
 	dbC := DB
-	result := dbC.Delete(&Question{}, id)
+	result := dbC.Delete(&model.Question{}, id)
 	if result.Error != nil {
 		return result.Error
 	}

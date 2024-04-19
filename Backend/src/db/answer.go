@@ -1,15 +1,11 @@
 package db
 
-import "github.com/gofrs/uuid"
+import (
+	"github.com/gofrs/uuid"
+	"src/model"
+)
 
-type Answer struct {
-	Id         uuid.UUID `json:"id"`
-	QuestionId uuid.UUID `json:"question_id"`
-	Body       string    `json:"body"`
-	Valid      bool      `json:"valid"`
-}
-
-func AddAnswerToDB(answer *Answer) error {
+func AddAnswerToDB(answer *model.Answer) error {
 	dbC := DB
 	result := dbC.Create(answer)
 	if result.Error != nil {
@@ -18,9 +14,9 @@ func AddAnswerToDB(answer *Answer) error {
 	return nil
 }
 
-func GetAnswersFromDB() ([]Answer, error) {
+func GetAnswersFromDB() ([]model.Answer, error) {
 	dbC := DB
-	var answers []Answer
+	var answers []model.Answer
 	result := dbC.Find(&answers)
 	if result.Error != nil {
 		return nil, result.Error
@@ -28,9 +24,9 @@ func GetAnswersFromDB() ([]Answer, error) {
 	return answers, nil
 }
 
-func GetAnswerFromDB(id uuid.UUID) (*Answer, error) {
+func GetAnswerFromDB(id uuid.UUID) (*model.Answer, error) {
 	dbC := DB
-	var answer Answer
+	var answer model.Answer
 	result := dbC.First(&answer, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -38,9 +34,9 @@ func GetAnswerFromDB(id uuid.UUID) (*Answer, error) {
 	return &answer, nil
 }
 
-func UpdateAnswerInDB(newAnswer *Answer) error {
+func UpdateAnswerInDB(newAnswer *model.Answer) error {
 	dbC := DB
-	var answer Answer
+	var answer model.Answer
 	result := dbC.First(&answer, newAnswer.Id)
 	if result.Error != nil {
 		return result.Error
@@ -54,7 +50,7 @@ func UpdateAnswerInDB(newAnswer *Answer) error {
 
 func DeleteAnswerFromDB(id uuid.UUID) error {
 	dbC := DB
-	result := dbC.Delete(&Answer{}, id)
+	result := dbC.Delete(&model.Answer{}, id)
 	if result.Error != nil {
 		return result.Error
 	}

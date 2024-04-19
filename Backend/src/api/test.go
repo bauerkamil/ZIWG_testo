@@ -7,16 +7,11 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 	"src/db"
+	"src/model"
 )
 
-type TestRequest struct {
-	Name     string    `json:"name"`
-	User     string    `json:"user"`
-	CourseId uuid.UUID `json:"course_id"`
-}
-
 func AddTestHandle(ctx *gin.Context) {
-	var request TestRequest
+	var request model.TestRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -24,7 +19,7 @@ func AddTestHandle(ctx *gin.Context) {
 	}
 	date := *timestamppb.Now()
 	id, _ := uuid.NewV4()
-	Test := &db.Test{
+	Test := &model.Test{
 		Id:        id,
 		Name:      request.Name,
 		CreatedBy: request.User,
@@ -66,14 +61,14 @@ func GetTestHandle(ctx *gin.Context) {
 }
 
 func UpdateTestHandle(ctx *gin.Context) {
-	var request TestRequest
+	var request model.TestRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"Json decode error: ": err.Error()})
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	Test := &db.Test{
+	Test := &model.Test{
 		Id:        id,
 		Name:      request.Name,
 		ChangedBy: request.User,

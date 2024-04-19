@@ -6,23 +6,18 @@ import (
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
 	"src/db"
+	"src/model"
 )
 
-type QuestionRequest struct {
-	Body    string    `json:"body"`
-	ImgFile string    `json:"img_file"`
-	TestId  uuid.UUID `json:"test_id"`
-}
-
 func AddQuestionHandle(ctx *gin.Context) {
-	var request QuestionRequest
+	var request model.QuestionRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	id, _ := uuid.NewV4()
-	Question := &db.Question{
+	Question := &model.Question{
 		Id:      id,
 		Body:    request.Body,
 		ImgFile: request.ImgFile,
@@ -62,14 +57,14 @@ func GetQuestionHandle(ctx *gin.Context) {
 }
 
 func UpdateQuestionHandle(ctx *gin.Context) {
-	var request QuestionRequest
+	var request model.QuestionRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"Json decode error: ": err.Error()})
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	question := &db.Question{
+	question := &model.Question{
 		Id:      id,
 		Body:    request.Body,
 		ImgFile: request.ImgFile,

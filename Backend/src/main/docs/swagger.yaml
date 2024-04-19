@@ -1,0 +1,38 @@
+definitions:
+  model.TeacherRequest:
+    properties:
+      name:
+        type: string
+      second_name:
+        type: string
+      surname:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+info:
+  contact: {}
+  description: REST API for ZIWG_testo project
+  title: Swagger ZIWG_testo API
+  version: "1.0"
+paths:
+  /api/v1/teacher:
+    get:
+      description: Add teacher from json body
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.TeacherRequest'
+            type: array
+      summary: Add teacher
+      tags:
+      - teacher
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

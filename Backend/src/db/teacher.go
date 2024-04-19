@@ -1,15 +1,11 @@
 package db
 
-import "github.com/gofrs/uuid"
+import (
+	"github.com/gofrs/uuid"
+	"src/model"
+)
 
-type Teacher struct {
-	Id         uuid.UUID `json:"id"`
-	Name       string    `json:"name"`
-	SecondName string    `json:"second_name"`
-	Surname    string    `json:"surname"`
-}
-
-func AddTeacherToDB(teacher *Teacher) error {
+func AddTeacherToDB(teacher *model.Teacher) error {
 	dbC := DB
 	result := dbC.Create(teacher)
 	if result.Error != nil {
@@ -18,9 +14,9 @@ func AddTeacherToDB(teacher *Teacher) error {
 	return nil
 }
 
-func GetTeachersFromDB() ([]Teacher, error) {
+func GetTeachersFromDB() ([]model.Teacher, error) {
 	dbC := DB
-	var teachers []Teacher
+	var teachers []model.Teacher
 	result := dbC.Find(&teachers)
 	if result.Error != nil {
 		return nil, result.Error
@@ -30,9 +26,9 @@ func GetTeachersFromDB() ([]Teacher, error) {
 
 //make teacher optional
 
-func GetTeacherFromDB(id uuid.UUID) (*Teacher, error) {
+func GetTeacherFromDB(id uuid.UUID) (*model.Teacher, error) {
 	dbC := DB
-	var teacher Teacher
+	var teacher model.Teacher
 	result := dbC.First(&teacher, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -40,9 +36,9 @@ func GetTeacherFromDB(id uuid.UUID) (*Teacher, error) {
 	return &teacher, nil
 }
 
-func UpdateTeacherInDB(newTeacher *Teacher) error {
+func UpdateTeacherInDB(newTeacher *model.Teacher) error {
 	dbC := DB
-	var teacher Teacher
+	var teacher model.Teacher
 	result := dbC.First(&teacher, newTeacher.Id)
 	if result.Error != nil {
 		return result.Error
@@ -56,7 +52,7 @@ func UpdateTeacherInDB(newTeacher *Teacher) error {
 
 func DeleteTeacherFromDB(id uuid.UUID) error {
 	dbC := DB
-	result := dbC.Delete(&Teacher{}, id)
+	result := dbC.Delete(&model.Teacher{}, id)
 	if result.Error != nil {
 		return result.Error
 	}

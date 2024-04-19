@@ -6,23 +6,18 @@ import (
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
 	"src/db"
+	"src/model"
 )
 
-type AnswerRequest struct {
-	QuestionId uuid.UUID `json:"question_id"`
-	Body       string    `json:"body"`
-	Valid      bool      `json:"valid"`
-}
-
 func AddAnswerHandle(ctx *gin.Context) {
-	var request AnswerRequest
+	var request model.AnswerRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	id, _ := uuid.NewV4()
-	answer := &db.Answer{
+	answer := &model.Answer{
 		Id:         id,
 		Body:       request.Body,
 		QuestionId: request.QuestionId,
@@ -61,14 +56,14 @@ func GetAnswerHandle(ctx *gin.Context) {
 }
 
 func UpdateAnswerHandle(ctx *gin.Context) {
-	var request AnswerRequest
+	var request model.AnswerRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"Json decode error: ": err.Error()})
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	answer := &db.Answer{
+	answer := &model.Answer{
 		Id:         id,
 		Body:       request.Body,
 		Valid:      request.Valid,

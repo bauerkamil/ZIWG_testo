@@ -6,23 +6,25 @@ import (
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
 	"src/db"
+	"src/model"
 )
 
-type TeacherRequest struct {
-	Name       string `json:"name"`
-	SecondName string `json:"second_name"`
-	Surname    string `json:"surname"`
-}
-
+// AddTeacher            godoc
+// @Summary      Add teacher
+// @Description  Add teacher from json body
+// @Tags         teacher
+// @Produce      json
+// @Success      200  {array}  model.TeacherRequest
+// @Router       /api/v1/teacher [get]
 func AddTeacherHandle(ctx *gin.Context) {
-	var request TeacherRequest
+	var request model.TeacherRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	id, _ := uuid.NewV4()
-	teacher := &db.Teacher{
+	teacher := &model.Teacher{
 		Id:         id,
 		Name:       request.Name,
 		SecondName: request.SecondName,
@@ -62,14 +64,14 @@ func GetTeacherHandle(ctx *gin.Context) {
 }
 
 func UpdateTeacherHandle(ctx *gin.Context) {
-	var request TeacherRequest
+	var request model.TeacherRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"Json decode error: ": err.Error()})
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	teacher := &db.Teacher{
+	teacher := &model.Teacher{
 		Id:         id,
 		Name:       request.Name,
 		SecondName: request.SecondName,

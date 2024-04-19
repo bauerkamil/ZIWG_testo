@@ -1,15 +1,11 @@
 package db
 
-import "github.com/gofrs/uuid"
+import (
+	"github.com/gofrs/uuid"
+	"src/model"
+)
 
-type Course struct {
-	Id         uuid.UUID `json:"id"`
-	Name       string    `json:"name"`
-	Teacher    uuid.UUID `json:"teacher"`
-	SchoolYear int       `json:"school_year"`
-}
-
-func AddCourseToDB(course *Course) error {
+func AddCourseToDB(course *model.Course) error {
 	dbC := DB
 	result := dbC.Create(course)
 	if result.Error != nil {
@@ -18,9 +14,9 @@ func AddCourseToDB(course *Course) error {
 	return nil
 }
 
-func GetCoursesFromDB() ([]Course, error) {
+func GetCoursesFromDB() ([]model.Course, error) {
 	dbC := DB
-	var courses []Course
+	var courses []model.Course
 	result := dbC.Find(&courses)
 	if result.Error != nil {
 		return nil, result.Error
@@ -28,9 +24,9 @@ func GetCoursesFromDB() ([]Course, error) {
 	return courses, nil
 }
 
-func GetCourseFromDB(id uuid.UUID) (*Course, error) {
+func GetCourseFromDB(id uuid.UUID) (*model.Course, error) {
 	dbC := DB
-	var course Course
+	var course model.Course
 	result := dbC.First(&course, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -38,9 +34,9 @@ func GetCourseFromDB(id uuid.UUID) (*Course, error) {
 	return &course, nil
 }
 
-func UpdateCourseInDB(newCourse *Course) error {
+func UpdateCourseInDB(newCourse *model.Course) error {
 	dbC := DB
-	var course Course
+	var course model.Course
 	result := dbC.First(&course, newCourse.Id)
 	if result.Error != nil {
 		return result.Error
@@ -54,7 +50,7 @@ func UpdateCourseInDB(newCourse *Course) error {
 
 func DeleteCourseFromDB(id uuid.UUID) error {
 	dbC := DB
-	result := dbC.Delete(&Course{}, id)
+	result := dbC.Delete(&model.Course{}, id)
 	if result.Error != nil {
 		return result.Error
 	}

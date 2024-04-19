@@ -6,23 +6,18 @@ import (
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
 	"src/db"
+	"src/model"
 )
 
-type CourseRequest struct {
-	Name       string    `json:"name"`
-	Teacher    uuid.UUID `json:"teacher"`
-	SchoolYear int       `json:"school_year"`
-}
-
 func AddCourseHandle(ctx *gin.Context) {
-	var request CourseRequest
+	var request model.CourseRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	id, _ := uuid.NewV4()
-	course := &db.Course{
+	course := &model.Course{
 		Id:         id,
 		Name:       request.Name,
 		Teacher:    request.Teacher,
@@ -62,14 +57,14 @@ func GetCourseHandle(ctx *gin.Context) {
 }
 
 func UpdateCourseHandle(ctx *gin.Context) {
-	var request CourseRequest
+	var request model.CourseRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"Json decode error: ": err.Error()})
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	Course := &db.Course{
+	Course := &model.Course{
 		Id:         id,
 		Name:       request.Name,
 		Teacher:    request.Teacher,

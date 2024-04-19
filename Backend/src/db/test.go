@@ -2,19 +2,10 @@ package db
 
 import (
 	"github.com/gofrs/uuid"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"src/model"
 )
 
-type Test struct {
-	Id        uuid.UUID             `json:"id"`
-	Name      string                `json:"name"`
-	CreatedBy string                `json:"created_by"`
-	ChangedBy string                `json:"changed_by"`
-	CreatedAt timestamppb.Timestamp `json:"created_at"`
-	CourseId  uuid.UUID             `json:"course_id"`
-}
-
-func AddTestToDB(test *Test) error {
+func AddTestToDB(test *model.Test) error {
 	dbC := DB
 	result := dbC.Create(test)
 	if result.Error != nil {
@@ -23,9 +14,9 @@ func AddTestToDB(test *Test) error {
 	return nil
 }
 
-func GetTestsFromDB() ([]Test, error) {
+func GetTestsFromDB() ([]model.Test, error) {
 	dbC := DB
-	var tests []Test
+	var tests []model.Test
 	result := dbC.Find(&tests)
 	if result.Error != nil {
 		return nil, result.Error
@@ -33,9 +24,9 @@ func GetTestsFromDB() ([]Test, error) {
 	return tests, nil
 }
 
-func GetTestFromDB(id uuid.UUID) (*Test, error) {
+func GetTestFromDB(id uuid.UUID) (*model.Test, error) {
 	dbC := DB
-	var test Test
+	var test model.Test
 	result := dbC.First(&test, id)
 	if result.Error != nil {
 		return nil, result.Error
@@ -43,9 +34,9 @@ func GetTestFromDB(id uuid.UUID) (*Test, error) {
 	return &test, nil
 }
 
-func UpdateTestInDB(newTest *Test) error {
+func UpdateTestInDB(newTest *model.Test) error {
 	dbC := DB
-	var test Test
+	var test model.Test
 	result := dbC.First(&test, newTest.Id)
 	if result.Error != nil {
 		return result.Error
@@ -71,7 +62,7 @@ func UpdateTestInDB(newTest *Test) error {
 
 func DeleteTestFromDB(id uuid.UUID) error {
 	dbC := DB
-	result := dbC.Delete(&Test{}, id)
+	result := dbC.Delete(&model.Test{}, id)
 	if result.Error != nil {
 		return result.Error
 	}
