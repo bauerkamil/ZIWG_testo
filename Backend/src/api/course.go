@@ -8,28 +8,28 @@ import (
 	"src/db"
 )
 
-type TeacherRequest struct {
-	Name       string `json:"name"`
-	SecondName string `json:"second_name"`
-	Surname    string `json:"surname"`
+type CourseRequest struct {
+	Name       string    `json:"name"`
+	Teacher    uuid.UUID `json:"teacher"`
+	SchoolYear int       `json:"school_year"`
 }
 
-func AddTeacherHandle(ctx *gin.Context) {
-	var request TeacherRequest
+func AddCourseHandle(ctx *gin.Context) {
+	var request CourseRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	id, _ := uuid.NewV4()
-	teacher := &db.Teacher{
+	course := &db.Course{
 		Id:         id,
 		Name:       request.Name,
-		SecondName: request.SecondName,
-		Surname:    request.Surname,
+		Teacher:    request.Teacher,
+		SchoolYear: request.SchoolYear,
 	}
 
-	err = db.AddTeacherToDB(teacher)
+	err = db.AddCourseToDB(course)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -38,19 +38,19 @@ func AddTeacherHandle(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"message": "OK"})
 }
 
-func GetTeachersHandle(ctx *gin.Context) {
-	teachers, err := db.GetTeachersFromDB()
+func GetCoursesHandle(ctx *gin.Context) {
+	courses, err := db.GetCoursesFromDB()
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, teachers)
+	ctx.JSON(200, courses)
 }
 
-func GetTeacherHandle(ctx *gin.Context) {
+func GetCourseHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	teacher, err := db.GetTeacherFromDB(id)
+	course, err := db.GetCourseFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -58,25 +58,25 @@ func GetTeacherHandle(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"Error": err.Error()})
 		return
 	}
-	ctx.JSON(200, teacher)
+	ctx.JSON(200, course)
 }
 
-func UpdateTeacherHandle(ctx *gin.Context) {
-	var request TeacherRequest
+func UpdateCourseHandle(ctx *gin.Context) {
+	var request CourseRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"Json decode error: ": err.Error()})
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	teacher := &db.Teacher{
+	Course := &db.Course{
 		Id:         id,
 		Name:       request.Name,
-		SecondName: request.SecondName,
-		Surname:    request.Surname,
+		Teacher:    request.Teacher,
+		SchoolYear: request.SchoolYear,
 	}
 
-	err = db.UpdateTeacherInDB(teacher)
+	err = db.UpdateCourseInDB(Course)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -88,9 +88,9 @@ func UpdateTeacherHandle(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"message": "OK"})
 }
 
-func DeleteTeacherHandle(ctx *gin.Context) {
+func DeleteCourseHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	err = db.DeleteTeacherFromDB(id)
+	err = db.DeleteCourseFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -103,11 +103,11 @@ func DeleteTeacherHandle(ctx *gin.Context) {
 
 }
 
-func AddTeacherHandlers(router *gin.RouterGroup) {
-	var subGroup = router.Group("/teacher")
-	subGroup.POST("", AddTeacherHandle)
-	subGroup.GET("", GetTeachersHandle)
-	subGroup.GET(":id", GetTeacherHandle)
-	subGroup.PUT(":id", UpdateTeacherHandle)
-	subGroup.DELETE(":id", DeleteTeacherHandle)
+func AddCourseHandlers(router *gin.RouterGroup) {
+	var subGroup = router.Group("/course")
+	subGroup.POST("", AddCourseHandle)
+	subGroup.GET("", GetCoursesHandle)
+	subGroup.GET(":id", GetCourseHandle)
+	subGroup.PUT(":id", UpdateCourseHandle)
+	subGroup.DELETE(":id", DeleteCourseHandle)
 }

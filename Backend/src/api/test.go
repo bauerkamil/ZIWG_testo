@@ -4,32 +4,36 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 	"src/db"
 )
 
-type TeacherRequest struct {
-	Name       string `json:"name"`
-	SecondName string `json:"second_name"`
-	Surname    string `json:"surname"`
+type TestRequest struct {
+	Name     string    `json:"name"`
+	User     string    `json:"user"`
+	CourseId uuid.UUID `json:"course_id"`
 }
 
-func AddTeacherHandle(ctx *gin.Context) {
-	var request TeacherRequest
+func AddTestHandle(ctx *gin.Context) {
+	var request TestRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
+	date := *timestamppb.Now()
 	id, _ := uuid.NewV4()
-	teacher := &db.Teacher{
-		Id:         id,
-		Name:       request.Name,
-		SecondName: request.SecondName,
-		Surname:    request.Surname,
+	Test := &db.Test{
+		Id:        id,
+		Name:      request.Name,
+		CreatedBy: request.User,
+		CourseId:  request.CourseId,
+		CreatedAt: date,
+		ChangedBy: "",
 	}
 
-	err = db.AddTeacherToDB(teacher)
+	err = db.AddTestToDB(Test)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -38,19 +42,19 @@ func AddTeacherHandle(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"message": "OK"})
 }
 
-func GetTeachersHandle(ctx *gin.Context) {
-	teachers, err := db.GetTeachersFromDB()
+func GetTestsHandle(ctx *gin.Context) {
+	Tests, err := db.GetTestsFromDB()
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, teachers)
+	ctx.JSON(200, Tests)
 }
 
-func GetTeacherHandle(ctx *gin.Context) {
+func GetTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	teacher, err := db.GetTeacherFromDB(id)
+	Test, err := db.GetTestFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -58,25 +62,25 @@ func GetTeacherHandle(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"Error": err.Error()})
 		return
 	}
-	ctx.JSON(200, teacher)
+	ctx.JSON(200, Test)
 }
 
-func UpdateTeacherHandle(ctx *gin.Context) {
-	var request TeacherRequest
+func UpdateTestHandle(ctx *gin.Context) {
+	var request TestRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"Json decode error: ": err.Error()})
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	teacher := &db.Teacher{
-		Id:         id,
-		Name:       request.Name,
-		SecondName: request.SecondName,
-		Surname:    request.Surname,
+	Test := &db.Test{
+		Id:        id,
+		Name:      request.Name,
+		ChangedBy: request.User,
+		CourseId:  request.CourseId,
 	}
 
-	err = db.UpdateTeacherInDB(teacher)
+	err = db.UpdateTestInDB(Test)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -88,9 +92,9 @@ func UpdateTeacherHandle(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"message": "OK"})
 }
 
-func DeleteTeacherHandle(ctx *gin.Context) {
+func DeleteTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	err = db.DeleteTeacherFromDB(id)
+	err = db.DeleteTestFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -103,11 +107,11 @@ func DeleteTeacherHandle(ctx *gin.Context) {
 
 }
 
-func AddTeacherHandlers(router *gin.RouterGroup) {
-	var subGroup = router.Group("/teacher")
-	subGroup.POST("", AddTeacherHandle)
-	subGroup.GET("", GetTeachersHandle)
-	subGroup.GET(":id", GetTeacherHandle)
-	subGroup.PUT(":id", UpdateTeacherHandle)
-	subGroup.DELETE(":id", DeleteTeacherHandle)
+func AddTestHandlers(router *gin.RouterGroup) {
+	var subGroup = router.Group("/test")
+	subGroup.POST("", AddTestHandle)
+	subGroup.GET("", GetTestsHandle)
+	subGroup.GET(":id", GetTestHandle)
+	subGroup.PUT(":id", UpdateTestHandle)
+	subGroup.DELETE(":id", DeleteTestHandle)
 }
