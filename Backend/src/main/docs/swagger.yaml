@@ -1,4 +1,90 @@
 definitions:
+  model.Answer:
+    properties:
+      body:
+        type: string
+      id:
+        type: string
+      question_id:
+        type: string
+      valid:
+        type: boolean
+    type: object
+  model.AnswerRequest:
+    properties:
+      body:
+        type: string
+      question_id:
+        type: string
+      valid:
+        type: boolean
+    type: object
+  model.BaseResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  model.Course:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      school_year:
+        type: integer
+      teacher_id:
+        type: string
+    type: object
+  model.CourseRequest:
+    properties:
+      name:
+        type: string
+      school_year:
+        type: integer
+      teacher_id:
+        type: string
+    type: object
+  model.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  model.IdResponse:
+    properties:
+      id:
+        type: string
+    type: object
+  model.Question:
+    properties:
+      body:
+        type: string
+      id:
+        type: string
+      img_file:
+        type: string
+      test_id:
+        type: string
+    type: object
+  model.QuestionRequest:
+    properties:
+      body:
+        type: string
+      img_file:
+        type: string
+      test_id:
+        type: string
+    type: object
+  model.Teacher:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      second_name:
+        type: string
+      surname:
+        type: string
+    type: object
   model.TeacherRequest:
     properties:
       name:
@@ -6,6 +92,28 @@ definitions:
       second_name:
         type: string
       surname:
+        type: string
+    type: object
+  model.Test:
+    properties:
+      changed_by:
+        type: string
+      course_id:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  model.TestRequest:
+    properties:
+      course_id:
+        type: string
+      name:
         type: string
     type: object
 externalDocs:
@@ -17,9 +125,9 @@ info:
   title: Swagger ZIWG_testo API
   version: "1.0"
 paths:
-  /api/v1/teacher:
+  /api/v1/answer:
     get:
-      description: Add teacher from json body
+      description: Get all answers
       produces:
       - application/json
       responses:
@@ -27,11 +135,667 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.TeacherRequest'
+              $ref: '#/definitions/model.Answer'
             type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get answers
+      tags:
+      - answer
+    post:
+      description: Add answer from json body
+      parameters:
+      - description: Payload
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/model.AnswerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.IdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Add answer
+      tags:
+      - answer
+  /api/v1/answer/{id}:
+    delete:
+      description: Delete answer by id
+      parameters:
+      - description: Answer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete answer
+      tags:
+      - answer
+    get:
+      description: Get answer by id
+      parameters:
+      - description: Answer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Answer'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get answer
+      tags:
+      - answer
+    put:
+      description: Update answer by id
+      parameters:
+      - description: Answer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedAnswer
+        required: true
+        schema:
+          $ref: '#/definitions/model.AnswerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update answer
+      tags:
+      - answer
+  /api/v1/course:
+    get:
+      description: Get all courses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Course'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get courses
+      tags:
+      - course
+    post:
+      description: Add course from json body
+      parameters:
+      - description: Payload
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/model.CourseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.IdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Add course
+      tags:
+      - course
+  /api/v1/course/{id}:
+    delete:
+      description: Delete course by id
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete course
+      tags:
+      - course
+    get:
+      description: Get course by id
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Course'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get course
+      tags:
+      - course
+    put:
+      description: Update course by id
+      parameters:
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedCourse
+        required: true
+        schema:
+          $ref: '#/definitions/model.CourseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update course
+      tags:
+      - course
+  /api/v1/question:
+    get:
+      description: Get all questions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Question'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get questions
+      tags:
+      - question
+    post:
+      description: Add question from json body
+      parameters:
+      - description: Payload
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/model.QuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Add question
+      tags:
+      - question
+  /api/v1/question/{id}:
+    delete:
+      description: Delete question by id
+      parameters:
+      - description: Question ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete question
+      tags:
+      - question
+    get:
+      description: Get question by id
+      parameters:
+      - description: Question ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Question'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get question
+      tags:
+      - question
+    put:
+      description: Update question by id
+      parameters:
+      - description: Question ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedQuestion
+        required: true
+        schema:
+          $ref: '#/definitions/model.QuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.IdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update question
+      tags:
+      - question
+  /api/v1/teacher:
+    get:
+      description: Get all teachers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Teacher'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get teachers
+      tags:
+      - teacher
+    post:
+      description: Add teacher from json body
+      parameters:
+      - description: Payload
+        in: body
+        name: teacher
+        required: true
+        schema:
+          $ref: '#/definitions/model.TeacherRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.IdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
       summary: Add teacher
       tags:
       - teacher
+  /api/v1/teacher/{id}:
+    delete:
+      description: Delete teacher by id
+      parameters:
+      - description: Teacher ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete teacher
+      tags:
+      - teacher
+    get:
+      description: Get teacher by id
+      parameters:
+      - description: Teacher ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Teacher'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get teacher
+      tags:
+      - teacher
+    put:
+      description: Update teacher by id
+      parameters:
+      - description: Teacher ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedTeacher
+        required: true
+        schema:
+          $ref: '#/definitions/model.TeacherRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update teacher
+      tags:
+      - teacher
+  /api/v1/test:
+    get:
+      description: Get all tests
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Test'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get tests
+      tags:
+      - test
+    post:
+      description: Add test from json body
+      parameters:
+      - description: Payload
+        in: body
+        name: test
+        required: true
+        schema:
+          $ref: '#/definitions/model.TestRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.IdResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Add test
+      tags:
+      - test
+  /api/v1/test/{id}:
+    delete:
+      description: Delete test by id
+      parameters:
+      - description: Test ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Delete test
+      tags:
+      - test
+    get:
+      description: Get test by id
+      parameters:
+      - description: Test ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Test'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Get test
+      tags:
+      - test
+    put:
+      description: Update test by id
+      parameters:
+      - description: Test ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedTest
+        required: true
+        schema:
+          $ref: '#/definitions/model.TestRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BaseResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      summary: Update test
+      tags:
+      - test
 securityDefinitions:
   BasicAuth:
     type: basic

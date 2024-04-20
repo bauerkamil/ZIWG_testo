@@ -50,7 +50,7 @@ func UpdateTestInDB(newTest *model.Test) error {
 		test.CourseId = newTest.CourseId
 		changed = true
 	}
-	if !changed {
+	if changed {
 		test.ChangedBy = newTest.ChangedBy
 		result = dbC.Save(&test)
 		if result.Error != nil {

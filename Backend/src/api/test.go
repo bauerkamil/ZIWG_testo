@@ -4,12 +4,21 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 	"src/db"
 	"src/model"
+	"time"
 )
 
+// AddTest            godoc
+// @Summary      Add test
+// @Description  Add test from json body
+// @Tags         test
+// @Produce      json
+// @Param        test body model.TestRequest true "Payload"
+// @Success      200  {object} model.IdResponse
+// @Failure     400  {object} model.ErrorResponse
+// @Router       /api/v1/test [post]
 func AddTestHandle(ctx *gin.Context) {
 	var request model.TestRequest
 	err := ctx.BindJSON(&request)
@@ -17,26 +26,36 @@ func AddTestHandle(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	date := *timestamppb.Now()
+	// TODO remove when auth is implemented
+	createdBy, _ := uuid.NewV4()
+	date := time.Now()
 	id, _ := uuid.NewV4()
 	Test := &model.Test{
 		Id:        id,
 		Name:      request.Name,
-		CreatedBy: request.User,
+		CreatedBy: createdBy,
 		CourseId:  request.CourseId,
 		CreatedAt: date,
-		ChangedBy: "",
+		ChangedBy: nil,
 	}
 
 	err = db.AddTestToDB(Test)
 	if err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, gin.H{"message": "OK"})
+	ctx.JSON(200, gin.H{"id": id})
 }
 
+// GetTests            godoc
+// @Summary      Get tests
+// @Description  Get all tests
+// @Tags         test
+// @Produce      json
+// @Success      200  {array}  model.Test
+// @Failure     500  {object} model.ErrorResponse
+// @Router       /api/v1/test [get]
 func GetTestsHandle(ctx *gin.Context) {
 	Tests, err := db.GetTestsFromDB()
 	if err != nil {
@@ -47,6 +66,16 @@ func GetTestsHandle(ctx *gin.Context) {
 	ctx.JSON(200, Tests)
 }
 
+// GetTest            godoc
+// @Summary      Get test
+// @Description  Get test by id
+// @Tags         test
+// @Produce      json
+// @Param        id  path  string  true  "Test ID"
+// @Success      200  {object} model.Test
+// @Failure    404  {object} model.ErrorResponse
+// @Failure    500  {object} model.ErrorResponse
+// @Router       /api/v1/test/{id} [get]
 func GetTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
 	Test, err := db.GetTestFromDB(id)
@@ -54,24 +83,38 @@ func GetTestHandle(ctx *gin.Context) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
 	} else if err != nil {
-		ctx.JSON(500, gin.H{"Error": err.Error()})
+		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 	ctx.JSON(200, Test)
 }
 
+// UpdateTest            godoc
+// @Summary      Update test
+// @Description  Update test by id
+// @Tags         test
+// @Produce      json
+// @Param        id  path  string  true  "Test ID"
+// @Param        updatedTest body model.TestRequest true "Payload"
+// @Success      200  {object} model.BaseResponse
+// @Failure   404  {object} model.ErrorResponse
+// @Failure   500  {object} model.ErrorResponse
+// @Failure   400  {object} model.ErrorResponse
+// @Router       /api/v1/test/{id} [put]
 func UpdateTestHandle(ctx *gin.Context) {
 	var request model.TestRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
-		ctx.JSON(400, gin.H{"Json decode error: ": err.Error()})
+		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
+	// TODO remove when auth is implemented
+	changedBy, _ := uuid.NewV4()
 	Test := &model.Test{
 		Id:        id,
 		Name:      request.Name,
-		ChangedBy: request.User,
+		ChangedBy: &changedBy,
 		CourseId:  request.CourseId,
 	}
 
@@ -80,13 +123,23 @@ func UpdateTestHandle(ctx *gin.Context) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
 	} else if err != nil {
-		ctx.JSON(500, gin.H{"Error": err.Error()})
+		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(200, gin.H{"message": "OK"})
+	ctx.JSON(200, gin.H{"msg": "OK"})
 }
 
+// DeleteTest            godoc
+// @Summary      Delete test
+// @Description  Delete test by id
+// @Tags         test
+// @Produce      json
+// @Param        id  path  string  true  "Test ID"
+// @Success      200  {object} model.BaseResponse
+// @Failure  404  {object} model.ErrorResponse
+// @Failure  500  {object} model.ErrorResponse
+// @Router       /api/v1/test/{id} [delete]
 func DeleteTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
 	err = db.DeleteTestFromDB(id)
@@ -94,7 +147,7 @@ func DeleteTestHandle(ctx *gin.Context) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
 	} else if err != nil {
-		ctx.JSON(500, gin.H{"Error": err.Error()})
+		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 

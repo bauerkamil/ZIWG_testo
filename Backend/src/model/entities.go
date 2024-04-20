@@ -2,7 +2,7 @@ package model
 
 import (
 	"github.com/gofrs/uuid"
-	"google.golang.org/protobuf/types/known/timestamppb"
+	"time"
 )
 
 type Answer struct {
@@ -15,7 +15,7 @@ type Answer struct {
 type Course struct {
 	Id         uuid.UUID `json:"id"`
 	Name       string    `json:"name"`
-	Teacher    uuid.UUID `json:"teacher"`
+	TeacherId  uuid.UUID `json:"teacher_id"`
 	SchoolYear int       `json:"school_year"`
 }
 
@@ -34,10 +34,10 @@ type Teacher struct {
 }
 
 type Test struct {
-	Id        uuid.UUID             `json:"id"`
-	Name      string                `json:"name"`
-	CreatedBy string                `json:"created_by"`
-	ChangedBy string                `json:"changed_by"`
-	CreatedAt timestamppb.Timestamp `json:"created_at"`
-	CourseId  uuid.UUID             `json:"course_id"`
+	Id        uuid.UUID  `json:"id"`
+	Name      string     `json:"name"`
+	CreatedBy uuid.UUID  `json:"created_by"`
+	ChangedBy *uuid.UUID `json:"changed_by"`
+	CreatedAt time.Time  `json:"created_at"`
+	CourseId  uuid.UUID  `json:"course_id"`
 }

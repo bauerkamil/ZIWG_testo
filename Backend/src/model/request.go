@@ -10,7 +10,7 @@ type AnswerRequest struct {
 
 type CourseRequest struct {
 	Name       string    `json:"name"`
-	Teacher    uuid.UUID `json:"teacher"`
+	TeacherId  uuid.UUID `json:"teacher_id"`
 	SchoolYear int       `json:"school_year"`
 }
 
@@ -28,6 +28,5 @@ type TeacherRequest struct {
 
 type TestRequest struct {
 	Name     string    `json:"name"`
-	User     string    `json:"user"`
 	CourseId uuid.UUID `json:"course_id"`
 }
