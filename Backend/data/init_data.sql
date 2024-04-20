@@ -3,11 +3,10 @@
 -- noinspection SqlCurrentSchemaInspectionForFile
 
 -- noinspection SqlCurrentSchemaInspectionForFile
-
 CREATE SCHEMA IF NOT EXISTS "system";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE "system"."testownik"
+CREATE TABLE  IF NOT EXISTS "system"."test"
 (
     "id"         uuid PRIMARY KEY,
     "name"       varchar   NOT NULL,
@@ -18,15 +17,15 @@ CREATE TABLE "system"."testownik"
     "course_id"  uuid
 );
 
-CREATE TABLE "system"."course"
+CREATE TABLE IF NOT EXISTS "system"."course"
 (
     "id"          uuid PRIMARY KEY,
-    "teacher"     uuid    NOT NULL,
+    "teacher_id"     uuid    NOT NULL,
     "school_year" integer,
     "name"        varchar NOT NULL
 );
 
-CREATE TABLE "system"."teacher"
+CREATE TABLE  IF NOT EXISTS  "system"."teacher"
 (
     "id"          uuid PRIMARY KEY,
     "name"        varchar NOT NULL,
@@ -34,15 +33,15 @@ CREATE TABLE "system"."teacher"
     "surname"     varchar NOT NULL
 );
 
-CREATE TABLE "system"."question"
+CREATE TABLE IF NOT EXISTS "system"."question"
 (
     "id"           uuid PRIMARY KEY,
     "body"         varchar NOT NULL,
     "img_file"     varchar,
-    "testownik_id" uuid
+    "test_id" uuid
 );
 
-CREATE TABLE "system"."answer"
+CREATE TABLE IF NOT EXISTS "system"."answer"
 (
     "id"          uuid PRIMARY KEY,
     "question_id" uuid,
@@ -50,14 +49,14 @@ CREATE TABLE "system"."answer"
     "valid"       bool    NOT NULL
 );
 
-ALTER TABLE "system"."testownik"
-    ADD FOREIGN KEY ("course_id") REFERENCES "system"."course" ("id");
+ALTER TABLE "system"."test"
+    ADD FOREIGN KEY  ("course_id") REFERENCES "system"."course" ("id");
 
 ALTER TABLE "system"."course"
-    ADD FOREIGN KEY ("teacher") REFERENCES "system"."teacher" ("id");
+    ADD FOREIGN KEY ("teacher_id") REFERENCES "system"."teacher" ("id");
 
 ALTER TABLE "system"."question"
-    ADD FOREIGN KEY ("testownik_id") REFERENCES "system"."testownik" ("id");
+    ADD FOREIGN KEY ("test_id") REFERENCES "system"."test" ("id");
 
 ALTER TABLE "system"."answer"
     ADD FOREIGN KEY ("question_id") REFERENCES "system"."question" ("id");
