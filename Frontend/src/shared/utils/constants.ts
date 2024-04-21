@@ -1,4 +1,4 @@
-import { EnvironmentProfiles } from "../enums/EnviromentProfiles";
+import { EnvironmentProfiles } from "../enums";
 
 export const TOKEN_LINK = import.meta.env.VITE_TOKEN_LINK;
 export const AUTH_LINK = import.meta.env.VITE_AUTH_LINK;
