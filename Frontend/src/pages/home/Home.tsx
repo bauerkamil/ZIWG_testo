@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
+import { LocalStorageElements } from "@/shared/LocalStorageElements";
 
 const Home: React.FC = () => {
   const [firstName, setFirstName] = useState("");
@@ -20,8 +21,10 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedFirstName = localStorage.getItem("firstName");
-    const storedLastName = localStorage.getItem("lastName");
+    const storedFirstName = localStorage.getItem(
+      LocalStorageElements.FirstName
+    );
+    const storedLastName = localStorage.getItem(LocalStorageElements.LastName);
 
     if (storedFirstName) {
       setFirstName(storedFirstName);

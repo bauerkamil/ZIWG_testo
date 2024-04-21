@@ -1,3 +1,5 @@
+import { AuthResponseElements } from "@/shared/AuthResponseElements";
+import { LocalStorageElements } from "@/shared/LocalStorageElements";
 import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,9 +29,9 @@ const LoadingPage = () => {
     }
 
     const responseObj: IResponseTypeLogin = {
-      key: urlParams.get("key"),
-      oauth_token: urlParams.get("oauth_token"),
-      oauth_verifier: urlParams.get("oauth_verifier"),
+      key: urlParams.get(AuthResponseElements.Key),
+      oauth_token: urlParams.get(AuthResponseElements.OauthToken),
+      oauth_verifier: urlParams.get(AuthResponseElements.OuathVerifier),
     };
 
     if (responseObj) {
@@ -40,11 +42,20 @@ const LoadingPage = () => {
           );
 
           const responseData = response.data;
-          localStorage.setItem("responseKey", responseData.Token || "");
-          localStorage.setItem("firstName", responseData.FirstName || "");
-          localStorage.setItem("lastName", responseData.LastName || "");
+          localStorage.setItem(
+            LocalStorageElements.Token,
+            responseData.Token || ""
+          );
+          localStorage.setItem(
+            LocalStorageElements.FirstName,
+            responseData.FirstName || ""
+          );
+          localStorage.setItem(
+            LocalStorageElements.LastName,
+            responseData.LastName || ""
+          );
           console.log(responseData);
-          navigate("/home"); // Używamy hooka navigate bezpośrednio
+          navigate("/home");
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -53,7 +64,7 @@ const LoadingPage = () => {
       console.log(responseObj);
       getData();
     }
-  }, [navigate]); // Dodajemy navigate do zależności useEffect
+  }, [navigate]);
 
   return <div>Oczekiwanie na pobranie danych</div>;
 };
