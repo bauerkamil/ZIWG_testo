@@ -24,7 +24,7 @@ const LoadingPage = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
 
-    if (!urlParams.get("key")) {
+    if (!urlParams.get(AuthResponseElements.Key)) {
       return;
     }
 
