@@ -40,7 +40,7 @@ const Home: React.FC = () => {
             Rozpocznij naukę
           </Link>
           <Link
-            to="#"
+            to="/add-new"
             className="text-muted-foreground transition-colors hover:text-foreground whitespace-nowrap"
           >
             Dodaj testownik
