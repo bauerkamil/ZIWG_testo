@@ -36,8 +36,17 @@ type Teacher struct {
 type Test struct {
 	Id        uuid.UUID  `json:"id"`
 	Name      string     `json:"name"`
-	CreatedBy uuid.UUID  `json:"created_by"`
-	ChangedBy *uuid.UUID `json:"changed_by"`
+	CreatedBy string     `json:"created_by"`
+	ChangedBy *string    `json:"changed_by"`
 	CreatedAt time.Time  `json:"created_at"`
+	ChangedAt *time.Time `json:"changed_at"`
 	CourseId  uuid.UUID  `json:"course_id"`
+}
+
+type User struct {
+	Id       uuid.UUID `json:"id"`
+	Username string    `json:"username"`
+	Password string    `json:"password"`
+	Email    string    `json:"email"`
+	Active   bool      `json:"active"`
 }

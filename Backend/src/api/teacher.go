@@ -18,6 +18,7 @@ import (
 // @Success      200  {object} model.IdResponse
 // @Failure     400  {object} model.ErrorResponse
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/teacher [post]
 func AddTeacherHandle(ctx *gin.Context) {
 	var request model.TeacherRequest
@@ -50,6 +51,7 @@ func AddTeacherHandle(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {array}  model.Teacher
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/teacher [get]
 func GetTeachersHandle(ctx *gin.Context) {
 	teachers, err := db.GetTeachersFromDB()
@@ -70,6 +72,7 @@ func GetTeachersHandle(ctx *gin.Context) {
 // @Success      200  {object}  model.Teacher
 // @Failure     404  {object} model.ErrorResponse
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/teacher/{id} [get]
 func GetTeacherHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -97,6 +100,7 @@ func GetTeacherHandle(ctx *gin.Context) {
 // @Failure    404  {object} model.ErrorResponse
 // @Failure    500  {object} model.ErrorResponse
 // @Failure    400  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/teacher/{id} [put]
 func UpdateTeacherHandle(ctx *gin.Context) {
 	var request model.TeacherRequest
@@ -134,6 +138,7 @@ func UpdateTeacherHandle(ctx *gin.Context) {
 // @Success      200  {object} model.BaseResponse
 // @Failure  404  {object} model.ErrorResponse
 // @Failure  500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/teacher/{id} [delete]
 func DeleteTeacherHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -151,7 +156,7 @@ func DeleteTeacherHandle(ctx *gin.Context) {
 }
 
 func AddTeacherHandlers(router *gin.RouterGroup) {
-	var subGroup = router.Group("/teacher")
+	var subGroup = router.Group("/teacher", RequireAuth)
 	subGroup.POST("", AddTeacherHandle)
 	subGroup.GET("", GetTeachersHandle)
 	subGroup.GET(":id", GetTeacherHandle)

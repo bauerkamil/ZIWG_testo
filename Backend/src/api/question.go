@@ -18,6 +18,7 @@ import (
 // @Success      200  {object} model.BaseResponse
 // @Failure     400  {object} model.ErrorResponse
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/question [post]
 func AddQuestionHandle(ctx *gin.Context) {
 	var request model.QuestionRequest
@@ -50,6 +51,7 @@ func AddQuestionHandle(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {array}  model.Question
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/question [get]
 func GetQuestionsHandle(ctx *gin.Context) {
 	questions, err := db.GetQuestionsFromDB()
@@ -70,6 +72,7 @@ func GetQuestionsHandle(ctx *gin.Context) {
 // @Success      200  {object} model.Question
 // @Failure     404  {object} model.ErrorResponse
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/question/{id} [get]
 func GetQuestionHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -95,6 +98,7 @@ func GetQuestionHandle(ctx *gin.Context) {
 // @Failure    404  {object} model.ErrorResponse
 // @Failure    500  {object} model.ErrorResponse
 // @Failure    400  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/question/{id} [put]
 func UpdateQuestionHandle(ctx *gin.Context) {
 	var request model.QuestionRequest
@@ -132,6 +136,7 @@ func UpdateQuestionHandle(ctx *gin.Context) {
 // @Success      200  {object} model.BaseResponse
 // @Failure  404  {object} model.ErrorResponse
 // @Failure  500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/question/{id} [delete]
 func DeleteQuestionHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -149,7 +154,7 @@ func DeleteQuestionHandle(ctx *gin.Context) {
 }
 
 func AddQuestionHandlers(router *gin.RouterGroup) {
-	var subGroup = router.Group("/question")
+	var subGroup = router.Group("/question", RequireAuth)
 	subGroup.POST("", AddQuestionHandle)
 	subGroup.GET("", GetQuestionsHandle)
 	subGroup.GET(":id", GetQuestionHandle)

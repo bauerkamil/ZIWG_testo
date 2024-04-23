@@ -18,6 +18,7 @@ import (
 // @Param        test body model.TestRequest true "Payload"
 // @Success      200  {object} model.IdResponse
 // @Failure     400  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/test [post]
 func AddTestHandle(ctx *gin.Context) {
 	var request model.TestRequest
@@ -26,8 +27,8 @@ func AddTestHandle(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	// TODO remove when auth is implemented
-	createdBy, _ := uuid.NewV4()
+	userId, _ := ctx.Get("user")
+	createdBy := userId.(string)
 	date := time.Now()
 	id, _ := uuid.NewV4()
 	Test := &model.Test{
@@ -55,6 +56,7 @@ func AddTestHandle(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {array}  model.Test
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/test [get]
 func GetTestsHandle(ctx *gin.Context) {
 	Tests, err := db.GetTestsFromDB()
@@ -75,6 +77,7 @@ func GetTestsHandle(ctx *gin.Context) {
 // @Success      200  {object} model.Test
 // @Failure    404  {object} model.ErrorResponse
 // @Failure    500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/test/{id} [get]
 func GetTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -100,6 +103,7 @@ func GetTestHandle(ctx *gin.Context) {
 // @Failure   404  {object} model.ErrorResponse
 // @Failure   500  {object} model.ErrorResponse
 // @Failure   400  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/test/{id} [put]
 func UpdateTestHandle(ctx *gin.Context) {
 	var request model.TestRequest
@@ -109,13 +113,15 @@ func UpdateTestHandle(ctx *gin.Context) {
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	// TODO remove when auth is implemented
-	changedBy, _ := uuid.NewV4()
+	userId, _ := ctx.Get("user")
+	changedBy := userId.(string)
+	changedAt := time.Now()
 	Test := &model.Test{
 		Id:        id,
 		Name:      request.Name,
 		ChangedBy: &changedBy,
 		CourseId:  request.CourseId,
+		ChangedAt: &changedAt,
 	}
 
 	err = db.UpdateTestInDB(Test)
@@ -139,6 +145,7 @@ func UpdateTestHandle(ctx *gin.Context) {
 // @Success      200  {object} model.BaseResponse
 // @Failure  404  {object} model.ErrorResponse
 // @Failure  500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/test/{id} [delete]
 func DeleteTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -156,7 +163,7 @@ func DeleteTestHandle(ctx *gin.Context) {
 }
 
 func AddTestHandlers(router *gin.RouterGroup) {
-	var subGroup = router.Group("/test")
+	var subGroup = router.Group("/test", RequireAuth)
 	subGroup.POST("", AddTestHandle)
 	subGroup.GET("", GetTestsHandle)
 	subGroup.GET(":id", GetTestHandle)

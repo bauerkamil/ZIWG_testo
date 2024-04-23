@@ -52,6 +52,7 @@ func UpdateTestInDB(newTest *model.Test) error {
 	}
 	if changed {
 		test.ChangedBy = newTest.ChangedBy
+		test.ChangedAt = newTest.ChangedAt
 		result = dbC.Save(&test)
 		if result.Error != nil {
 			return result.Error

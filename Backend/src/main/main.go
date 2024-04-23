@@ -12,11 +12,9 @@ import (
 // @title           Swagger ZIWG_testo API
 // @version         1.0
 // @description     REST API for ZIWG_testo project
-
-// @securityDefinitions.basic  BasicAuth
-
-// @externalDocs.description  OpenAPI
-// @externalDocs.url          https://swagger.io/resources/open-api/
+// @securitydefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	router := gin.Default()
 	var defaultGroup = router.Group("api/v1")

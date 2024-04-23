@@ -10,8 +10,8 @@ CREATE TABLE  IF NOT EXISTS "system"."test"
 (
     "id"         uuid PRIMARY KEY,
     "name"       varchar   NOT NULL,
-    "created_by" uuid,
-    "changed_by" uuid,
+    "created_by" varchar,
+    "changed_by" varchar,
     "changed_at" timestamp,
     "created_at" timestamp NOT NULL DEFAULT 'NOW()',
     "course_id"  uuid
@@ -38,7 +38,8 @@ CREATE TABLE IF NOT EXISTS "system"."question"
     "id"           uuid PRIMARY KEY,
     "body"         varchar NOT NULL,
     "img_file"     varchar,
-    "test_id" uuid
+    "test_id" uuid,
+    UNIQUE ("body", "test_id")
 );
 
 CREATE TABLE IF NOT EXISTS "system"."answer"
@@ -46,7 +47,8 @@ CREATE TABLE IF NOT EXISTS "system"."answer"
     "id"          uuid PRIMARY KEY,
     "question_id" uuid,
     "body"        varchar NOT NULL,
-    "valid"       bool    NOT NULL
+    "valid"       bool    NOT NULL,
+    UNIQUE ("body", "question_id")
 );
 
 ALTER TABLE "system"."test"

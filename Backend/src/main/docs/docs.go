@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/api/v1/answer": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all answers",
                 "produces": [
                     "application/json"
@@ -44,6 +49,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add answer from json body",
                 "produces": [
                     "application/json"
@@ -87,6 +97,11 @@ const docTemplate = `{
         },
         "/api/v1/answer/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get answer by id",
                 "produces": [
                     "application/json"
@@ -126,6 +141,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update answer by id",
                 "produces": [
                     "application/json"
@@ -180,6 +200,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete answer by id",
                 "produces": [
                     "application/json"
@@ -221,6 +246,11 @@ const docTemplate = `{
         },
         "/api/v1/course": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all courses",
                 "produces": [
                     "application/json"
@@ -248,6 +278,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add course from json body",
                 "produces": [
                     "application/json"
@@ -291,6 +326,11 @@ const docTemplate = `{
         },
         "/api/v1/course/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get course by id",
                 "produces": [
                     "application/json"
@@ -330,6 +370,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update course by id",
                 "produces": [
                     "application/json"
@@ -384,6 +429,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete course by id",
                 "produces": [
                     "application/json"
@@ -425,6 +475,11 @@ const docTemplate = `{
         },
         "/api/v1/question": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all questions",
                 "produces": [
                     "application/json"
@@ -452,6 +507,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add question from json body",
                 "produces": [
                     "application/json"
@@ -495,6 +555,11 @@ const docTemplate = `{
         },
         "/api/v1/question/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get question by id",
                 "produces": [
                     "application/json"
@@ -534,6 +599,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update question by id",
                 "produces": [
                     "application/json"
@@ -588,6 +658,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete question by id",
                 "produces": [
                     "application/json"
@@ -629,6 +704,11 @@ const docTemplate = `{
         },
         "/api/v1/teacher": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all teachers",
                 "produces": [
                     "application/json"
@@ -656,6 +736,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add teacher from json body",
                 "produces": [
                     "application/json"
@@ -699,6 +784,11 @@ const docTemplate = `{
         },
         "/api/v1/teacher/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get teacher by id",
                 "produces": [
                     "application/json"
@@ -738,6 +828,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update teacher by id",
                 "produces": [
                     "application/json"
@@ -792,6 +887,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete teacher by id",
                 "produces": [
                     "application/json"
@@ -833,6 +933,11 @@ const docTemplate = `{
         },
         "/api/v1/test": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all tests",
                 "produces": [
                     "application/json"
@@ -860,6 +965,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Add test from json body",
                 "produces": [
                     "application/json"
@@ -897,6 +1007,11 @@ const docTemplate = `{
         },
         "/api/v1/test/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get test by id",
                 "produces": [
                     "application/json"
@@ -936,6 +1051,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update test by id",
                 "produces": [
                     "application/json"
@@ -990,6 +1110,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete test by id",
                 "produces": [
                     "application/json"
@@ -1182,6 +1307,9 @@ const docTemplate = `{
         "model.Test": {
             "type": "object",
             "properties": {
+                "changed_at": {
+                    "type": "string"
+                },
                 "changed_by": {
                     "type": "string"
                 },
@@ -1215,13 +1343,11 @@ const docTemplate = `{
         }
     },
     "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
-    },
-    "externalDocs": {
-        "description": "OpenAPI",
-        "url": "https://swagger.io/resources/open-api/"
     }
 }`
 

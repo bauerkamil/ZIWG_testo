@@ -18,6 +18,7 @@ import (
 // @Success      200  {object} model.IdResponse
 // @Failure     400  {object} model.ErrorResponse
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/course [post]
 func AddCourseHandle(ctx *gin.Context) {
 	var request model.CourseRequest
@@ -50,6 +51,7 @@ func AddCourseHandle(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {array}  model.Course
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/course [get]
 func GetCoursesHandle(ctx *gin.Context) {
 	courses, err := db.GetCoursesFromDB()
@@ -70,6 +72,7 @@ func GetCoursesHandle(ctx *gin.Context) {
 // @Success      200  {object} model.Course
 // @Failure    404  {object} model.ErrorResponse
 // @Failure    500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/course/{id} [get]
 func GetCourseHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -95,6 +98,7 @@ func GetCourseHandle(ctx *gin.Context) {
 // @Failure    404  {object} model.ErrorResponse
 // @Failure    500  {object} model.ErrorResponse
 // @Failure    400  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/course/{id} [put]
 func UpdateCourseHandle(ctx *gin.Context) {
 	var request model.CourseRequest
@@ -132,6 +136,7 @@ func UpdateCourseHandle(ctx *gin.Context) {
 // @Success      200  {object} model.BaseResponse
 // @Failure   404  {object} model.ErrorResponse
 // @Failure   500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/course/{id} [delete]
 func DeleteCourseHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -149,7 +154,7 @@ func DeleteCourseHandle(ctx *gin.Context) {
 }
 
 func AddCourseHandlers(router *gin.RouterGroup) {
-	var subGroup = router.Group("/course")
+	var subGroup = router.Group("/course", RequireAuth)
 	subGroup.POST("", AddCourseHandle)
 	subGroup.GET("", GetCoursesHandle)
 	subGroup.GET(":id", GetCourseHandle)

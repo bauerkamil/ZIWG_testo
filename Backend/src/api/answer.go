@@ -18,6 +18,7 @@ import (
 // @Success      200  {object} model.IdResponse
 // @Failure     400  {object} model.ErrorResponse
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/answer [post]
 func AddAnswerHandle(ctx *gin.Context) {
 	var request model.AnswerRequest
@@ -49,6 +50,7 @@ func AddAnswerHandle(ctx *gin.Context) {
 // @Produce      json
 // @Success      200  {array}  model.Answer
 // @Failure     500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/answer [get]
 func GetAnswersHandle(ctx *gin.Context) {
 	answers, err := db.GetAnswersFromDB()
@@ -69,6 +71,7 @@ func GetAnswersHandle(ctx *gin.Context) {
 // @Success      200  {object} model.Answer
 // @Failure    404  {object} model.ErrorResponse
 // @Failure    500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/answer/{id} [get]
 func GetAnswerHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -94,6 +97,7 @@ func GetAnswerHandle(ctx *gin.Context) {
 // @Failure    404  {object} model.ErrorResponse
 // @Failure    500  {object} model.ErrorResponse
 // @Failure    400  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/answer/{id} [put]
 func UpdateAnswerHandle(ctx *gin.Context) {
 	var request model.AnswerRequest
@@ -130,6 +134,7 @@ func UpdateAnswerHandle(ctx *gin.Context) {
 // @Success      200  {object} model.BaseResponse
 // @Failure   404  {object} model.ErrorResponse
 // @Failure   500  {object} model.ErrorResponse
+// @Security     BearerAuth
 // @Router       /api/v1/answer/{id} [delete]
 func DeleteAnswerHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
@@ -147,7 +152,7 @@ func DeleteAnswerHandle(ctx *gin.Context) {
 }
 
 func AddAnswerHandlers(router *gin.RouterGroup) {
-	var subGroup = router.Group("/answer")
+	var subGroup = router.Group("/answer", RequireAuth)
 	subGroup.POST("", AddAnswerHandle)
 	subGroup.GET("", GetAnswersHandle)
 	subGroup.GET(":id", GetAnswerHandle)

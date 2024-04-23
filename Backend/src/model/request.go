@@ -30,3 +30,20 @@ type TestRequest struct {
 	Name     string    `json:"name"`
 	CourseId uuid.UUID `json:"course_id"`
 }
+
+type UserRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Username string `json:"username"`
+}
+
+type EditUserRequest struct {
+	Email    *string `json:"email"`
+	Password *string `json:"password"`
+	Username *string `json:"username"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
