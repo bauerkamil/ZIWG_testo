@@ -8,7 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE  IF NOT EXISTS "system"."test"
 (
-    "id"         uuid PRIMARY KEY,
+    "id"         uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     "name"       varchar   NOT NULL,
     "created_by" varchar,
     "changed_by" varchar,
@@ -19,7 +19,7 @@ CREATE TABLE  IF NOT EXISTS "system"."test"
 
 CREATE TABLE IF NOT EXISTS "system"."course"
 (
-    "id"          uuid PRIMARY KEY,
+    "id"          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     "teacher_id"     uuid    NOT NULL,
     "school_year" integer,
     "name"        varchar NOT NULL
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS "system"."course"
 
 CREATE TABLE  IF NOT EXISTS  "system"."teacher"
 (
-    "id"          uuid PRIMARY KEY,
+    "id"          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     "name"        varchar NOT NULL,
     "second_name" varchar,
     "surname"     varchar NOT NULL
@@ -35,7 +35,7 @@ CREATE TABLE  IF NOT EXISTS  "system"."teacher"
 
 CREATE TABLE IF NOT EXISTS "system"."question"
 (
-    "id"           uuid PRIMARY KEY,
+    "id"           uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     "body"         varchar NOT NULL,
     "img_file"     varchar,
     "test_id" uuid,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS "system"."question"
 
 CREATE TABLE IF NOT EXISTS "system"."answer"
 (
-    "id"          uuid PRIMARY KEY,
+    "id"          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     "question_id" uuid,
     "body"        varchar NOT NULL,
     "valid"       bool    NOT NULL,

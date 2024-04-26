@@ -1,12 +1,13 @@
-package api
+package services
 
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
-	"src/db"
+	"src/dal"
 	"src/model"
+	"src/model/dto"
 	"time"
 )
 
@@ -15,13 +16,13 @@ import (
 // @Description  Add test from json body
 // @Tags         test
 // @Produce      json
-// @Param        test body model.TestRequest true "Payload"
-// @Success      200  {object} model.IdResponse
-// @Failure     400  {object} model.ErrorResponse
+// @Param        test body dto.TestRequest true "Payload"
+// @Success      200  {object} dto.IdResponse
+// @Failure     400  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/test [post]
 func AddTestHandle(ctx *gin.Context) {
-	var request model.TestRequest
+	var request dto.TestRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -40,7 +41,7 @@ func AddTestHandle(ctx *gin.Context) {
 		ChangedBy: nil,
 	}
 
-	err = db.AddTestToDB(Test)
+	err = dal.AddTestToDB(Test)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -54,18 +55,23 @@ func AddTestHandle(ctx *gin.Context) {
 // @Description  Get all tests
 // @Tags         test
 // @Produce      json
-// @Success      200  {array}  model.Test
-// @Failure     500  {object} model.ErrorResponse
+// @Success      200  {array}  dto.ListTest
+// @Failure     500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/test [get]
 func GetTestsHandle(ctx *gin.Context) {
-	Tests, err := db.GetTestsFromDB()
+	tests, err := dal.GetTestsFromDB()
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+	//loop over tests and convert to listTest
+	output := make([]dto.ListTest, len(tests))
+	for i, test := range tests {
+		output[i] = dto.ToListTest(test)
+	}
 
-	ctx.JSON(200, Tests)
+	ctx.JSON(200, output)
 }
 
 // GetTest            godoc
@@ -74,14 +80,14 @@ func GetTestsHandle(ctx *gin.Context) {
 // @Tags         test
 // @Produce      json
 // @Param        id  path  string  true  "Test ID"
-// @Success      200  {object} model.Test
-// @Failure    404  {object} model.ErrorResponse
-// @Failure    500  {object} model.ErrorResponse
+// @Success      200  {object} dto.FullTest
+// @Failure    404  {object} dto.ErrorResponse
+// @Failure    500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/test/{id} [get]
 func GetTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	Test, err := db.GetTestFromDB(id)
+	test, err := dal.GetTestFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -89,7 +95,7 @@ func GetTestHandle(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(200, Test)
+	ctx.JSON(200, dto.ToFullTest(*test))
 }
 
 // UpdateTest            godoc
@@ -98,15 +104,15 @@ func GetTestHandle(ctx *gin.Context) {
 // @Tags         test
 // @Produce      json
 // @Param        id  path  string  true  "Test ID"
-// @Param        updatedTest body model.TestRequest true "Payload"
-// @Success      200  {object} model.BaseResponse
-// @Failure   404  {object} model.ErrorResponse
-// @Failure   500  {object} model.ErrorResponse
-// @Failure   400  {object} model.ErrorResponse
+// @Param        updatedTest body dto.TestRequest true "Payload"
+// @Success      200  {object} dto.BaseResponse
+// @Failure   404  {object} dto.ErrorResponse
+// @Failure   500  {object} dto.ErrorResponse
+// @Failure   400  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/test/{id} [put]
 func UpdateTestHandle(ctx *gin.Context) {
-	var request model.TestRequest
+	var request dto.TestRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -124,7 +130,7 @@ func UpdateTestHandle(ctx *gin.Context) {
 		ChangedAt: &changedAt,
 	}
 
-	err = db.UpdateTestInDB(Test)
+	err = dal.UpdateTestInDB(Test)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -142,14 +148,14 @@ func UpdateTestHandle(ctx *gin.Context) {
 // @Tags         test
 // @Produce      json
 // @Param        id  path  string  true  "Test ID"
-// @Success      200  {object} model.BaseResponse
-// @Failure  404  {object} model.ErrorResponse
-// @Failure  500  {object} model.ErrorResponse
+// @Success      200  {object} dto.BaseResponse
+// @Failure  404  {object} dto.ErrorResponse
+// @Failure  500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/test/{id} [delete]
 func DeleteTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	err = db.DeleteTestFromDB(id)
+	err = dal.DeleteTestFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return

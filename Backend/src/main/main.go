@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"src/api"
 	_ "src/main/docs"
+	"src/services"
 )
 
 // @title           Swagger ZIWG_testo API
@@ -18,11 +18,11 @@ import (
 func main() {
 	router := gin.Default()
 	var defaultGroup = router.Group("api/v1")
-	api.AddTeacherHandlers(defaultGroup)
-	api.AddCourseHandlers(defaultGroup)
-	api.AddQuestionHandlers(defaultGroup)
-	api.AddAnswerHandlers(defaultGroup)
-	api.AddTestHandlers(defaultGroup)
+	services.AddTeacherHandlers(defaultGroup)
+	services.AddCourseHandlers(defaultGroup)
+	services.AddQuestionHandlers(defaultGroup)
+	services.AddAnswerHandlers(defaultGroup)
+	services.AddTestHandlers(defaultGroup)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	err := router.Run("localhost:9090")

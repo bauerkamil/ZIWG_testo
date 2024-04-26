@@ -1,4 +1,4 @@
-package db
+package dal
 
 import (
 	"github.com/gofrs/uuid"
@@ -17,7 +17,9 @@ func AddTestToDB(test *model.Test) error {
 func GetTestsFromDB() ([]model.Test, error) {
 	dbC := DB
 	var tests []model.Test
-	result := dbC.Find(&tests)
+	result := dbC.Preload("Course").
+		Preload("Course.Teacher").
+		Find(&tests)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -27,7 +29,9 @@ func GetTestsFromDB() ([]model.Test, error) {
 func GetTestFromDB(id uuid.UUID) (*model.Test, error) {
 	dbC := DB
 	var test model.Test
-	result := dbC.First(&test, id)
+	result := dbC.Preload("Questions").
+		Preload("Questions.Answers").
+		First(&test, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}

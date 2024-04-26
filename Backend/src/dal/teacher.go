@@ -1,4 +1,4 @@
-package db
+package dal
 
 import (
 	"github.com/gofrs/uuid"

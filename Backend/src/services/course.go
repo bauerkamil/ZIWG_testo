@@ -1,12 +1,13 @@
-package api
+package services
 
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
-	"src/db"
+	"src/dal"
 	"src/model"
+	"src/model/dto"
 )
 
 // AddCourse            godoc
@@ -14,14 +15,14 @@ import (
 // @Description  Add course from json body
 // @Tags         course
 // @Produce      json
-// @Param        course body model.CourseRequest true "Payload"
-// @Success      200  {object} model.IdResponse
-// @Failure     400  {object} model.ErrorResponse
-// @Failure     500  {object} model.ErrorResponse
+// @Param        course body dto.CourseRequest true "Payload"
+// @Success      200  {object} dto.IdResponse
+// @Failure     400  {object} dto.ErrorResponse
+// @Failure     500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/course [post]
 func AddCourseHandle(ctx *gin.Context) {
-	var request model.CourseRequest
+	var request dto.CourseRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -35,7 +36,7 @@ func AddCourseHandle(ctx *gin.Context) {
 		SchoolYear: request.SchoolYear,
 	}
 
-	err = db.AddCourseToDB(course)
+	err = dal.AddCourseToDB(course)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -50,11 +51,11 @@ func AddCourseHandle(ctx *gin.Context) {
 // @Tags         course
 // @Produce      json
 // @Success      200  {array}  model.Course
-// @Failure     500  {object} model.ErrorResponse
+// @Failure     500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/course [get]
 func GetCoursesHandle(ctx *gin.Context) {
-	courses, err := db.GetCoursesFromDB()
+	courses, err := dal.GetCoursesFromDB()
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -70,13 +71,13 @@ func GetCoursesHandle(ctx *gin.Context) {
 // @Produce      json
 // @Param        id path string true "Course ID"
 // @Success      200  {object} model.Course
-// @Failure    404  {object} model.ErrorResponse
-// @Failure    500  {object} model.ErrorResponse
+// @Failure    404  {object} dto.ErrorResponse
+// @Failure    500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/course/{id} [get]
 func GetCourseHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	course, err := db.GetCourseFromDB(id)
+	course, err := dal.GetCourseFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -93,15 +94,15 @@ func GetCourseHandle(ctx *gin.Context) {
 // @Tags         course
 // @Produce      json
 // @Param        id  path  string  true  "Course ID"
-// @Param        updatedCourse body model.CourseRequest true "Payload"
-// @Success      200  {object} model.BaseResponse
-// @Failure    404  {object} model.ErrorResponse
-// @Failure    500  {object} model.ErrorResponse
-// @Failure    400  {object} model.ErrorResponse
+// @Param        updatedCourse body dto.CourseRequest true "Payload"
+// @Success      200  {object} dto.BaseResponse
+// @Failure    404  {object} dto.ErrorResponse
+// @Failure    500  {object} dto.ErrorResponse
+// @Failure    400  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/course/{id} [put]
 func UpdateCourseHandle(ctx *gin.Context) {
-	var request model.CourseRequest
+	var request dto.CourseRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -115,7 +116,7 @@ func UpdateCourseHandle(ctx *gin.Context) {
 		SchoolYear: request.SchoolYear,
 	}
 
-	err = db.UpdateCourseInDB(Course)
+	err = dal.UpdateCourseInDB(Course)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -133,14 +134,14 @@ func UpdateCourseHandle(ctx *gin.Context) {
 // @Tags         course
 // @Produce      json
 // @Param        id  path  string  true  "Course ID"
-// @Success      200  {object} model.BaseResponse
-// @Failure   404  {object} model.ErrorResponse
-// @Failure   500  {object} model.ErrorResponse
+// @Success      200  {object} dto.BaseResponse
+// @Failure   404  {object} dto.ErrorResponse
+// @Failure   500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/course/{id} [delete]
 func DeleteCourseHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	err = db.DeleteCourseFromDB(id)
+	err = dal.DeleteCourseFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return

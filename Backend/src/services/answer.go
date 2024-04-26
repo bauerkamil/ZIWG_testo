@@ -1,12 +1,13 @@
-package api
+package services
 
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
-	"src/db"
+	"src/dal"
 	"src/model"
+	"src/model/dto"
 )
 
 // AddAnswer            godoc
@@ -14,14 +15,14 @@ import (
 // @Description  Add answer from json body
 // @Tags         answer
 // @Produce      json
-// @Param        answer body model.AnswerRequest true "Payload"
-// @Success      200  {object} model.IdResponse
-// @Failure     400  {object} model.ErrorResponse
-// @Failure     500  {object} model.ErrorResponse
+// @Param        answer body dto.AnswerRequest true "Payload"
+// @Success      200  {object} dto.IdResponse
+// @Failure     400  {object} dto.ErrorResponse
+// @Failure     500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/answer [post]
 func AddAnswerHandle(ctx *gin.Context) {
-	var request model.AnswerRequest
+	var request dto.AnswerRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -34,7 +35,7 @@ func AddAnswerHandle(ctx *gin.Context) {
 		QuestionId: request.QuestionId,
 		Valid:      request.Valid,
 	}
-	err = db.AddAnswerToDB(answer)
+	err = dal.AddAnswerToDB(answer)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -49,11 +50,11 @@ func AddAnswerHandle(ctx *gin.Context) {
 // @Tags         answer
 // @Produce      json
 // @Success      200  {array}  model.Answer
-// @Failure     500  {object} model.ErrorResponse
+// @Failure     500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/answer [get]
 func GetAnswersHandle(ctx *gin.Context) {
-	answers, err := db.GetAnswersFromDB()
+	answers, err := dal.GetAnswersFromDB()
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -69,13 +70,13 @@ func GetAnswersHandle(ctx *gin.Context) {
 // @Produce      json
 // @Param        id path string true "Answer ID"
 // @Success      200  {object} model.Answer
-// @Failure    404  {object} model.ErrorResponse
-// @Failure    500  {object} model.ErrorResponse
+// @Failure    404  {object} dto.ErrorResponse
+// @Failure    500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/answer/{id} [get]
 func GetAnswerHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	answer, err := db.GetAnswerFromDB(id)
+	answer, err := dal.GetAnswerFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -92,15 +93,15 @@ func GetAnswerHandle(ctx *gin.Context) {
 // @Tags         answer
 // @Produce      json
 // @Param        id  path  string  true  "Answer ID"
-// @Param        updatedAnswer body model.AnswerRequest true "Payload"
-// @Success      200  {object} model.BaseResponse
-// @Failure    404  {object} model.ErrorResponse
-// @Failure    500  {object} model.ErrorResponse
-// @Failure    400  {object} model.ErrorResponse
+// @Param        updatedAnswer body dto.AnswerRequest true "Payload"
+// @Success      200  {object} dto.BaseResponse
+// @Failure    404  {object} dto.ErrorResponse
+// @Failure    500  {object} dto.ErrorResponse
+// @Failure    400  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/answer/{id} [put]
 func UpdateAnswerHandle(ctx *gin.Context) {
-	var request model.AnswerRequest
+	var request dto.AnswerRequest
 	err := ctx.BindJSON(&request)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -113,7 +114,7 @@ func UpdateAnswerHandle(ctx *gin.Context) {
 		Valid:      request.Valid,
 		QuestionId: request.QuestionId,
 	}
-	err = db.UpdateAnswerInDB(answer)
+	err = dal.UpdateAnswerInDB(answer)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
@@ -131,14 +132,14 @@ func UpdateAnswerHandle(ctx *gin.Context) {
 // @Tags         answer
 // @Produce      json
 // @Param        id  path  string  true  "Answer ID"
-// @Success      200  {object} model.BaseResponse
-// @Failure   404  {object} model.ErrorResponse
-// @Failure   500  {object} model.ErrorResponse
+// @Success      200  {object} dto.BaseResponse
+// @Failure   404  {object} dto.ErrorResponse
+// @Failure   500  {object} dto.ErrorResponse
 // @Security     BearerAuth
 // @Router       /api/v1/answer/{id} [delete]
 func DeleteAnswerHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
-	err = db.DeleteAnswerFromDB(id)
+	err = dal.DeleteAnswerFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
 		return
