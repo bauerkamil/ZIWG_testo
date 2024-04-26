@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"os"
 	_ "src/main/docs"
 	"src/services"
 )
@@ -25,7 +26,7 @@ func main() {
 	services.AddTestHandlers(defaultGroup)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	err := router.Run("localhost:9090")
+	err := router.Run(os.Getenv("ADDRESS"))
 	if err != nil {
 		fmt.Println("Gin error occurred: ", err)
 	}
