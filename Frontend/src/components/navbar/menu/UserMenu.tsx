@@ -1,6 +1,7 @@
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, Separator, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { CircleUser } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useAuth } from "@/shared/hooks/auth/useAuth";
 
 const UserMenu = () => {
