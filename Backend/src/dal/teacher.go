@@ -6,18 +6,13 @@ import (
 )
 
 func AddTeacherToDB(teacher *model.Teacher) error {
-	dbC := DB
-	result := dbC.Create(teacher)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := DB.Create(teacher)
+	return result.Error
 }
 
 func GetTeachersFromDB() ([]model.Teacher, error) {
-	dbC := DB
 	var teachers []model.Teacher
-	result := dbC.Find(&teachers)
+	result := DB.Find(&teachers)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -27,9 +22,8 @@ func GetTeachersFromDB() ([]model.Teacher, error) {
 //make teacher optional
 
 func GetTeacherFromDB(id uuid.UUID) (*model.Teacher, error) {
-	dbC := DB
 	var teacher model.Teacher
-	result := dbC.First(&teacher, id)
+	result := DB.First(&teacher, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -37,24 +31,16 @@ func GetTeacherFromDB(id uuid.UUID) (*model.Teacher, error) {
 }
 
 func UpdateTeacherInDB(newTeacher *model.Teacher) error {
-	dbC := DB
 	var teacher model.Teacher
-	result := dbC.First(&teacher, newTeacher.Id)
+	result := DB.First(&teacher, newTeacher.Id)
 	if result.Error != nil {
 		return result.Error
 	}
-	dbC.Save(newTeacher)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result = DB.Save(newTeacher)
+	return result.Error
 }
 
 func DeleteTeacherFromDB(id uuid.UUID) error {
-	dbC := DB
-	result := dbC.Delete(&model.Teacher{}, id)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := DB.Delete(&model.Teacher{}, id)
+	return result.Error
 }

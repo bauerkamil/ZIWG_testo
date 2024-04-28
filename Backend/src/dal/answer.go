@@ -6,18 +6,13 @@ import (
 )
 
 func AddAnswerToDB(answer *model.Answer) error {
-	dbC := DB
-	result := dbC.Create(answer)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := DB.Create(answer)
+	return result.Error
 }
 
 func GetAnswersFromDB() ([]model.Answer, error) {
-	dbC := DB
 	var answers []model.Answer
-	result := dbC.Find(&answers)
+	result := DB.Find(&answers)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -25,9 +20,8 @@ func GetAnswersFromDB() ([]model.Answer, error) {
 }
 
 func GetAnswerFromDB(id uuid.UUID) (*model.Answer, error) {
-	dbC := DB
 	var answer model.Answer
-	result := dbC.First(&answer, id)
+	result := DB.First(&answer, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -35,24 +29,16 @@ func GetAnswerFromDB(id uuid.UUID) (*model.Answer, error) {
 }
 
 func UpdateAnswerInDB(newAnswer *model.Answer) error {
-	dbC := DB
 	var answer model.Answer
-	result := dbC.First(&answer, newAnswer.Id)
+	result := DB.First(&answer, newAnswer.Id)
 	if result.Error != nil {
 		return result.Error
 	}
-	dbC.Save(newAnswer)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result = DB.Save(newAnswer)
+	return result.Error
 }
 
 func DeleteAnswerFromDB(id uuid.UUID) error {
-	dbC := DB
-	result := dbC.Delete(&model.Answer{}, id)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := DB.Delete(&model.Answer{}, id)
+	return result.Error
 }

@@ -6,18 +6,13 @@ import (
 )
 
 func AddTestToDB(test *model.Test) error {
-	dbC := DB
-	result := dbC.Create(test)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := DB.Create(test)
+	return result.Error
 }
 
 func GetTestsFromDB() ([]model.Test, error) {
-	dbC := DB
 	var tests []model.Test
-	result := dbC.Preload("Course").
+	result := DB.Preload("Course").
 		Preload("Course.Teacher").
 		Find(&tests)
 	if result.Error != nil {
@@ -27,9 +22,8 @@ func GetTestsFromDB() ([]model.Test, error) {
 }
 
 func GetTestFromDB(id uuid.UUID) (*model.Test, error) {
-	dbC := DB
 	var test model.Test
-	result := dbC.Preload("Questions").
+	result := DB.Preload("Questions").
 		Preload("Questions.Answers").
 		First(&test, id)
 	if result.Error != nil {
@@ -39,9 +33,8 @@ func GetTestFromDB(id uuid.UUID) (*model.Test, error) {
 }
 
 func UpdateTestInDB(newTest *model.Test) error {
-	dbC := DB
 	var test model.Test
-	result := dbC.First(&test, newTest.Id)
+	result := DB.First(&test, newTest.Id)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -57,19 +50,13 @@ func UpdateTestInDB(newTest *model.Test) error {
 	if changed {
 		test.ChangedBy = newTest.ChangedBy
 		test.ChangedAt = newTest.ChangedAt
-		result = dbC.Save(&test)
-		if result.Error != nil {
-			return result.Error
-		}
+		result = DB.Save(&test)
+		return result.Error
 	}
 	return nil
 }
 
 func DeleteTestFromDB(id uuid.UUID) error {
-	dbC := DB
-	result := dbC.Delete(&model.Test{}, id)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := DB.Delete(&model.Test{}, id)
+	return result.Error
 }

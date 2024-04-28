@@ -6,18 +6,13 @@ import (
 )
 
 func AddQuestionToDB(question *model.Question) error {
-	dbC := DB
-	result := dbC.Create(question)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := DB.Create(question)
+	return result.Error
 }
 
 func GetQuestionsFromDB() ([]model.Question, error) {
-	dbC := DB
 	var questions []model.Question
-	result := dbC.Find(&questions)
+	result := DB.Find(&questions)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -25,9 +20,8 @@ func GetQuestionsFromDB() ([]model.Question, error) {
 }
 
 func GetQuestionFromDB(id uuid.UUID) (*model.Question, error) {
-	dbC := DB
 	var question model.Question
-	result := dbC.First(&question, id)
+	result := DB.First(&question, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -35,24 +29,16 @@ func GetQuestionFromDB(id uuid.UUID) (*model.Question, error) {
 }
 
 func UpdateQuestionInDB(newQuestion *model.Question) error {
-	dbC := DB
 	var Question model.Question
-	result := dbC.First(&Question, newQuestion.Id)
+	result := DB.First(&Question, newQuestion.Id)
 	if result.Error != nil {
 		return result.Error
 	}
-	dbC.Save(newQuestion)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result = DB.Save(newQuestion)
+	return result.Error
 }
 
 func DeleteQuestionFromDB(id uuid.UUID) error {
-	dbC := DB
-	result := dbC.Delete(&model.Question{}, id)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+	result := DB.Delete(&model.Question{}, id)
+	return result.Error
 }
