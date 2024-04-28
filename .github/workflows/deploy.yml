@@ -39,10 +39,26 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REACT_FRONTEND_PATH: 'Frontend'
+      NOTE_VERSION: '18.x'
 
     steps:
     - name: 'Checkout GitHub Action'
       uses: actions/checkout@v3
+
+    - name: Set up Node.js version
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NOTE_VERSION }}
+
+    - name: Install dependencies, build
+      run: |
+        pushd '${{ env.REACT_FRONTEND_PATH }}'
+        npm install
+        npm run build
+        popd
+      env: 
+        VITE_AUTH_LINK: ${{ secrets.VITE_AUTH_LINK}}
+        VITE_TOKEN_LINK: ${{ secrets.VITE_TOKEN_LINK}}
 
     - name: Build And Deploy
       uses: Azure/static-web-apps-deploy@v1
@@ -50,8 +66,8 @@ jobs:
         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_DEPLOYMENT_TOKEN }}
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         action: 'upload'
-        app_location: ${{ env.REACT_FRONTEND_PATH}}
-        app_build_command: 'npm run build' 
+        app_location: ${{ env.REACT_FRONTEND_PATH }}/dist
+        skip_app_build: true
       env: 
         VITE_AUTH_LINK: ${{ secrets.VITE_AUTH_LINK}}
         VITE_TOKEN_LINK: ${{ secrets.VITE_TOKEN_LINK}}
