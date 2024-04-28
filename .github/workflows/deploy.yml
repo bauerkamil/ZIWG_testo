@@ -1,0 +1,54 @@
+
+name: Deploy
+
+on:
+  push:
+    branches: ["master"]
+
+env:
+  AZURE_FUNCTIONAPP_NAME: 'func-pwr-testo-dev'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './USOSConnector/USOSConnector.Functions'
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  build-and-deploy-usos-connector:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v3
+
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 'Resolve Project Dependencies Using Dotnet'
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        dotnet build --configuration Release --output ./output
+        popd
+
+    - name: 'Run Azure Functions Action'
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+  build-and-deploy-react-frontend:  
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Build And Deploy
+      uses: Azure/static-web-apps-deploy@v1
+      with:
+        azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_DEPLOYMENT_TOKEN }}
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        action: 'upload'
+        app_location: '/Frontend'
+        app_build_command: 'npm run build' 
+      env: 
+        VITE_AUTH_LINK: ${{ secrets.VITE_AUTH_LINK}}
+        VITE_TOKEN_LINK: ${{ secrets.VITE_TOKEN_LINK}}
