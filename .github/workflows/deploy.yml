@@ -51,7 +51,7 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         action: 'upload'
         app_location: ${{ env.REACT_FRONTEND_PATH}}
-        output_location: './output'
+        output_location: 'output'
         app_build_command: 'npm run build' 
       env: 
         VITE_AUTH_LINK: ${{ secrets.VITE_AUTH_LINK}}
