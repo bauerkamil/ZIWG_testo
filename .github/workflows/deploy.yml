@@ -8,6 +8,9 @@ on:
 jobs:
   build-and-deploy-usos-connector:
     runs-on: ubuntu-latest
+    env:
+      AZURE_FUNCTIONAPP_PACKAGE_PATH: 'USOSConnector/USOSConnector.Functions'
+      AZURE_FUNCTIONAPP_NAME: 'func-pwr-testo-dev'
 
     steps:
     - name: 'Checkout GitHub Action'
@@ -21,19 +24,21 @@ jobs:
     - name: 'Resolve Project Dependencies Using Dotnet'
       shell: bash
       run: |
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        pushd '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         dotnet build --configuration Release --output ./output
         popd
 
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
       with:
-        app-name: func-pwr-testo-dev
-        package: './USOSConnector/USOSConnector.Functions/output'
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
 
   build-and-deploy-react-frontend:  
     runs-on: ubuntu-latest
+    env:
+      REACT_FRONTEND_PATH: 'Frontend'
 
     steps:
     - name: Build And Deploy
@@ -42,7 +47,7 @@ jobs:
         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_DEPLOYMENT_TOKEN }}
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         action: 'upload'
-        app_location: '/Frontend'
+        app_location: ${{ env.REACT_FRONTEND_PATH}}
         app_build_command: 'npm run build' 
       env: 
         VITE_AUTH_LINK: ${{ secrets.VITE_AUTH_LINK}}
