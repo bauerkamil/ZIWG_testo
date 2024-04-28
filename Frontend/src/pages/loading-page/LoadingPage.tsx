@@ -7,7 +7,6 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 interface IResponseTypeLogin {
   key: string | null;
   oauth_token: string | null;
@@ -51,7 +50,6 @@ const LoadingPage = () => {
             lastName: responseData.LastName || "",
           };
           dispatchUser({ type: AuthActions.SetUser, payload: user });
-
           console.log(responseData);
           navigate("/home");
         } catch (error) {
