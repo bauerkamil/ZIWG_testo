@@ -3,7 +3,7 @@ name: Deploy
 
 on:
   push:
-    branches: ["master", "features/dg/deployment"]
+    branches: ["master"]
 
 jobs:
   build-and-deploy-dotnet-connector:
