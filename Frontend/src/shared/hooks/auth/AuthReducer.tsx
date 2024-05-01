@@ -1,11 +1,15 @@
 import { AuthActions, LocalStorageElements } from "@/shared/enums";
 import { IUser } from "@/shared/interfaces";
 import { Reducer } from "react";
+import {
+  getStoredValue,
+  removeStoredItem,
+  setStoredValue,
+} from "../../utils/localStorageHelper";
 
 export interface AuthAction {
   type: AuthActions;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  payload?: any;
+  payload?: IUser;
 }
 
 export const AuthReducer: Reducer<IUser | undefined, AuthAction> = (
@@ -14,20 +18,19 @@ export const AuthReducer: Reducer<IUser | undefined, AuthAction> = (
 ) => {
   switch (action.type) {
     case AuthActions.SetUser: {
-      const user = JSON.stringify(action.payload);
-      window.localStorage.setItem(LocalStorageElements.User, user);
+      setStoredValue(LocalStorageElements.User, action.payload);
       return action.payload;
     }
     case AuthActions.ClearUser: {
-      window.localStorage.removeItem(LocalStorageElements.User);
-      return null;
+      removeStoredItem(LocalStorageElements.User);
+      return undefined;
     }
     case AuthActions.RefreshUser: {
-      const user = window.localStorage.getItem(LocalStorageElements.User);
+      const user = getStoredValue<IUser | undefined>(LocalStorageElements.User);
       if (!user) {
-        return null;
+        return undefined;
       }
-      return JSON.parse(user);
+      return user;
     }
     default:
       return state;

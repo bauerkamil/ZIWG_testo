@@ -1,8 +1,15 @@
-import { Dispatch, PropsWithChildren, createContext, useMemo, useReducer } from "react";
+import {
+  Dispatch,
+  PropsWithChildren,
+  createContext,
+  useMemo,
+  useReducer,
+} from "react";
 import { AuthAction, AuthReducer } from "./AuthReducer";
 import { IUser } from "@/shared/interfaces";
-import { AuthActions } from "@/shared/enums";
-const AUTH_LINK = import.meta.env.VITE_AUTH_LINK;
+import { AuthActions, LocalStorageElements } from "@/shared/enums";
+import { AUTH_LINK } from "@/shared/utils/constants";
+import { getStoredValue } from "../../utils/localStorageHelper";
 
 interface InitialState {
   login: () => void;
@@ -19,36 +26,26 @@ export const AuthContext = createContext<InitialState>({
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const user = window.localStorage.getItem("user");
-  
-  const [state, dispatch] = useReducer(
-    AuthReducer,
-    user ? JSON.parse(user) : null
-  );
+  const user = getStoredValue<IUser | undefined>(LocalStorageElements.User);
 
-  const value = useMemo(
-    () => {
-      const login = () => {
-        window.open(AUTH_LINK, "_self");
-      };
+  const [state, dispatch] = useReducer(AuthReducer, user ?? undefined);
 
-      const logout = () => {
-        dispatch({ type: AuthActions.ClearUser });
-      };
+  const value = useMemo(() => {
+    const login = () => {
+      window.open(AUTH_LINK, "_self");
+    };
 
-      return {
-        login,
-        logout,
-        user: state,
-        dispatchUser: dispatch,
-      };
-    },
-    [state, dispatch]
-  );
+    const logout = () => {
+      dispatch({ type: AuthActions.ClearUser });
+    };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+    return {
+      login,
+      logout,
+      user: state,
+      dispatchUser: dispatch,
+    };
+  }, [state, dispatch]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
