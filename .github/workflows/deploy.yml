@@ -92,7 +92,7 @@ jobs:
     - name: Build and push Docker Image
       run: |
         pushd '${{ env.GOLANG_BACKEND_PATH }}'
-        docker build ${{ env.CONTAIER_REGISTRY_NAME }} -f ${{ env.GOLANG_DOCKERFILE_PATH }} -t ${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/${{ env.REPOSITORY_NAME }}:${{ github.sha }}
+        docker build . -f ${{ env.GOLANG_DOCKERFILE_PATH }} -t ${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/${{ env.REPOSITORY_NAME }}:${{ github.sha }}
         docker push ${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/{{ env.REPOSITORY_NAME }}:${{ github.sha }}  
         popd
 
