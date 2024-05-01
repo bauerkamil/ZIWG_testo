@@ -6,7 +6,7 @@ on:
     branches: ["master", "features/dg/deployment"]
 
 jobs:
-  build-and-deploy-usos-connector:
+  build-and-deploy-dotnet-connector:
     runs-on: ubuntu-latest
     env:
       AZURE_FUNCTIONAPP_PACKAGE_PATH: 'USOSConnector/USOSConnector.Functions'
@@ -23,7 +23,7 @@ jobs:
 
     - name: Resolve Project Dependencies Using Dotnet
       run: |
-        pushd '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        pushd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         dotnet build --configuration Release --output ./output
         popd
 
@@ -31,7 +31,7 @@ jobs:
       uses: Azure/functions-action@v1
       with:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
 
   build-and-deploy-react-frontend:  
@@ -51,7 +51,7 @@ jobs:
 
     - name: Install dependencies, build
       run: |
-        pushd '${{ env.REACT_FRONTEND_PATH }}'
+        pushd ${{ env.REACT_FRONTEND_PATH }}
         npm install
         npm run build
         mv staticwebapp.config.json ./dist
@@ -65,7 +65,7 @@ jobs:
       with:
         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_DEPLOYMENT_TOKEN }}
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        action: 'upload'
+        action: upload
         app_location: ${{ env.REACT_FRONTEND_PATH }}/dist
         skip_app_build: true
 
@@ -92,8 +92,8 @@ jobs:
     - name: Build and push Docker Image
       run: |
         pushd '${{ env.GOLANG_BACKEND_PATH }}'
-        docker build . -f ${{ env.GOLANG_DOCKERFILE_PATH }} -t '${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/${{ env.REPOSITORY_NAME }}:${{ github.sha }}'
-        docker push '${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/{{ env.REPOSITORY_NAME }}:${{ github.sha }}' 
+        docker build . -f ${{ env.GOLANG_DOCKERFILE_PATH }} -t ${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/${{ env.REPOSITORY_NAME }}:${{ github.sha }}
+        docker push ${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/${{ env.REPOSITORY_NAME }}:${{ github.sha }}
         popd
 
     - name: Deploy to WebApp
@@ -101,5 +101,5 @@ jobs:
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        images: '${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/{{ env.REPOSITORY_NAME }}:${{ github.sha }}'
+        images: ${{ env.CONTAIER_REGISTRY_NAME }}.azurecr.io/{{ env.REPOSITORY_NAME }}:${{ github.sha }}
   
