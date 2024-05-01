@@ -1,11 +1,13 @@
+import React from "react";
 import Combobox from "@/components/combobox/Combobox";
 import Navbar from "@/components/navbar/Navbar";
 import { Button, Input, Label } from "@/components/ui";
-import { ICourse } from "@/shared/interfaces";
+import { ICourse, IQuesiton } from "@/shared/interfaces";
 import { Plus } from "lucide-react";
-import React from "react";
+import EditQuestion from "./question/EditQuestion";
 
 const EditTest: React.FC = () => {
+  const [questions, setQuestions] = React.useState<IQuesiton[]>([]);
   const [courses, setCourses] = React.useState<ICourse[]>([]);
   const [selectedCourse, setSelectedCourse] = React.useState<ICourse | null>(
     null
@@ -24,8 +26,30 @@ const EditTest: React.FC = () => {
         teacher: "dr inż. Anna Nowak",
       },
     ];
+    const mockQuestions: IQuesiton[] = [
+      {
+        id: "1",
+        body: "Czy 2+2=4?",
+        imgFile: "",
+        testId: "1",
+        answears: [
+          { id: "1", body: "Tak", isCorrect: true, questionId: "1" },
+          { id: "2", body: "Nie", isCorrect: false, questionId: "1" },
+        ],
+      },
+      {
+        id: "2",
+        body: "Czy 2+2=5?",
+        imgFile: "",
+        testId: "1",
+        answears: [
+          { id: "3", body: "Tak", isCorrect: false, questionId: "2" },
+          { id: "4", body: "Nie", isCorrect: true, questionId: "2" },
+        ],
+      },
+    ];
     setCourses(mock);
-    // setSelectedCourse(mock[0]);
+    setQuestions(mockQuestions);
   }, []);
 
   return (
@@ -52,7 +76,23 @@ const EditTest: React.FC = () => {
         </div>
         <div>
           <Label className="text-muted-foreground">Prowadzący</Label>
-          <Input readOnly value={selectedCourse?.teacher} />
+          <Input
+            readOnly
+            value={selectedCourse?.teacher ?? ""}
+            placeholder="Wybierz kurs żeby zobaczyć prowadzącego"
+          />
+        </div>
+        <div>
+          <Label>Pytania</Label>
+          <div className="grid gap-4">
+            {questions.map((question, index) => (
+              <EditQuestion
+                key={question.id}
+                index={index}
+                question={question}
+              />
+            ))}
+          </div>
         </div>
         <Button className="gap-2">
           <Plus className="h-5 w-5" /> Dodaj nowe pytanie
