@@ -12,7 +12,7 @@ export const getStoredValue = <T,>(keyName: string): T | undefined => {
   }
 };
 
-export const setStoredValue = <T,>(keyName: string, newValue: T) => {
+export const setStoredValue = <T>(keyName: string, newValue: T) => {
   try {
     window.localStorage.setItem(keyName, JSON.stringify(newValue));
   } catch (err) {
