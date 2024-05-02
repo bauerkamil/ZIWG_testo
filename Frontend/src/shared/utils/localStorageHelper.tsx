@@ -1,4 +1,4 @@
-export const getStoredValue = <T,>(keyName: string): T | undefined => {
+export const getStoredValue = <T>(keyName: string): T | undefined => {
   try {
     const value = window.localStorage.getItem(keyName);
     if (value) {
@@ -12,14 +12,14 @@ export const getStoredValue = <T,>(keyName: string): T | undefined => {
   }
 };
 
-export const setStoredValue = <T>(keyName: string, newValue: T) => {
+export const setStoredValue = <T>(keyName: string, newValue: T): void => {
   try {
     window.localStorage.setItem(keyName, JSON.stringify(newValue));
   } catch (err) {
     console.log(err);
   }
 };
-export const removeStoredItem = (keyName: string) => {
+export const removeStoredItem = (keyName: string): void => {
   try {
     window.localStorage.removeItem(keyName);
   } catch (err) {
