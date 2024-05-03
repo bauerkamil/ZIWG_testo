@@ -2,16 +2,10 @@ namespace USOSConnector.Functions.Triggers.Dtos;
 
 public record CoursesResponseDto
 {
-    public required CoursesResponseTerm[] Terms { get; init; }
-}
-
-public record CoursesResponseTerm
-{
     public required string Id { get; init; }
     public required string Name { get; init; }
     public required DateTimeOffset StartDate { get; init; }
     public required DateTimeOffset EndDate { get; init; }
-    public required bool IsCurrent { get; init; }
     public required CoursesResponseCourse[] Courses { get; init; }
 }
 
@@ -26,7 +20,7 @@ public record CoursesResponseCourse
 public record CoursesResponseGroup
 {
     public required string Id { get; init; }
-    public required string TypeName { get; init; }
+    public required string TypeId { get; init; }
     public required CoursesResponseLecturer Lecturer { get; init; }
 }
 

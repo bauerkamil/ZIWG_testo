@@ -8,6 +8,7 @@ using USOSConnector.Functions.Extensions;
 using USOSConnector.Functions.Options;
 using USOSConnector.Functions.Services.JwtService;
 using USOSConnector.Functions.Services.UsosService;
+using USOSConnector.Functions.Services.UsosService.Dtos;
 using USOSConnector.Functions.Triggers.Dtos;
 
 namespace USOSConnector.Functions.Triggers;
@@ -66,38 +67,49 @@ public class CoursesTrigger
             cancellationToken);
 
         var currentDate = _timeProvider.GetUtcNow();
-        var response = new CoursesResponseDto
+        var response = termsResult.Terms
+            .Where(t => t.StartDate <= currentDate && t.EndDate >= currentDate)
+            .OrderByDescending(t => t.EndDate)
+            .Select(t => MapToCourseDto(t, coursesResult.CourseEditions[t.Id]))
+            .FirstOrDefault();
+
+        if (response is null)
         {
-            Terms = termsResult.Terms
-                .Select(t => new CoursesResponseTerm
-                {
-                    Id = t.Id,
-                    Name = t.Name.Pl,
-                    StartDate = t.StartDate,
-                    EndDate = t.EndDate,
-                    IsCurrent = t.StartDate <= currentDate && t.EndDate >= currentDate,
-                    Courses = coursesResult.CourseEditions[t.Id]
-                        .Select(c => new CoursesResponseCourse
-                        {
-                            Id = c.CurseId,
-                            Name = c.CourseName.Pl,
-                            UsosUrl = c.UserGroups.First().CourseProfileUrl,
-                            Groups = c.UserGroups
-                                .Select(g => new CoursesResponseGroup
-                                {
-                                    Id = g.CourseUnitId,
-                                    TypeName = g.ClassType.Pl,
-                                    Lecturer = new CoursesResponseLecturer
-                                    {
-                                        Id = g.Lecturers.First().Id,
-                                        FirstName = g.Lecturers.First().FirstName,
-                                        LastName = g.Lecturers.First().LastName
-                                    }
-                        }).ToArray()
-                }).ToArray()
-            }).ToArray()
-        };
+            response = termsResult.Terms
+                .Where(t => t.EndDate < currentDate)
+                .OrderByDescending(t => t.EndDate)
+                .Select(t => MapToCourseDto(t, coursesResult.CourseEditions[t.Id]))
+                .FirstOrDefault();
+        }
 
         return await req.CreateOkResponseAsync(response);
     }
+
+    private static CoursesResponseDto MapToCourseDto(
+        UserTermsTerm t, 
+        UserCoursesCourseEditions[] courseEditions) => new CoursesResponseDto
+        {
+            Id = t.Id,
+            Name = t.Name.Pl,
+            StartDate = t.StartDate,
+            EndDate = t.EndDate,
+            Courses = courseEditions.Select(c => new CoursesResponseCourse
+                {
+                    Id = c.CurseId,
+                    Name = c.CourseName.Pl,
+                    UsosUrl = c.UserGroups.First().CourseProfileUrl,
+                    Groups = c.UserGroups
+                        .Select(g => new CoursesResponseGroup
+                        {
+                            Id = g.CourseUnitId,
+                            TypeId = g.ClassTypeId,
+                            Lecturer = new CoursesResponseLecturer
+                            {
+                                Id = g.Lecturers.First().Id,
+                                FirstName = g.Lecturers.First().FirstName,
+                                LastName = g.Lecturers.First().LastName
+                            }
+                        }).ToArray()
+                }).ToArray()
+        };
 }
