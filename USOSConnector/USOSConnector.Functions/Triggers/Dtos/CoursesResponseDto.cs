@@ -20,7 +20,7 @@ public record CoursesResponseCourse
 public record CoursesResponseGroup
 {
     public required string Id { get; init; }
-    public required string TypeId { get; init; }
+    public required string Type { get; init; }
     public required CoursesResponseLecturer Lecturer { get; init; }
 }
 

@@ -102,7 +102,7 @@ public class CoursesTrigger
                         .Select(g => new CoursesResponseGroup
                         {
                             Id = g.CourseUnitId,
-                            TypeId = g.ClassTypeId,
+                            Type = g.ClassTypeId,
                             Lecturer = new CoursesResponseLecturer
                             {
                                 Id = g.Lecturers.First().Id,
