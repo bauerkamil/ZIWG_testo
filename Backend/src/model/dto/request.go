@@ -11,7 +11,8 @@ type AnswerRequest struct {
 type CourseRequest struct {
 	Name       string    `json:"name"`
 	TeacherId  uuid.UUID `json:"teacher_id"`
-	SchoolYear int       `json:"school_year"`
+	UsosId     string    `json:"usos_id"`
+	CourseType string    `json:"course_type"`
 }
 
 type QuestionRequest struct {
@@ -27,23 +28,7 @@ type TeacherRequest struct {
 }
 
 type TestRequest struct {
-	Name     string    `json:"name"`
-	CourseId uuid.UUID `json:"course_id"`
-}
-
-type UserRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Username string `json:"username"`
-}
-
-type EditUserRequest struct {
-	Email    *string `json:"email"`
-	Password *string `json:"password"`
-	Username *string `json:"username"`
-}
-
-type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name       string    `json:"name"`
+	CourseId   uuid.UUID `json:"course_id"`
+	SchoolYear string    `json:"school_year"`
 }

@@ -1176,14 +1176,17 @@ const docTemplate = `{
         "model.Course": {
             "type": "object",
             "properties": {
+                "course_id": {
+                    "type": "string"
+                },
+                "course_type": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
-                },
-                "school_year": {
-                    "type": "integer"
                 },
                 "teacher": {
                     "$ref": "#/definitions/model.Teacher"
@@ -1258,11 +1261,14 @@ const docTemplate = `{
         "src_model_dto.CourseRequest": {
             "type": "object",
             "properties": {
-                "name": {
+                "course_id": {
                     "type": "string"
                 },
-                "school_year": {
-                    "type": "integer"
+                "course_type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "teacher_id": {
                     "type": "string"
@@ -1328,6 +1334,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "school_year": {
+                    "type": "string"
                 }
             }
         },
@@ -1366,6 +1375,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "school_year": {
                     "type": "string"
                 }
             }
