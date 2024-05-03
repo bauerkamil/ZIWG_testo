@@ -494,7 +494,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.Question"
+                                "$ref": "#/definitions/src_model_dto.ListQuestion"
                             }
                         }
                     },
@@ -581,7 +581,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Question"
+                            "$ref": "#/definitions/src_model_dto.FullQuestion"
                         }
                     },
                     "404": {
@@ -626,7 +626,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.QuestionRequest"
+                            "$ref": "#/definitions/src_model_dto.EditQuestionRequest"
                         }
                     }
                 ],
@@ -1078,7 +1078,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.TestRequest"
+                            "$ref": "#/definitions/src_model_dto.EditTestRequest"
                         }
                     }
                 ],
@@ -1275,10 +1275,78 @@ const docTemplate = `{
                 }
             }
         },
+        "src_model_dto.EditQuestionRequest": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/src_model_dto.EditSubAnswer"
+                    }
+                },
+                "body": {
+                    "type": "string"
+                },
+                "img_file": {
+                    "type": "string"
+                }
+            }
+        },
+        "src_model_dto.EditSubAnswer": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "src_model_dto.EditTestRequest": {
+            "type": "object",
+            "properties": {
+                "course_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "school_year": {
+                    "type": "string"
+                }
+            }
+        },
         "src_model_dto.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "src_model_dto.FullQuestion": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Answer"
+                    }
+                },
+                "body": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "img_file": {
+                    "type": "string"
+                },
+                "test_id": {
                     "type": "string"
                 }
             }
@@ -1304,6 +1372,23 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "src_model_dto.ListQuestion": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "img_file": {
+                    "type": "string"
+                },
+                "test_id": {
                     "type": "string"
                 }
             }
@@ -1346,7 +1431,7 @@ const docTemplate = `{
                 "answers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/src_model_dto.SubAnswerRequest"
+                        "$ref": "#/definitions/src_model_dto.SubAnswer"
                     }
                 },
                 "body": {
@@ -1360,7 +1445,7 @@ const docTemplate = `{
                 }
             }
         },
-        "src_model_dto.SubAnswerRequest": {
+        "src_model_dto.SubAnswer": {
             "type": "object",
             "properties": {
                 "body": {
@@ -1368,6 +1453,23 @@ const docTemplate = `{
                 },
                 "valid": {
                     "type": "boolean"
+                }
+            }
+        },
+        "src_model_dto.SubQuestion": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/src_model_dto.SubAnswer"
+                    }
+                },
+                "body": {
+                    "type": "string"
+                },
+                "img_file": {
+                    "type": "string"
                 }
             }
         },
@@ -1393,6 +1495,12 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/src_model_dto.SubQuestion"
+                    }
                 },
                 "school_year": {
                     "type": "string"

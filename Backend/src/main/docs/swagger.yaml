@@ -76,9 +76,53 @@ definitions:
       usos_id:
         type: string
     type: object
+  src_model_dto.EditQuestionRequest:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/src_model_dto.EditSubAnswer'
+        type: array
+      body:
+        type: string
+      img_file:
+        type: string
+    type: object
+  src_model_dto.EditSubAnswer:
+    properties:
+      body:
+        type: string
+      id:
+        type: string
+      valid:
+        type: boolean
+    type: object
+  src_model_dto.EditTestRequest:
+    properties:
+      course_id:
+        type: string
+      name:
+        type: string
+      school_year:
+        type: string
+    type: object
   src_model_dto.ErrorResponse:
     properties:
       error:
+        type: string
+    type: object
+  src_model_dto.FullQuestion:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/model.Answer'
+        type: array
+      body:
+        type: string
+      id:
+        type: string
+      img_file:
+        type: string
+      test_id:
         type: string
     type: object
   src_model_dto.FullTest:
@@ -95,6 +139,17 @@ definitions:
   src_model_dto.IdResponse:
     properties:
       id:
+        type: string
+    type: object
+  src_model_dto.ListQuestion:
+    properties:
+      body:
+        type: string
+      id:
+        type: string
+      img_file:
+        type: string
+      test_id:
         type: string
     type: object
   src_model_dto.ListTest:
@@ -122,7 +177,7 @@ definitions:
     properties:
       answers:
         items:
-          $ref: '#/definitions/src_model_dto.SubAnswerRequest'
+          $ref: '#/definitions/src_model_dto.SubAnswer'
         type: array
       body:
         type: string
@@ -131,12 +186,23 @@ definitions:
       test_id:
         type: string
     type: object
-  src_model_dto.SubAnswerRequest:
+  src_model_dto.SubAnswer:
     properties:
       body:
         type: string
       valid:
         type: boolean
+    type: object
+  src_model_dto.SubQuestion:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/src_model_dto.SubAnswer'
+        type: array
+      body:
+        type: string
+      img_file:
+        type: string
     type: object
   src_model_dto.TeacherRequest:
     properties:
@@ -153,6 +219,10 @@ definitions:
         type: string
       name:
         type: string
+      questions:
+        items:
+          $ref: '#/definitions/src_model_dto.SubQuestion'
+        type: array
       school_year:
         type: string
     type: object
@@ -462,7 +532,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.Question'
+              $ref: '#/definitions/src_model_dto.ListQuestion'
             type: array
         "500":
           description: Internal Server Error
@@ -545,7 +615,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Question'
+            $ref: '#/definitions/src_model_dto.FullQuestion'
         "404":
           description: Not Found
           schema:
@@ -572,7 +642,7 @@ paths:
         name: updatedQuestion
         required: true
         schema:
-          $ref: '#/definitions/src_model_dto.QuestionRequest'
+          $ref: '#/definitions/src_model_dto.EditQuestionRequest'
       produces:
       - application/json
       responses:
@@ -858,7 +928,7 @@ paths:
         name: updatedTest
         required: true
         schema:
-          $ref: '#/definitions/src_model_dto.TestRequest'
+          $ref: '#/definitions/src_model_dto.EditTestRequest'
       produces:
       - application/json
       responses:

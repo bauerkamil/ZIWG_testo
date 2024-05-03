@@ -16,7 +16,8 @@ CREATE TABLE  IF NOT EXISTS "system"."test"
     "changed_by" varchar,
     "changed_at" timestamp,
     "created_at" timestamp NOT NULL DEFAULT 'NOW()',
-    "course_id"  uuid
+    "course_id"  uuid,
+    UNIQUE (school_year, course_id)
 );
 
 CREATE TABLE IF NOT EXISTS "system"."course"
@@ -51,8 +52,7 @@ CREATE TABLE IF NOT EXISTS "system"."answer"
     "id"          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     "question_id" uuid,
     "body"        varchar NOT NULL,
-    "valid"       bool    NOT NULL,
-    UNIQUE ("body", "question_id")
+    "valid"       bool    NOT NULL
 );
 
 ALTER TABLE "system"."test"
