@@ -1176,9 +1176,6 @@ const docTemplate = `{
         "model.Course": {
             "type": "object",
             "properties": {
-                "course_id": {
-                    "type": "string"
-                },
                 "course_type": {
                     "type": "string"
                 },
@@ -1192,6 +1189,9 @@ const docTemplate = `{
                     "$ref": "#/definitions/model.Teacher"
                 },
                 "teacher_id": {
+                    "type": "string"
+                },
+                "usos_id": {
                     "type": "string"
                 }
             }
@@ -1261,9 +1261,6 @@ const docTemplate = `{
         "src_model_dto.CourseRequest": {
             "type": "object",
             "properties": {
-                "course_id": {
-                    "type": "string"
-                },
                 "course_type": {
                     "type": "string"
                 },
@@ -1271,6 +1268,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "teacher_id": {
+                    "type": "string"
+                },
+                "usos_id": {
                     "type": "string"
                 }
             }
@@ -1343,6 +1343,12 @@ const docTemplate = `{
         "src_model_dto.QuestionRequest": {
             "type": "object",
             "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/src_model_dto.SubAnswerRequest"
+                    }
+                },
                 "body": {
                     "type": "string"
                 },
@@ -1351,6 +1357,17 @@ const docTemplate = `{
                 },
                 "test_id": {
                     "type": "string"
+                }
+            }
+        },
+        "src_model_dto.SubAnswerRequest": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "valid": {
+                    "type": "boolean"
                 }
             }
         },

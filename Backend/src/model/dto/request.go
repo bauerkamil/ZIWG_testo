@@ -16,9 +16,14 @@ type CourseRequest struct {
 }
 
 type QuestionRequest struct {
-	Body    string    `json:"body"`
-	ImgFile string    `json:"img_file"`
-	TestId  uuid.UUID `json:"test_id"`
+	Body    string             `json:"body"`
+	ImgFile string             `json:"img_file"`
+	TestId  uuid.UUID          `json:"test_id"`
+	Answers []SubAnswerRequest `json:"answers"`
+}
+type SubAnswerRequest struct {
+	Body  string `json:"body"`
+	Valid bool   `json:"valid"`
 }
 
 type TeacherRequest struct {

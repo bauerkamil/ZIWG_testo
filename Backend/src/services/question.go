@@ -35,13 +35,30 @@ func AddQuestionHandle(ctx *gin.Context) {
 		ImgFile: request.ImgFile,
 		TestId:  request.TestId,
 	}
+	err = dal.DB.Transaction(func(tx *gorm.DB) error {
+		err = dal.AddQuestionToDB(Question)
+		if err != nil {
+			return err
+		}
 
-	err = dal.AddQuestionToDB(Question)
+		for _, answer := range request.Answers {
+			answerId, _ := uuid.NewV4()
+			Answer := &model.Answer{
+				Id:         answerId,
+				Body:       answer.Body,
+				Valid:      answer.Valid,
+				QuestionId: id,
+			}
+			err = dal.AddAnswerToDB(Answer)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
-		return
 	}
-
 	ctx.JSON(200, gin.H{"message": "OK"})
 }
 
