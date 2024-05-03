@@ -3,13 +3,13 @@ import React from "react";
 import { useAuth } from "@/shared/hooks/auth/useAuth";
 import Navbar from "@/components/navbar/Navbar";
 import { NavbarPages } from "@/shared/enums";
-import { ITestInfo } from "@/shared/interfaces";
+import { ITest } from "@/shared/interfaces";
 import TestCard from "./test-card/TestCard";
 
 const Home: React.FC = () => {
   const { user } = useAuth();
 
-  const tests: ITestInfo[] = [
+  const tests: ITest[] = [
     {
       id: "1",
       name: "Kolokwium 1",

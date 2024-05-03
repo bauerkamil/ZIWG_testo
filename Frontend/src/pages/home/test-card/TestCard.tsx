@@ -1,8 +1,13 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { ITestInfo } from "@/shared/interfaces";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { ITest } from "@/shared/interfaces";
 
-const TestCard= (props: {test: ITestInfo}) => {
-  const {test} = props;
+const TestCard = (props: { test: ITest }) => {
+  const { test } = props;
 
   return (
     <Card className="cursor-pointer hover:border-solid hover:border-current group">
@@ -11,18 +16,19 @@ const TestCard= (props: {test: ITestInfo}) => {
           {test.name}
         </div>
       </CardHeader>
-      <CardContent>        
+      <CardContent>
         <div className="text-primary font-bold">{test.course}</div>
         <div className="flex flex-row">
-          <p className="text-muted-foreground italic">prowadzący:&nbsp;</p> 
+          <p className="text-muted-foreground italic">prowadzący:&nbsp;</p>
           <p>{test.teacher}</p>
         </div>
       </CardContent>
       <CardFooter>
-        <div className="text-sm text-muted-foreground">Ostatnia modyfikacja: {test.lastModified.toDateString()}</div>
+        <div className="text-sm text-muted-foreground">
+          Ostatnia modyfikacja: {test.lastModified.toDateString()}
+        </div>
       </CardFooter>
     </Card>
-
   );
 };
 

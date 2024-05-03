@@ -2,12 +2,12 @@ import React from "react";
 import Combobox from "@/components/combobox/Combobox";
 import Navbar from "@/components/navbar/Navbar";
 import { Button, Input, Label } from "@/components/ui";
-import { ICourse, IQuesiton } from "@/shared/interfaces";
+import { ICourse, IQuestion } from "@/shared/interfaces";
 import { Plus } from "lucide-react";
 import EditQuestion from "./question/EditQuestion";
 
 const EditTest: React.FC = () => {
-  const [questions, setQuestions] = React.useState<IQuesiton[]>([]);
+  const [questions, setQuestions] = React.useState<IQuestion[]>([]);
   const [courses, setCourses] = React.useState<ICourse[]>([]);
   const [selectedCourse, setSelectedCourse] = React.useState<ICourse | null>(
     null
@@ -26,7 +26,7 @@ const EditTest: React.FC = () => {
         teacher: "dr inż. Anna Nowak",
       },
     ];
-    const mockQuestions: IQuesiton[] = [
+    const mockQuestions: IQuestion[] = [
       {
         id: "1",
         body: "Czy 2+2=4?",
@@ -58,7 +58,6 @@ const EditTest: React.FC = () => {
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
         <div className="grid gap-2 text-center">
           <div className="text-4xl">Edytuj testownik</div>
-          {/* <p className="text-balance text-muted-foreground">Zacznij</p> */}
         </div>
         <div>
           <Label>Nazwa testownika</Label>

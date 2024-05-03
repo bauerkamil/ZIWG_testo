@@ -1,6 +1,6 @@
 import { IAnswear } from "./IAnswear";
 
-export interface IQuesiton {
+export interface IQuestion {
   id: string;
   body: string;
   imgFile: string;
