@@ -1,30 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { useAuth } from "@/shared/hooks/auth/useAuth";
 import Navbar from "@/components/navbar/Navbar";
 import { NavbarPages } from "@/shared/enums";
-import { ITest } from "@/shared/interfaces";
 import TestCard from "./test-card/TestCard";
+import Client from "@/api/Client";
+import { ITestsResponse } from "@/shared/interfaces/ITestsResponse";
 
 const Home: React.FC = () => {
   const { user } = useAuth();
+  const [tests, setTests] = useState<ITestsResponse[]>([]);
 
-  const tests: ITest[] = [
-    {
-      id: "1",
-      name: "Kolokwium 1",
-      course: "Analiza matematyczna",
-      teacher: "prof. Jan Kowalski",
-      lastModified: new Date(),
-    },
-    {
-      id: "2",
-      name: "Kolokwium 2",
-      course: "Algebra liniowa",
-      teacher: "dr inż. Anna Nowak",
-      lastModified: new Date(),
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const testsData = await Client.getTests();
+
+        setTests(testsData);
+
+      } catch (error) {
+        console.error("An error occurred while fetching tests:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="flex min-h-screen w-full flex-col">

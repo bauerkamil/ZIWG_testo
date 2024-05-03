@@ -8,6 +8,8 @@ import PrivateRoute from "@/components/private-route/PrivateRoute";
 import AddNew from "./add-new/AddNew";
 import EditTest from "./edit-test/EditTest";
 import SolveTest from "./solve-test/SolveTest";
+import SearchCourse from "./search-course/SearchCourse";
+import TestPage from "./test-page/TestPage";
 
 const Router = createBrowserRouter([
   {
@@ -34,6 +36,14 @@ const Router = createBrowserRouter([
       {
         path: "/solve",
         element: <PrivateRoute Component={SolveTest} />,
+      },
+      {
+        path: "/search-course",
+        element: <PrivateRoute Component={SearchCourse} />,
+      },
+      {
+        path: "/test/:id",
+        element: <PrivateRoute Component={TestPage} />,
       },
       {
         path: "/loading",

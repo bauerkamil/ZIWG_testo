@@ -34,13 +34,13 @@ const Navbar = (props: INavbarProps) => {
           Strona główna
         </Link>
         <Link
-          to="/home"
+          to="/search-course"
           className={cn(
-            getTextForeground(NavbarPages.Learn),
+            getTextForeground(NavbarPages.SearchCourse),
             "transition-colors hover:text-foreground whitespace-nowrap"
           )}
         >
-          Rozpocznij naukę
+          Wyszukaj kurs
         </Link>
         <Link
           to="/add-new"
@@ -72,13 +72,13 @@ const Navbar = (props: INavbarProps) => {
               Strona główna
             </Link>
             <Link
-              to="/home"
+              to="/search-course"
               className={cn(
-                getTextForeground(NavbarPages.Learn),
+                getTextForeground(NavbarPages.SearchCourse),
                 "transition-colors hover:text-foreground whitespace-nowrap"
               )}
             >
-              Rozpocznij naukę
+              Wyszukaj kurs
             </Link>
             <Link
               to="/add-new"
