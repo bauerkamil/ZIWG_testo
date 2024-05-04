@@ -33,8 +33,8 @@ const EditTest: React.FC = () => {
         imgFile: "",
         testId: "1",
         answears: [
-          { id: "1", body: "Tak", isCorrect: true, questionId: "1" },
-          { id: "2", body: "Nie", isCorrect: false, questionId: "1" },
+          { id: "1", body: "Tak", valid: true, questionId: "1" },
+          { id: "2", body: "Nie", valid: false, questionId: "1" },
         ],
       },
       {
@@ -43,8 +43,8 @@ const EditTest: React.FC = () => {
         imgFile: "",
         testId: "1",
         answears: [
-          { id: "3", body: "Tak", isCorrect: false, questionId: "2" },
-          { id: "4", body: "Nie", isCorrect: true, questionId: "2" },
+          { id: "3", body: "Tak", valid: false, questionId: "2" },
+          { id: "4", body: "Nie", valid: true, questionId: "2" },
         ],
       },
     ];

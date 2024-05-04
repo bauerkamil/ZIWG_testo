@@ -34,7 +34,7 @@ const Router = createBrowserRouter([
         element: <PrivateRoute Component={EditTest} />,
       },
       {
-        path: "/solve",
+        path: "/solve/:id",
         element: <PrivateRoute Component={SolveTest} />,
       },
       {

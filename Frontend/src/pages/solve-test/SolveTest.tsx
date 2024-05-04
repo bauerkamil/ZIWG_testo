@@ -1,14 +1,19 @@
 import React from "react";
 import Navbar from "@/components/navbar/Navbar";
-import { IQuestion, ITest } from "@/shared/interfaces";
+import { IAnswear, IQuestion, ITest } from "@/shared/interfaces";
 import { shuffle } from "@/shared/utils/helpers";
 import SolveQuestion from "./solve-question/SolveQuestion";
+import { useParams } from "react-router-dom";
 
 const SolveTest: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+
   const [test, setTest] = React.useState<ITest>();
   const [questionsToSolve, setQuestionsToSolve] = React.useState<IQuestion[]>(
     []
   );
+  const [currentQuestion, setCurrentQuestion] =
+    React.useState<IQuestion | null>();
 
   React.useEffect(() => {
     const mockQuestions: IQuestion[] = [
@@ -18,18 +23,18 @@ const SolveTest: React.FC = () => {
         imgFile: "",
         testId: "1",
         answears: [
-          { id: "1", body: "Tak", isCorrect: true, questionId: "1" },
-          { id: "2", body: "Nie", isCorrect: false, questionId: "1" },
+          { id: "1", body: "Tak", valid: true, questionId: "1" },
+          { id: "2", body: "Nie", valid: false, questionId: "1" },
         ],
       },
       {
         id: "2",
-        body: "Czy 2+2=5?",
+        body: "Czy pwr jest jebniety?",
         imgFile: "",
         testId: "1",
         answears: [
-          { id: "3", body: "Tak", isCorrect: false, questionId: "2" },
-          { id: "4", body: "Nie", isCorrect: true, questionId: "2" },
+          { id: "3", body: "Tak", valid: true, questionId: "2" },
+          { id: "4", body: "Nie", valid: false, questionId: "2" },
         ],
       },
     ];
@@ -43,7 +48,36 @@ const SolveTest: React.FC = () => {
     };
     setTest(mockTest);
     setQuestionsToSolve(shuffle(mockQuestions));
-  }, []);
+    console.log(id);
+  }, [id]);
+
+  React.useEffect(() => {
+    setCurrentQuestion(
+      questionsToSolve && questionsToSolve.length > 0
+        ? { ...questionsToSolve[0] }
+        : null
+    );
+  }, [questionsToSolve]);
+
+  const handleNext = (selectedAnswears: IAnswear[]) => {
+    const currentAnswears = currentQuestion?.answears;
+    const correct = currentAnswears?.every((answear) => {
+      if (answear.valid) {
+        return selectedAnswears.some((selected) => selected.id === answear.id);
+      } else {
+        return !selectedAnswears.some((selected) => selected.id === answear.id);
+      }
+    });
+    if (correct) {
+      setQuestionsToSolve((prev) => prev.slice(1));
+    } else {
+      setQuestionsToSolve((prev) => [...prev.slice(1), prev[0]]);
+    }
+  };
+
+  const handleSkip = () => {
+    setQuestionsToSolve((prev) => prev.slice(1));
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -59,10 +93,12 @@ const SolveTest: React.FC = () => {
             </div>
           </div>
         </div>
-        {questionsToSolve && questionsToSolve.length > 0 ? (
-          <SolveQuestion question={questionsToSolve[0]} />
-        ) : (
-          <></>
+        {currentQuestion && (
+          <SolveQuestion
+            question={currentQuestion}
+            onNext={handleNext}
+            onSkip={handleSkip}
+          />
         )}
       </main>
     </div>

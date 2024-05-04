@@ -7,7 +7,7 @@ const EditAnswear = (props: IEditAnswearProps) => {
 
   return (
     <div className="flex flex-row content-center gap-3">
-      <Checkbox defaultChecked={answear.isCorrect} className="self-center" />
+      <Checkbox defaultChecked={answear.valid} className="self-center" />
       <Input defaultValue={answear.body} />
     </div>
   );
