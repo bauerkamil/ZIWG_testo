@@ -16,7 +16,7 @@ import (
 // @Tags         question
 // @Produce      json
 // @Param        question body dto.QuestionRequest true "Payload"
-// @Success      200  {object} dto.BaseResponse
+// @Success      200  {object} dto.IdResponse
 // @Failure     400  {object} dto.ErrorResponse
 // @Failure     500  {object} dto.ErrorResponse
 // @Security     BearerAuth
@@ -29,27 +29,21 @@ func AddQuestionHandle(ctx *gin.Context) {
 		return
 	}
 	id, _ := uuid.NewV4()
-	Question := &model.Question{
+	question := &model.Question{
 		Id:      id,
 		Body:    request.Body,
 		ImgFile: request.ImgFile,
 		TestId:  request.TestId,
 	}
 	err = dal.DB.Transaction(func(tx *gorm.DB) error {
-		err = dal.AddQuestionToDB(Question)
+		err = dal.AddQuestionToDB(question)
 		if err != nil {
 			return err
 		}
 
 		for _, answer := range request.Answers {
-			answerId, _ := uuid.NewV4()
-			Answer := &model.Answer{
-				Id:         answerId,
-				Body:       answer.Body,
-				Valid:      answer.Valid,
-				QuestionId: id,
-			}
-			err = dal.AddAnswerToDB(Answer)
+			dbAnswer := createNewAnswer(answer, question.Id)
+			err = dal.AddAnswerToDB(&dbAnswer)
 			if err != nil {
 				return err
 			}
@@ -59,7 +53,7 @@ func AddQuestionHandle(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 	}
-	ctx.JSON(200, gin.H{"message": "OK"})
+	ctx.JSON(200, gin.H{"id": id})
 }
 
 // GetQuestions            godoc
@@ -218,7 +212,7 @@ func prepareAnswers(request dto.EditQuestionRequest, existingQuestion *model.Que
 }
 
 func handleAnswers(existingQuestion *model.Question, existingAnswers []model.Answer, newAnswers []model.Answer) error {
-	err := dal.DB.Transaction(func(tx *gorm.DB) error {
+	return dal.DB.Transaction(func(tx *gorm.DB) error {
 		// Update question info
 		err := dal.UpdateQuestionInDB(existingQuestion)
 		if err != nil {
@@ -250,5 +244,4 @@ func handleAnswers(existingQuestion *model.Question, existingAnswers []model.Ans
 		}
 		return nil
 	})
-	return err
 }
