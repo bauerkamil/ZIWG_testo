@@ -15,9 +15,9 @@ const Home: React.FC = () => {
     const fetchData = async () => {
       try {
         const testsData = await Client.getTests();
+        console.log("Tests data:", testsData);
 
         setTests(testsData);
-
       } catch (error) {
         console.error("An error occurred while fetching tests:", error);
       }

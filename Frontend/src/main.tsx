@@ -5,9 +5,7 @@ import Router from "@/pages/Router.tsx";
 import { AuthProvider } from "./shared/hooks/auth/AuthProvider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  // <React.StrictMode>
   <AuthProvider>
     <RouterProvider router={Router} />
   </AuthProvider>
-  // </React.StrictMode>,
 );
