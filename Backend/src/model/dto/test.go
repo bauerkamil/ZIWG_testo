@@ -35,6 +35,7 @@ type FullTest struct {
 	Id        uuid.UUID        `json:"id"`
 	Name      string           `json:"name"`
 	Questions []model.Question `json:"questions"`
+	Course    model.Course     `json:"course"`
 }
 
 func ToFullTest(test model.Test) FullTest {
@@ -42,5 +43,6 @@ func ToFullTest(test model.Test) FullTest {
 		Id:        test.Id,
 		Name:      test.Name,
 		Questions: test.Questions,
+		Course:    test.Course,
 	}
 }
