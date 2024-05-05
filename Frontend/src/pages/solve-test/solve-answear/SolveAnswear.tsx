@@ -3,19 +3,19 @@ import { ISolveAnswearProps } from "./ISolveAnswearProps";
 import { cn } from "@/lib/utils";
 
 const SolveAnswear = (props: ISolveAnswearProps) => {
-  const { answear, revealed, selected, onSelected } = props;
+  const { answear, revealed, small } = props;
   const [answearStyle, setAnswearStyle] = React.useState("");
 
   const handleClick = () => {
-    if (!selected) {
+    if (!answear.selected) {
       setAnswearStyle("bg-gray-300");
-      onSelected(answear);
+      answear.selected = true;
     }
   };
 
   React.useEffect(() => {
     if (!revealed) {
-      if (selected) {
+      if (answear.selected) {
         setAnswearStyle("bg-gray-300");
         return;
       }
@@ -23,22 +23,27 @@ const SolveAnswear = (props: ISolveAnswearProps) => {
       return;
     }
     if (answear.valid) {
+      if (answear.selected) {
+        setAnswearStyle("bg-green-700");
+        return;
+      }
       setAnswearStyle("bg-green-500");
       return;
     }
-    if (selected && !answear.valid) {
+    if (answear.selected && !answear.valid) {
       setAnswearStyle("bg-red-500");
       return;
     }
-    setAnswearStyle("bg-gray-300");
-  }, [answear.valid, revealed, selected]);
+    setAnswearStyle("");
+  }, [answear, revealed]);
 
   return (
     <div
       className={cn(
-        "text-2xl p-2 border border-gray-300 rounded-lg shadow-md transition ease-in-out delay-200",
+        "p-2 border border-gray-300 rounded-lg shadow-md transition ease-in-out delay-200",
+        !small && "text-2xl",
         answearStyle,
-        !revealed && !selected && "cursor-pointer hover:bg-gray-200"
+        !revealed && !answear.selected && "cursor-pointer hover:bg-gray-200"
       )}
       onClick={handleClick}
     >

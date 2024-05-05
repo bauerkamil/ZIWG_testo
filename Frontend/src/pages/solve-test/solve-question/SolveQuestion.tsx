@@ -1,24 +1,17 @@
 import React from "react";
 import { shuffle } from "@/shared/utils/helpers";
 import { ISolveQuestionProps } from "./ISolveQuestionProps";
-import SolveAnswear from "./solve-answear/SolveAnswear";
-import { IAnswear } from "@/shared/interfaces";
+import SolveAnswear from "../solve-answear/SolveAnswear";
 import { Button } from "@/components/ui";
 import { ArrowRight } from "lucide-react";
+import { IAnswearSolved } from "@/shared/interfaces";
 
 const SolveQuestion = (props: ISolveQuestionProps) => {
   const { question, onNext, onSkip } = props;
-  const [answears, setAnswears] = React.useState<IAnswear[]>([]);
-  const [selectedAnswears, setSelectedAnswears] = React.useState<IAnswear[]>(
-    []
-  );
+  const [answears, setAnswears] = React.useState<IAnswearSolved[]>([]);
 
   const [showAll, setShowAll] = React.useState(false);
   const [nextDisabled, setNextDisabled] = React.useState(false);
-
-  const handleAnswearSelected = (solvedAnswear: IAnswear) => {
-    selectedAnswears.push(solvedAnswear);
-  };
 
   const finish = (): Promise<void> => {
     return new Promise((resolve) => {
@@ -26,7 +19,6 @@ const SolveQuestion = (props: ISolveQuestionProps) => {
       setNextDisabled(true);
       setTimeout(() => {
         setShowAll(false);
-        setSelectedAnswears([]);
         setNextDisabled(false);
         resolve();
       }, 2000);
@@ -34,9 +26,9 @@ const SolveQuestion = (props: ISolveQuestionProps) => {
   };
 
   const handleNext = () => {
-    const selectedAnswearsCopy = [...selectedAnswears];
+    // const selectedAnswearsCopy = [...selectedAnswears];
     finish().then(() => {
-      onNext(selectedAnswearsCopy);
+      onNext(answears);
     });
   };
   const handleSkip = () => {
@@ -46,11 +38,17 @@ const SolveQuestion = (props: ISolveQuestionProps) => {
   };
 
   React.useEffect(() => {
-    setAnswears(shuffle(question.answears));
+    setAnswears(
+      shuffle(
+        question.answears.map((answear) => {
+          return { selected: false, ...answear };
+        })
+      )
+    );
   }, [question]);
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4 transition ease-in-out delay-200">
       <div className="text-4xl text-center">{question.body}</div>
       <div>
         {question.imgFile && (
@@ -59,18 +57,10 @@ const SolveQuestion = (props: ISolveQuestionProps) => {
       </div>
       <div className="flex flex-col gap-1">
         {answears.map((answear) => (
-          <SolveAnswear
-            key={answear.id}
-            answear={answear}
-            revealed={showAll}
-            selected={selectedAnswears.some(
-              (selected) => selected.id === answear.id
-            )}
-            onSelected={handleAnswearSelected}
-          />
+          <SolveAnswear key={answear.id} answear={answear} revealed={showAll} />
         ))}
       </div>
-      <div className="flex">
+      <div className="flex gap-2">
         <div className="grow"></div>
         <Button
           variant={"secondary"}

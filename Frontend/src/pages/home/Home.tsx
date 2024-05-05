@@ -38,7 +38,7 @@ const Home: React.FC = () => {
             Zacznij się uczyć (najlepiej tak z dzień przed kolosem)
           </p>
         </div>
-        <div className="text-2xl">Dostępne testowniki na ten semestr</div>
+        <div className="text-2xl">Dostępne testowniki</div>
         <div className="grid gap-4 md:grid-cols-2">
           {tests.map((test) => (
             <TestCard key={test.id} test={test} />

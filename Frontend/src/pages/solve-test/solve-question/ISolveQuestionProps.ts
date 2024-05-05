@@ -1,7 +1,7 @@
-import { IAnswear, IQuestion } from "@/shared/interfaces";
+import { IAnswearSolved, IQuestion } from "@/shared/interfaces";
 
 export interface ISolveQuestionProps {
   question: IQuestion;
-  onNext: (selectedAnswears: IAnswear[]) => void;
+  onNext: (selectedAnswears: IAnswearSolved[]) => void;
   onSkip: () => void;
 }

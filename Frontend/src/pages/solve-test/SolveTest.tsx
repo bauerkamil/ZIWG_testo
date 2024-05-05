@@ -1,9 +1,11 @@
 import React from "react";
 import Navbar from "@/components/navbar/Navbar";
-import { IAnswear, IQuestion, ITest } from "@/shared/interfaces";
-import { shuffle } from "@/shared/utils/helpers";
+import { IAnswearSolved, IQuestion, ITest } from "@/shared/interfaces";
+import { deepCopy, shuffle } from "@/shared/utils/helpers";
 import SolveQuestion from "./solve-question/SolveQuestion";
 import { useParams } from "react-router-dom";
+import QuestionSummary from "./question-summary/QuestionSummary";
+import { Button } from "@/components/ui";
 
 const SolveTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +14,7 @@ const SolveTest: React.FC = () => {
   const [questionsToSolve, setQuestionsToSolve] = React.useState<IQuestion[]>(
     []
   );
+  const [solvedQuestions, setSolvedQuestions] = React.useState<IQuestion[]>([]);
   const [currentQuestion, setCurrentQuestion] =
     React.useState<IQuestion | null>();
 
@@ -54,29 +57,51 @@ const SolveTest: React.FC = () => {
   React.useEffect(() => {
     setCurrentQuestion(
       questionsToSolve && questionsToSolve.length > 0
-        ? { ...questionsToSolve[0] }
+        ? questionsToSolve[0]
         : null
     );
   }, [questionsToSolve]);
 
-  const handleNext = (selectedAnswears: IAnswear[]) => {
-    const currentAnswears = currentQuestion?.answears;
-    const correct = currentAnswears?.every((answear) => {
-      if (answear.valid) {
-        return selectedAnswears.some((selected) => selected.id === answear.id);
-      } else {
-        return !selectedAnswears.some((selected) => selected.id === answear.id);
+  const finish = (answearsSolved?: IAnswearSolved[]) => {
+    if (
+      currentQuestion &&
+      !solvedQuestions.some((question) => question.id === currentQuestion?.id)
+    ) {
+      const questionCpy = deepCopy(currentQuestion);
+      if (answearsSolved) {
+        questionCpy.answears = deepCopy(answearsSolved);
       }
+      solvedQuestions.push(questionCpy);
+    }
+
+    currentQuestion?.answears.forEach(
+      (answear) => ((answear as IAnswearSolved).selected = false)
+    );
+  };
+
+  const handleNext = (answearsSolved: IAnswearSolved[]) => {
+    const correct = answearsSolved.every((answear) => {
+      return (
+        (answear.valid && answear.selected) ||
+        (!answear.valid && !answear.selected)
+      );
     });
+    finish(answearsSolved);
     if (correct) {
       setQuestionsToSolve((prev) => prev.slice(1));
     } else {
-      setQuestionsToSolve((prev) => [...prev.slice(1), prev[0]]);
+      setQuestionsToSolve((prev) => shuffle(prev));
     }
   };
 
   const handleSkip = () => {
+    finish();
     setQuestionsToSolve((prev) => prev.slice(1));
+  };
+
+  const handleRefresh = () => {
+    setQuestionsToSolve(shuffle(test?.questions || []));
+    setSolvedQuestions([]);
   };
 
   return (
@@ -100,6 +125,20 @@ const SolveTest: React.FC = () => {
             onSkip={handleSkip}
           />
         )}
+        {test?.questions?.length === solvedQuestions.length &&
+          !currentQuestion && (
+            <div className="grid gap-4">
+              {solvedQuestions.map((question) => (
+                <QuestionSummary key={question.id} question={question} />
+              ))}
+              <div className="flex flex-row">
+                <div className="grow"></div>
+                <Button onClick={handleRefresh}>
+                  Rozwiąż test jeszcze raz
+                </Button>
+              </div>
+            </div>
+          )}
       </main>
     </div>
   );
