@@ -15,7 +15,7 @@ type ListTest struct {
 	ChangedBy  *string      `json:"changedBy"`
 	ChangedAt  *time.Time   `json:"changedAt"`
 	Course     model.Course `json:"course"`
-	SchoolYear string       `json:"school_year"`
+	SchoolYear string       `json:"schoolYear"`
 }
 
 func ToListTest(test model.Test) ListTest {

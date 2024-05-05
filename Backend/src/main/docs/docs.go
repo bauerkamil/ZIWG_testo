@@ -535,7 +535,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.BaseResponse"
+                            "$ref": "#/definitions/src_model_dto.IdResponse"
                         }
                     },
                     "400": {
@@ -626,7 +626,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.EditQuestionRequest"
+                            "$ref": "#/definitions/src_model_dto.QuestionRequest"
                         }
                     }
                 ],
@@ -1165,7 +1165,7 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "question_id": {
+                "questionId": {
                     "type": "string"
                 },
                 "valid": {
@@ -1176,7 +1176,7 @@ const docTemplate = `{
         "model.Course": {
             "type": "object",
             "properties": {
-                "course_type": {
+                "courseType": {
                     "type": "string"
                 },
                 "id": {
@@ -1188,10 +1188,10 @@ const docTemplate = `{
                 "teacher": {
                     "$ref": "#/definitions/model.Teacher"
                 },
-                "teacher_id": {
+                "teacherId": {
                     "type": "string"
                 },
-                "usos_id": {
+                "usosId": {
                     "type": "string"
                 }
             }
@@ -1211,10 +1211,10 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 },
-                "test_id": {
+                "testId": {
                     "type": "string"
                 }
             }
@@ -1228,7 +1228,7 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "second_name": {
+                "secondName": {
                     "type": "string"
                 },
                 "surname": {
@@ -1242,7 +1242,7 @@ const docTemplate = `{
                 "body": {
                     "type": "string"
                 },
-                "question_id": {
+                "questionId": {
                     "type": "string"
                 },
                 "valid": {
@@ -1261,61 +1261,30 @@ const docTemplate = `{
         "src_model_dto.CourseRequest": {
             "type": "object",
             "properties": {
-                "course_type": {
+                "courseType": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "teacher_id": {
+                "teacherId": {
                     "type": "string"
                 },
-                "usos_id": {
+                "usosId": {
                     "type": "string"
-                }
-            }
-        },
-        "src_model_dto.EditQuestionRequest": {
-            "type": "object",
-            "properties": {
-                "answers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/src_model_dto.EditSubAnswer"
-                    }
-                },
-                "body": {
-                    "type": "string"
-                },
-                "img_file": {
-                    "type": "string"
-                }
-            }
-        },
-        "src_model_dto.EditSubAnswer": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "valid": {
-                    "type": "boolean"
                 }
             }
         },
         "src_model_dto.EditTestRequest": {
             "type": "object",
             "properties": {
-                "course_id": {
+                "courseId": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "school_year": {
+                "schoolYear": {
                     "type": "string"
                 }
             }
@@ -1343,10 +1312,10 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 },
-                "test_id": {
+                "testId": {
                     "type": "string"
                 }
             }
@@ -1385,10 +1354,10 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 },
-                "test_id": {
+                "testId": {
                     "type": "string"
                 }
             }
@@ -1420,7 +1389,7 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "school_year": {
+                "schoolYear": {
                     "type": "string"
                 }
             }
@@ -1437,10 +1406,10 @@ const docTemplate = `{
                 "body": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 },
-                "test_id": {
+                "testId": {
                     "type": "string"
                 }
             }
@@ -1468,7 +1437,7 @@ const docTemplate = `{
                 "body": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 }
             }
@@ -1479,7 +1448,7 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "second_name": {
+                "secondName": {
                     "type": "string"
                 },
                 "surname": {
@@ -1490,7 +1459,7 @@ const docTemplate = `{
         "src_model_dto.TestRequest": {
             "type": "object",
             "properties": {
-                "course_id": {
+                "courseId": {
                     "type": "string"
                 },
                 "name": {
@@ -1502,7 +1471,7 @@ const docTemplate = `{
                         "$ref": "#/definitions/src_model_dto.SubQuestion"
                     }
                 },
-                "school_year": {
+                "schoolYear": {
                     "type": "string"
                 }
             }

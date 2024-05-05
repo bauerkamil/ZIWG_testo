@@ -527,7 +527,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.BaseResponse"
+                            "$ref": "#/definitions/src_model_dto.IdResponse"
                         }
                     },
                     "400": {
@@ -618,7 +618,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.EditQuestionRequest"
+                            "$ref": "#/definitions/src_model_dto.QuestionRequest"
                         }
                     }
                 ],
@@ -1157,7 +1157,7 @@
                 "id": {
                     "type": "string"
                 },
-                "question_id": {
+                "questionId": {
                     "type": "string"
                 },
                 "valid": {
@@ -1168,7 +1168,7 @@
         "model.Course": {
             "type": "object",
             "properties": {
-                "course_type": {
+                "courseType": {
                     "type": "string"
                 },
                 "id": {
@@ -1180,10 +1180,10 @@
                 "teacher": {
                     "$ref": "#/definitions/model.Teacher"
                 },
-                "teacher_id": {
+                "teacherId": {
                     "type": "string"
                 },
-                "usos_id": {
+                "usosId": {
                     "type": "string"
                 }
             }
@@ -1203,10 +1203,10 @@
                 "id": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 },
-                "test_id": {
+                "testId": {
                     "type": "string"
                 }
             }
@@ -1220,7 +1220,7 @@
                 "name": {
                     "type": "string"
                 },
-                "second_name": {
+                "secondName": {
                     "type": "string"
                 },
                 "surname": {
@@ -1234,7 +1234,7 @@
                 "body": {
                     "type": "string"
                 },
-                "question_id": {
+                "questionId": {
                     "type": "string"
                 },
                 "valid": {
@@ -1253,61 +1253,30 @@
         "src_model_dto.CourseRequest": {
             "type": "object",
             "properties": {
-                "course_type": {
+                "courseType": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "teacher_id": {
+                "teacherId": {
                     "type": "string"
                 },
-                "usos_id": {
+                "usosId": {
                     "type": "string"
-                }
-            }
-        },
-        "src_model_dto.EditQuestionRequest": {
-            "type": "object",
-            "properties": {
-                "answers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/src_model_dto.EditSubAnswer"
-                    }
-                },
-                "body": {
-                    "type": "string"
-                },
-                "img_file": {
-                    "type": "string"
-                }
-            }
-        },
-        "src_model_dto.EditSubAnswer": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "valid": {
-                    "type": "boolean"
                 }
             }
         },
         "src_model_dto.EditTestRequest": {
             "type": "object",
             "properties": {
-                "course_id": {
+                "courseId": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "school_year": {
+                "schoolYear": {
                     "type": "string"
                 }
             }
@@ -1335,10 +1304,10 @@
                 "id": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 },
-                "test_id": {
+                "testId": {
                     "type": "string"
                 }
             }
@@ -1377,10 +1346,10 @@
                 "id": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 },
-                "test_id": {
+                "testId": {
                     "type": "string"
                 }
             }
@@ -1412,7 +1381,7 @@
                 "name": {
                     "type": "string"
                 },
-                "school_year": {
+                "schoolYear": {
                     "type": "string"
                 }
             }
@@ -1429,10 +1398,10 @@
                 "body": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 },
-                "test_id": {
+                "testId": {
                     "type": "string"
                 }
             }
@@ -1460,7 +1429,7 @@
                 "body": {
                     "type": "string"
                 },
-                "img_file": {
+                "imgFile": {
                     "type": "string"
                 }
             }
@@ -1471,7 +1440,7 @@
                 "name": {
                     "type": "string"
                 },
-                "second_name": {
+                "secondName": {
                     "type": "string"
                 },
                 "surname": {
@@ -1482,7 +1451,7 @@
         "src_model_dto.TestRequest": {
             "type": "object",
             "properties": {
-                "course_id": {
+                "courseId": {
                     "type": "string"
                 },
                 "name": {
@@ -1494,7 +1463,7 @@
                         "$ref": "#/definitions/src_model_dto.SubQuestion"
                     }
                 },
-                "school_year": {
+                "schoolYear": {
                     "type": "string"
                 }
             }

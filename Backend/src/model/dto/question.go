@@ -8,8 +8,8 @@ import (
 type ListQuestion struct {
 	Id      uuid.UUID `json:"id"`
 	Body    string    `json:"body"`
-	ImgFile string    `json:"img_file"`
-	TestId  uuid.UUID `json:"test_id"`
+	ImgFile string    `json:"imgFile"`
+	TestId  uuid.UUID `json:"testId"`
 }
 
 func ToListQuestion(question model.Question) ListQuestion {
@@ -24,8 +24,8 @@ func ToListQuestion(question model.Question) ListQuestion {
 type FullQuestion struct {
 	Id      uuid.UUID      `json:"id"`
 	Body    string         `json:"body"`
-	ImgFile string         `json:"img_file"`
-	TestId  uuid.UUID      `json:"test_id"`
+	ImgFile string         `json:"imgFile"`
+	TestId  uuid.UUID      `json:"testId"`
 	Answers []model.Answer `json:"answers"`
 }
 

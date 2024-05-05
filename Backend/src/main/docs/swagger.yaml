@@ -5,14 +5,14 @@ definitions:
         type: string
       id:
         type: string
-      question_id:
+      questionId:
         type: string
       valid:
         type: boolean
     type: object
   model.Course:
     properties:
-      course_type:
+      courseType:
         type: string
       id:
         type: string
@@ -20,9 +20,9 @@ definitions:
         type: string
       teacher:
         $ref: '#/definitions/model.Teacher'
-      teacher_id:
+      teacherId:
         type: string
-      usos_id:
+      usosId:
         type: string
     type: object
   model.Question:
@@ -35,9 +35,9 @@ definitions:
         type: string
       id:
         type: string
-      img_file:
+      imgFile:
         type: string
-      test_id:
+      testId:
         type: string
     type: object
   model.Teacher:
@@ -46,7 +46,7 @@ definitions:
         type: string
       name:
         type: string
-      second_name:
+      secondName:
         type: string
       surname:
         type: string
@@ -55,7 +55,7 @@ definitions:
     properties:
       body:
         type: string
-      question_id:
+      questionId:
         type: string
       valid:
         type: boolean
@@ -67,42 +67,22 @@ definitions:
     type: object
   src_model_dto.CourseRequest:
     properties:
-      course_type:
+      courseType:
         type: string
       name:
         type: string
-      teacher_id:
+      teacherId:
         type: string
-      usos_id:
+      usosId:
         type: string
-    type: object
-  src_model_dto.EditQuestionRequest:
-    properties:
-      answers:
-        items:
-          $ref: '#/definitions/src_model_dto.EditSubAnswer'
-        type: array
-      body:
-        type: string
-      img_file:
-        type: string
-    type: object
-  src_model_dto.EditSubAnswer:
-    properties:
-      body:
-        type: string
-      id:
-        type: string
-      valid:
-        type: boolean
     type: object
   src_model_dto.EditTestRequest:
     properties:
-      course_id:
+      courseId:
         type: string
       name:
         type: string
-      school_year:
+      schoolYear:
         type: string
     type: object
   src_model_dto.ErrorResponse:
@@ -120,9 +100,9 @@ definitions:
         type: string
       id:
         type: string
-      img_file:
+      imgFile:
         type: string
-      test_id:
+      testId:
         type: string
     type: object
   src_model_dto.FullTest:
@@ -147,9 +127,9 @@ definitions:
         type: string
       id:
         type: string
-      img_file:
+      imgFile:
         type: string
-      test_id:
+      testId:
         type: string
     type: object
   src_model_dto.ListTest:
@@ -170,7 +150,7 @@ definitions:
         type: string
       name:
         type: string
-      school_year:
+      schoolYear:
         type: string
     type: object
   src_model_dto.QuestionRequest:
@@ -181,9 +161,9 @@ definitions:
         type: array
       body:
         type: string
-      img_file:
+      imgFile:
         type: string
-      test_id:
+      testId:
         type: string
     type: object
   src_model_dto.SubAnswer:
@@ -201,21 +181,21 @@ definitions:
         type: array
       body:
         type: string
-      img_file:
+      imgFile:
         type: string
     type: object
   src_model_dto.TeacherRequest:
     properties:
       name:
         type: string
-      second_name:
+      secondName:
         type: string
       surname:
         type: string
     type: object
   src_model_dto.TestRequest:
     properties:
-      course_id:
+      courseId:
         type: string
       name:
         type: string
@@ -223,7 +203,7 @@ definitions:
         items:
           $ref: '#/definitions/src_model_dto.SubQuestion'
         type: array
-      school_year:
+      schoolYear:
         type: string
     type: object
 info:
@@ -558,7 +538,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/src_model_dto.BaseResponse'
+            $ref: '#/definitions/src_model_dto.IdResponse'
         "400":
           description: Bad Request
           schema:
@@ -642,7 +622,7 @@ paths:
         name: updatedQuestion
         required: true
         schema:
-          $ref: '#/definitions/src_model_dto.EditQuestionRequest'
+          $ref: '#/definitions/src_model_dto.QuestionRequest'
       produces:
       - application/json
       responses:
