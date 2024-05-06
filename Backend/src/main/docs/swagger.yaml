@@ -19,7 +19,7 @@ definitions:
       name:
         type: string
       teacher:
-        $ref: "#/definitions/model.Teacher"
+        $ref: '#/definitions/model.Teacher'
       teacherId:
         type: string
       usosId:
@@ -29,7 +29,7 @@ definitions:
     properties:
       answers:
         items:
-          $ref: "#/definitions/model.Answer"
+          $ref: '#/definitions/model.Answer'
         type: array
       body:
         type: string
@@ -94,7 +94,7 @@ definitions:
     properties:
       answers:
         items:
-          $ref: "#/definitions/model.Answer"
+          $ref: '#/definitions/model.Answer'
         type: array
       body:
         type: string
@@ -108,14 +108,14 @@ definitions:
   src_model_dto.FullTest:
     properties:
       course:
-        $ref: "#/definitions/model.Course"
+        $ref: '#/definitions/model.Course'
       id:
         type: string
       name:
         type: string
       questions:
         items:
-          $ref: "#/definitions/model.Question"
+          $ref: '#/definitions/model.Question'
         type: array
     type: object
   src_model_dto.IdResponse:
@@ -141,7 +141,7 @@ definitions:
       changedBy:
         type: string
       course:
-        $ref: "#/definitions/model.Course"
+        $ref: '#/definitions/model.Course'
       courseId:
         type: string
       createdAt:
@@ -159,7 +159,7 @@ definitions:
     properties:
       answers:
         items:
-          $ref: "#/definitions/src_model_dto.SubAnswer"
+          $ref: '#/definitions/src_model_dto.SubAnswer'
         type: array
       body:
         type: string
@@ -179,7 +179,7 @@ definitions:
     properties:
       answers:
         items:
-          $ref: "#/definitions/src_model_dto.SubAnswer"
+          $ref: '#/definitions/src_model_dto.SubAnswer'
         type: array
       body:
         type: string
@@ -203,7 +203,7 @@ definitions:
         type: string
       questions:
         items:
-          $ref: "#/definitions/src_model_dto.SubQuestion"
+          $ref: '#/definitions/src_model_dto.SubQuestion'
         type: array
       schoolYear:
         type: string
@@ -218,757 +218,757 @@ paths:
     get:
       description: Get all answers
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/model.Answer"
+              $ref: '#/definitions/model.Answer'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get answers
       tags:
-        - answer
+      - answer
     post:
       description: Add answer from json body
       parameters:
-        - description: Payload
-          in: body
-          name: answer
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.AnswerRequest"
+      - description: Payload
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.AnswerRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.IdResponse"
+            $ref: '#/definitions/src_model_dto.IdResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Add answer
       tags:
-        - answer
+      - answer
   /api/v1/answer/{id}:
     delete:
       description: Delete answer by id
       parameters:
-        - description: Answer ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Answer ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Delete answer
       tags:
-        - answer
+      - answer
     get:
       description: Get answer by id
       parameters:
-        - description: Answer ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Answer ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/model.Answer"
+            $ref: '#/definitions/model.Answer'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get answer
       tags:
-        - answer
+      - answer
     put:
       description: Update answer by id
       parameters:
-        - description: Answer ID
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: Payload
-          in: body
-          name: updatedAnswer
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.AnswerRequest"
+      - description: Answer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedAnswer
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.AnswerRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Update answer
       tags:
-        - answer
+      - answer
   /api/v1/course:
     get:
       description: Get all courses
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/model.Course"
+              $ref: '#/definitions/model.Course'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get courses
       tags:
-        - course
+      - course
     post:
       description: Add course from json body
       parameters:
-        - description: Payload
-          in: body
-          name: course
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.CourseRequest"
+      - description: Payload
+        in: body
+        name: course
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.CourseRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.IdResponse"
+            $ref: '#/definitions/src_model_dto.IdResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Add course
       tags:
-        - course
+      - course
   /api/v1/course/{id}:
     delete:
       description: Delete course by id
       parameters:
-        - description: Course ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Delete course
       tags:
-        - course
+      - course
     get:
       description: Get course by id
       parameters:
-        - description: Course ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/model.Course"
+            $ref: '#/definitions/model.Course'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get course
       tags:
-        - course
+      - course
     put:
       description: Update course by id
       parameters:
-        - description: Course ID
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: Payload
-          in: body
-          name: updatedCourse
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.CourseRequest"
+      - description: Course ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedCourse
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.CourseRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Update course
       tags:
-        - course
+      - course
   /api/v1/question:
     get:
       description: Get all questions
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/src_model_dto.ListQuestion"
+              $ref: '#/definitions/src_model_dto.ListQuestion'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get questions
       tags:
-        - question
+      - question
     post:
       description: Add question from json body
       parameters:
-        - description: Payload
-          in: body
-          name: question
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.QuestionRequest"
+      - description: Payload
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.QuestionRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.IdResponse"
+            $ref: '#/definitions/src_model_dto.IdResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Add question
       tags:
-        - question
+      - question
   /api/v1/question/{id}:
     delete:
       description: Delete question by id
       parameters:
-        - description: Question ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Question ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Delete question
       tags:
-        - question
+      - question
     get:
       description: Get question by id
       parameters:
-        - description: Question ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Question ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.FullQuestion"
+            $ref: '#/definitions/src_model_dto.FullQuestion'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get question
       tags:
-        - question
+      - question
     put:
       description: Update question by id
       parameters:
-        - description: Question ID
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: Payload
-          in: body
-          name: updatedQuestion
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.QuestionRequest"
+      - description: Question ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedQuestion
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.QuestionRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.IdResponse"
+            $ref: '#/definitions/src_model_dto.IdResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Update question
       tags:
-        - question
+      - question
   /api/v1/question/{id}/image:
     post:
       description: Add image to question by id
       parameters:
-        - description: Question ID
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: file
-          in: formData
-          name: file
-          required: true
-          type: file
+      - description: Question ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Add image to question
       tags:
-        - image
+      - image
   /api/v1/teacher:
     get:
       description: Get all teachers
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/model.Teacher"
+              $ref: '#/definitions/model.Teacher'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get teachers
       tags:
-        - teacher
+      - teacher
     post:
       description: Add teacher from json body
       parameters:
-        - description: Payload
-          in: body
-          name: teacher
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.TeacherRequest"
+      - description: Payload
+        in: body
+        name: teacher
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.TeacherRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.IdResponse"
+            $ref: '#/definitions/src_model_dto.IdResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Add teacher
       tags:
-        - teacher
+      - teacher
   /api/v1/teacher/{id}:
     delete:
       description: Delete teacher by id
       parameters:
-        - description: Teacher ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Teacher ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Delete teacher
       tags:
-        - teacher
+      - teacher
     get:
       description: Get teacher by id
       parameters:
-        - description: Teacher ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Teacher ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/model.Teacher"
+            $ref: '#/definitions/model.Teacher'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get teacher
       tags:
-        - teacher
+      - teacher
     put:
       description: Update teacher by id
       parameters:
-        - description: Teacher ID
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: Payload
-          in: body
-          name: updatedTeacher
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.TeacherRequest"
+      - description: Teacher ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedTeacher
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.TeacherRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Update teacher
       tags:
-        - teacher
+      - teacher
   /api/v1/test:
     get:
       description: Get all tests
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             items:
-              $ref: "#/definitions/src_model_dto.ListTest"
+              $ref: '#/definitions/src_model_dto.ListTest'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get tests
       tags:
-        - test
+      - test
     post:
       description: Add test from json body
       parameters:
-        - description: Payload
-          in: body
-          name: test
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.TestRequest"
+      - description: Payload
+        in: body
+        name: test
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.TestRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.IdResponse"
+            $ref: '#/definitions/src_model_dto.IdResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Add test
       tags:
-        - test
+      - test
   /api/v1/test/{id}:
     delete:
       description: Delete test by id
       parameters:
-        - description: Test ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Test ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Delete test
       tags:
-        - test
+      - test
     get:
       description: Get test by id
       parameters:
-        - description: Test ID
-          in: path
-          name: id
-          required: true
-          type: string
+      - description: Test ID
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.FullTest"
+            $ref: '#/definitions/src_model_dto.FullTest'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Get test
       tags:
-        - test
+      - test
     put:
       description: Update test by id
       parameters:
-        - description: Test ID
-          in: path
-          name: id
-          required: true
-          type: string
-        - description: Payload
-          in: body
-          name: updatedTest
-          required: true
-          schema:
-            $ref: "#/definitions/src_model_dto.EditTestRequest"
+      - description: Test ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payload
+        in: body
+        name: updatedTest
+        required: true
+        schema:
+          $ref: '#/definitions/src_model_dto.EditTestRequest'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: "#/definitions/src_model_dto.BaseResponse"
+            $ref: '#/definitions/src_model_dto.BaseResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: "#/definitions/src_model_dto.ErrorResponse"
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
       security:
-        - BearerAuth: []
+      - BearerAuth: []
       summary: Update test
       tags:
-        - test
+      - test
 securityDefinitions:
   BearerAuth:
     in: header
