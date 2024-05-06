@@ -1,11 +1,12 @@
 import React from "react";
 import Navbar from "@/components/navbar/Navbar";
+import { useParams } from "react-router-dom";
 import { IAnswearSolved, IQuestion, ITest } from "@/shared/interfaces";
 import { deepCopy, shuffle } from "@/shared/utils/helpers";
 import SolveQuestion from "./solve-question/SolveQuestion";
-import { useParams } from "react-router-dom";
 import QuestionSummary from "./question-summary/QuestionSummary";
 import { Button } from "@/components/ui";
+import Client from "@/api/Client";
 
 const SolveTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,39 +20,20 @@ const SolveTest: React.FC = () => {
     React.useState<IQuestion | null>();
 
   React.useEffect(() => {
-    const mockQuestions: IQuestion[] = [
-      {
-        id: "1",
-        body: "Czy 2+2=4?",
-        imgFile: "",
-        testId: "1",
-        answears: [
-          { id: "1", body: "Tak", valid: true, questionId: "1" },
-          { id: "2", body: "Nie", valid: false, questionId: "1" },
-        ],
-      },
-      {
-        id: "2",
-        body: "Czy pwr jest jebniety?",
-        imgFile: "",
-        testId: "1",
-        answears: [
-          { id: "3", body: "Tak", valid: true, questionId: "2" },
-          { id: "4", body: "Nie", valid: false, questionId: "2" },
-        ],
-      },
-    ];
-    const mockTest: ITest = {
-      id: "123",
-      name: "Testownik 1",
-      course: "Analiza",
-      teacher: "mgr. Jan Dupa",
-      lastModified: new Date(),
-      questions: mockQuestions,
+    const fetchData = async () => {
+      if (id) {
+        try {
+          const testData = await Client.getTest(id);
+          console.log(testData);
+          setTest(testData);
+          setQuestionsToSolve(shuffle(testData.questions ?? []));
+        } catch (error) {
+          console.error("An error occurred while fetching tests:", error);
+        }
+      }
     };
-    setTest(mockTest);
-    setQuestionsToSolve(shuffle(mockQuestions));
-    console.log(id);
+
+    fetchData();
   }, [id]);
 
   React.useEffect(() => {
@@ -69,12 +51,12 @@ const SolveTest: React.FC = () => {
     ) {
       const questionCpy = deepCopy(currentQuestion);
       if (answearsSolved) {
-        questionCpy.answears = deepCopy(answearsSolved);
+        questionCpy.answers = deepCopy(answearsSolved);
       }
       solvedQuestions.push(questionCpy);
     }
 
-    currentQuestion?.answears.forEach(
+    currentQuestion?.answers.forEach(
       (answear) => ((answear as IAnswearSolved).selected = false)
     );
   };
@@ -114,7 +96,7 @@ const SolveTest: React.FC = () => {
               {test?.name}
             </div>
             <div className="text-primary font-bold leading-none text-2xl">
-              {test?.course}
+              {test?.course?.name}&nbsp;({test?.course?.courseType})
             </div>
           </div>
         </div>

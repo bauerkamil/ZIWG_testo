@@ -26,7 +26,6 @@ const SolveQuestion = (props: ISolveQuestionProps) => {
   };
 
   const handleNext = () => {
-    // const selectedAnswearsCopy = [...selectedAnswears];
     finish().then(() => {
       onNext(answears);
     });
@@ -38,9 +37,10 @@ const SolveQuestion = (props: ISolveQuestionProps) => {
   };
 
   React.useEffect(() => {
+    if (!question.answers) return;
     setAnswears(
       shuffle(
-        question.answears.map((answear) => {
+        question.answers.map((answear) => {
           return { selected: false, ...answear };
         })
       )
@@ -52,7 +52,7 @@ const SolveQuestion = (props: ISolveQuestionProps) => {
       <div className="text-4xl text-center">{question.body}</div>
       <div>
         {question.imgFile && (
-          <img src={question.imgFile} alt="question" className="w-1/2" />
+          <img src={question.imgFile} alt="question" className="w-1/2 m-auto" />
         )}
       </div>
       <div className="flex flex-col gap-1">

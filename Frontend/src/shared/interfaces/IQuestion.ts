@@ -5,5 +5,5 @@ export interface IQuestion {
   body: string;
   imgFile: string;
   testId: string;
-  answears: IAnswear[];
+  answers: IAnswear[];
 }

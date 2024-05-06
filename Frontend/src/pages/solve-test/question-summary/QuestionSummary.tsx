@@ -16,7 +16,7 @@ const QuestionSummary = (props: IQuestionSummaryProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        {question.answears.map((answear) => (
+        {question.answers.map((answear) => (
           <SolveAnswear
             key={answear.id}
             answear={answear as IAnswearSolved}

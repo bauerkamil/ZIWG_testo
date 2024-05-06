@@ -1,31 +1,70 @@
-import { getStoredValue } from "@/shared/utils/localStorageHelper";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { DEFAULT_EP } from "@/shared/utils/constants";
-import { ITestsResponse } from "@/shared/interfaces/ITestsResponse";
+import { ITest } from "@/shared/interfaces/ITest";
+import LocalStorage from "@/shared/utils/LocalStorage";
+import { LocalStorageElements, StatusCodes } from "@/shared/enums";
 import { IUser } from "@/shared/interfaces";
-import { ITestResponse } from "@/shared/interfaces/ITestResponse";
-import { LocalStorageElements } from "@/shared/enums";
+import { redirect } from "react-router-dom";
 
 axios.interceptors.request.use((setup) => {
-  const user = getStoredValue<IUser>(LocalStorageElements.User);
+  const user = LocalStorage.getStoredValue<IUser>(LocalStorageElements.User);
 
-  if (user) {
-    if (user.token) {
-      setup.headers.Authorization = `Bearer ${user.token}`;
-    }
+  if (user?.token) {
+    setup.headers.Authorization = `Bearer ${user.token}`;
   }
 
   return setup;
 });
 
+axios.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    console.error(error);
+    if (error.message === "Network Error" && !error.response) {
+      console.error("Network error - make sure API is running!");
+    }
+
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { data, status } = error.response;
+
+    switch (status) {
+      case StatusCodes.BadRequest:
+        break;
+
+      case StatusCodes.Unauthorized:
+        // return refreshToken(error);
+        break;
+
+      case StatusCodes.Gone:
+        redirect("/not-found");
+        break;
+
+      case StatusCodes.InternalServerError:
+        redirect("/server-error");
+        break;
+
+      default:
+        break;
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 const Client = {
   getTests: async () =>
-    axios
-      .get<ITestsResponse[]>(`${DEFAULT_EP}/test`)
-      .then((response) => response.data),
+    axios.get<ITest[]>(`${DEFAULT_EP}/test`).then((response) => response.data),
   getTest: async (test_id: string) =>
     axios
-      .get<ITestResponse>(`${DEFAULT_EP}/test/${test_id}`)
+      .get<ITest>(`${DEFAULT_EP}/test/${test_id}`)
+      .then((response) => response.data),
+  postTest: async (test: ITest) =>
+    axios
+      .post<string>(`${DEFAULT_EP}/test`, test)
       .then((response) => response.data),
 };
 

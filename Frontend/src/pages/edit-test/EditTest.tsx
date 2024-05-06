@@ -32,7 +32,7 @@ const EditTest: React.FC = () => {
         body: "Czy 2+2=4?",
         imgFile: "",
         testId: "1",
-        answears: [
+        answers: [
           { id: "1", body: "Tak", valid: true, questionId: "1" },
           { id: "2", body: "Nie", valid: false, questionId: "1" },
         ],
@@ -42,7 +42,7 @@ const EditTest: React.FC = () => {
         body: "Czy 2+2=5?",
         imgFile: "",
         testId: "1",
-        answears: [
+        answers: [
           { id: "3", body: "Tak", valid: false, questionId: "2" },
           { id: "4", body: "Nie", valid: true, questionId: "2" },
         ],

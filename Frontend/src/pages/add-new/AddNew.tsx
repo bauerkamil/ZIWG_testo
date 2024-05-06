@@ -2,8 +2,15 @@ import Navbar from "@/components/navbar/Navbar";
 import { Button } from "@/components/ui";
 import { NavbarPages } from "@/shared/enums";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddNew: React.FC = () => {
+  const navigate = useNavigate();
+
+  const addManually = () => {
+    navigate("/edit");
+  };
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar page={NavbarPages.AddNew} />
@@ -17,8 +24,8 @@ const AddNew: React.FC = () => {
           </div>
           <div className="grid gap-4 mt-4">
             <Button>Dodaj z plików</Button>
-            <Button>Dodaj ze zdjęć (OCR)</Button>
-            <Button>Dodaj ręcznie</Button>
+            {/* <Button>Dodaj ze zdjęć (OCR)</Button> */}
+            <Button onClick={addManually}>Dodaj ręcznie</Button>
           </div>
         </div>
       </div>

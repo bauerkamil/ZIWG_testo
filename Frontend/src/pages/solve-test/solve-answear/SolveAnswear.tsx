@@ -41,7 +41,7 @@ const SolveAnswear = (props: ISolveAnswearProps) => {
     <div
       className={cn(
         "p-2 border border-gray-300 rounded-lg shadow-md transition ease-in-out delay-200",
-        !small && "text-2xl",
+        !small && "text-2xl p-4",
         answearStyle,
         !revealed && !answear.selected && "cursor-pointer hover:bg-gray-200"
       )}

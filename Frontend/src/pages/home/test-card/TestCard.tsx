@@ -4,17 +4,17 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { ITestsResponse } from "@/shared/interfaces/ITestsResponse";
+import { ITest } from "@/shared/interfaces/ITest";
 import { formatDate } from "@/shared/utils/helpers";
 import { useNavigate } from "react-router-dom";
 
-const TestCard = (props: { test: ITestsResponse }) => {
+const TestCard = (props: { test: ITest }) => {
   const { test } = props;
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/test/${test.id}`);
-  }
+    navigate(`/solve/${test.id}`);
+  };
 
   return (
     <div onClick={handleClick}>
@@ -25,24 +25,33 @@ const TestCard = (props: { test: ITestsResponse }) => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-column space-x-1">
-            <div className="text-primary font-bold">{test.course.name}</div>
-            <div className="text-primary font-bold">{test.course.school_year}</div></div>
+          <div className="flex flex-column gap-2">
+            <div className="text-primary font-bold">{test.course?.name}</div>
+            <div className="text-muted-foreground italic">
+              {test.course?.courseType}
+            </div>
+            {test.schoolYear && (
+              <div className="text-muted-foreground italic">
+                (Semestr: {test.schoolYear})
+              </div>
+            )}
+          </div>
           <div className="flex flex-row">
             <p className="text-muted-foreground italic">Prowadzący:&nbsp;</p>
-            <p>{test.course.teacher.name} {test.course.teacher.surname}</p>
+            <p>
+              {test.course?.teacher.name} {test.course?.teacher.surname}
+            </p>
           </div>
         </CardContent>
         <CardFooter>
           <div className="text-sm text-muted-foreground">
             <div>
-              Stworzone dnia {formatDate(test.createdAt)}
-            </div>
-            <div>
-              Twórca: {test.createdBy}
-            </div>
-            <div>
-              Ostatnia modyfikacja: {test.changedAt ? formatDate(test.changedAt) : formatDate(test.createdAt)}
+              Ostatnia modyfikacja::&nbsp;
+              {test.changedAt
+                ? formatDate(test.changedAt)
+                : test.createdAt
+                  ? formatDate(test.createdAt)
+                  : "Brak danych"}
             </div>
           </div>
         </CardFooter>

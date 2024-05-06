@@ -30,12 +30,12 @@ const EditQuestion = (props: IEditQuestionProps) => {
         </div>
         <div>
           <Label>Obrazek</Label>
-          <Input type="file" />
+          <Input type="file" accept="image/*" />
         </div>
         <div>
           <Label>Odpowiedzi</Label>
           <div className="grid gap-1">
-            {question.answears.map((answear) => (
+            {question.answers.map((answear) => (
               <EditAnswear key={answear.id} answear={answear} />
             ))}
           </div>

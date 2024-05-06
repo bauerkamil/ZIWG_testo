@@ -5,11 +5,11 @@ import Navbar from "@/components/navbar/Navbar";
 import { NavbarPages } from "@/shared/enums";
 import TestCard from "./test-card/TestCard";
 import Client from "@/api/Client";
-import { ITestsResponse } from "@/shared/interfaces/ITestsResponse";
+import { ITest } from "@/shared/interfaces";
 
 const Home: React.FC = () => {
   const { user } = useAuth();
-  const [tests, setTests] = useState<ITestsResponse[]>([]);
+  const [tests, setTests] = useState<ITest[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

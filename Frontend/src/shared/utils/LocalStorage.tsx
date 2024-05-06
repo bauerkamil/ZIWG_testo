@@ -1,4 +1,5 @@
-export const getStoredValue = <T,>(keyName: string): T | undefined => {
+
+const getStoredValue = <T,>(keyName: string): T | undefined => {
   try {
     const value = window.localStorage.getItem(keyName);
     if (value) {
@@ -12,7 +13,7 @@ export const getStoredValue = <T,>(keyName: string): T | undefined => {
   }
 };
 
-export const setStoredValue = <T,>(keyName: string, newValue: T) => {
+const setStoredValue = <T,>(keyName: string, newValue: T) => {
   try {
     window.localStorage.setItem(keyName, JSON.stringify(newValue));
   } catch (err) {
@@ -20,10 +21,18 @@ export const setStoredValue = <T,>(keyName: string, newValue: T) => {
   }
 };
 
-export const removeStoredItem = (keyName: string) => {
+const removeStoredItem = (keyName: string) => {
   try {
     window.localStorage.removeItem(keyName);
   } catch (err) {
     console.log(err);
   }
 };
+
+const LocalStorage = {
+  getStoredValue,
+  setStoredValue,
+  removeStoredItem,
+};
+
+export default LocalStorage;
