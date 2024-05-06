@@ -9,7 +9,11 @@ import { AuthAction, AuthReducer } from "./AuthReducer";
 import { IUser } from "@/shared/interfaces";
 import { AuthActions, LocalStorageElements } from "@/shared/enums";
 import { AUTH_LINK } from "@/shared/utils/constants";
+<<<<<<< HEAD
 import LocalStorage from "../../utils/LocalStorage";
+=======
+import { getStoredValue } from "../../utils/localStorageHelper";
+>>>>>>> develop
 
 interface InitialState {
   login: () => void;
