@@ -28,8 +28,7 @@ axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { data, status } = error.response;
+    const { status } = error.response;
 
     switch (status) {
       case StatusCodes.BadRequest:
