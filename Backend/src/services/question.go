@@ -170,7 +170,7 @@ func DeleteQuestionHandle(ctx *gin.Context) {
 // @Router       /api/v1/question/{id}/image [post]
 func AddImageHandle(ctx *gin.Context) {
 
-	azureProvider, err := NewAzureProvider()
+	azureProvider, err := GetAzureProviderInstance()
 	if err != nil {
 		fmt.Printf("Failed to create AzureProvider: %v\n", err)
 		return

@@ -18,7 +18,20 @@ type AzureProvider struct {
 	maxFileSize  int64
 }
 
-func NewAzureProvider() (*AzureProvider, error) {
+var instance *AzureProvider
+
+func GetAzureProviderInstance() (*AzureProvider, error) {
+	if instance == nil {
+		instance, err := newAzureProvider()
+		if err != nil {
+			return nil, fmt.Errorf("failed to create AzureProvider instance: %v", err)
+		}
+		return instance, nil
+	}
+	return instance, nil
+}
+
+func newAzureProvider() (*AzureProvider, error) {
 	accountName := os.Getenv("AZURE_STORAGE_ACCOUNT_NAME")
 	accountKey := os.Getenv("AZURE_STORAGE_ACCOUNT_KEY")
 	containerName := os.Getenv("AZURE_STORAGE_CONTAINER_NAME")
