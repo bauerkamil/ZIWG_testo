@@ -11,7 +11,6 @@ import {
   ITestUpdate,
   IUser,
 } from "@/shared/interfaces";
-import { redirect } from "react-router-dom";
 
 axios.interceptors.request.use((setup) => {
   const user = LocalStorage.getStoredValue<IUser>(LocalStorageElements.User);
@@ -42,15 +41,16 @@ axios.interceptors.response.use(
         break;
 
       case StatusCodes.Unauthorized:
-        // return refreshToken(error);
+        window.alert("Sesja wygasła, zaloguj się ponownie");
+        window.location.href = "/";
         break;
 
       case StatusCodes.Gone:
-        redirect("/not-found");
+        window.location.href = "/not-found";
         break;
 
       case StatusCodes.InternalServerError:
-        redirect("/server-error");
+        window.location.href = "/server-error";
         break;
 
       default:
