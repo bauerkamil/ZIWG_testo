@@ -1,7 +1,7 @@
 import React from "react";
 import Combobox from "@/components/combobox/Combobox";
 import Navbar from "@/components/navbar/Navbar";
-import { Button, Input, Label } from "@/components/ui";
+import { Button, Input, Label, useToast } from "@/components/ui";
 import { ICourse, ITest } from "@/shared/interfaces";
 import { Plus } from "lucide-react";
 import EditQuestion from "./question/EditQuestion";
@@ -12,6 +12,8 @@ const EditTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [courses, setCourses] = React.useState<ICourse[]>([]);
   const [test, setTest] = React.useState<ITest>();
+
+  const { toast } = useToast();
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -30,25 +32,68 @@ const EditTest: React.FC = () => {
     fetchData();
   }, [id]);
 
-  const handleTestNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTest({name: event.target.value, id: id ?? "", ...test});
-  };
-
-  const updateTest = () => {
-    if (test) {
-      Client.putTest(test);
+  const updateTest = (courseId?: string) => {
+    if (test?.id && courseId) {
+      return Client.putTest(test.id, {
+        name: test.name ?? "",
+        courseId: courseId ?? test.course?.id ?? "",
+        schoolYear: test.schoolYear ?? "",
+      });
     }
   };
 
+  const handleTestNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTest({ ...test, name: event.target.value });
+  };
+
   const handleSelectedCourseChange = (course: ICourse | undefined) => {
-    setTest({course: course, id: id ?? "", ...test});
-    updateTest();
+    if (course?.id !== test?.course?.id && course?.id) {
+      updateTest(course?.id)?.then(() => {
+        setTest({ ...test, course: course });
+      });
+    }
+  };
+
+  const handleQuestionDeleted = (questionId: string) => {
+    setTest({
+      ...test,
+      questions: test?.questions?.filter((q) => q.id !== questionId),
+    });
   };
 
   const addNewQuestion = () => {
-    if (test?.id)
-    Client.postQuestion({id: "", testId: test.id, answers: []})
-  }
+    if (test?.id) {
+      if (test.questions?.find((q) => !q.body)) {
+        toast({
+          title: "Uzupełnij puste pytanie przed dodaniem nowego",
+          variant: "destructive",
+        });
+        return;
+      }
+      const newQuestion = {
+        testId: test.id,
+        body: "",
+        imgFile: "",
+        answers: [],
+      };
+      Client.postQuestion(newQuestion).then((response) => {
+        setTest({
+          ...test,
+          questions: [
+            ...(test.questions ?? []),
+            { ...newQuestion, id: response.id },
+          ],
+        });
+      });
+    }
+  };
+
+  const getCourseString = (course: ICourse) => {
+    return `${course.name} ${course.courseType} (${course.teacher.name} ${course.teacher.surname})`;
+  };
+  const getCourseHeader = (course: ICourse) => {
+    return `${course.name} (${course.courseType})`;
+  };
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -59,7 +104,12 @@ const EditTest: React.FC = () => {
         </div>
         <div>
           <Label>Nazwa testownika</Label>
-          <Input value={test?.name ?? ""} onChange={handleTestNameChange} onBlur={updateTest} />
+          <Input
+            value={test?.name ?? ""}
+            onChange={handleTestNameChange}
+            required
+            onBlur={() => updateTest()}
+          />
         </div>
         <div>
           <Label>Wybierz kurs</Label>
@@ -68,7 +118,9 @@ const EditTest: React.FC = () => {
             selectedItem={test?.course}
             onItemSelected={handleSelectedCourseChange}
             keyPath="id"
-            valuePath="name"
+            getItemValue={getCourseString}
+            getSelectedItemHeader={getCourseHeader}
+            required
           />
         </div>
         <div>
@@ -77,7 +129,7 @@ const EditTest: React.FC = () => {
             readOnly
             value={
               test?.course?.teacher
-                ? test.course.teacher.name + test.course.teacher.surname
+                ? `${test.course.teacher.name} ${test.course.teacher.surname}`
                 : ""
             }
             placeholder="Wybierz kurs żeby zobaczyć prowadzącego"
@@ -87,7 +139,12 @@ const EditTest: React.FC = () => {
           <Label>Pytania</Label>
           <div className="grid gap-4">
             {test?.questions?.map((question, index) => (
-              <EditQuestion key={question.id} index={index} question={question} />
+              <EditQuestion
+                key={question.id}
+                index={index}
+                question={question}
+                onDeleted={handleQuestionDeleted}
+              />
             ))}
           </div>
         </div>
