@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -7,18 +8,37 @@ import {
 import { ITest } from "@/shared/interfaces/ITest";
 import { formatDate } from "@/shared/utils/helpers";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const TestCard = (props: { test: ITest }) => {
   const { test } = props;
   const navigate = useNavigate();
+  const [showOptions, setShowOptions] = useState(false);
 
   const handleClick = () => {
+    setShowOptions(true);
+  };
+
+  const handleCloseOptions = () => {
+    setShowOptions(false);
+  };
+
+  const handleSolveClick = () => {
     navigate(`/solve/${test.id}`);
+    handleCloseOptions();
+  };
+
+  const handleEditClick = () => {
+    navigate(`/edit/${test.id}`)
+    handleCloseOptions();
   };
 
   return (
-    <div onClick={handleClick}>
-      <Card className="cursor-pointer hover:border-solid hover:border-current group">
+    <div>
+      <Card
+        className="cursor-pointer hover:border-solid hover:border-current group"
+        onClick={handleClick}
+      >
         <CardHeader>
           <div className="font-semibold leading-none tracking-tight group-hover:text-2xl">
             {test.name}
@@ -46,7 +66,7 @@ const TestCard = (props: { test: ITest }) => {
         <CardFooter>
           <div className="text-sm text-muted-foreground">
             <div>
-              Ostatnia modyfikacja::&nbsp;
+              Ostatnia modyfikacja:&nbsp;
               {test.changedAt
                 ? formatDate(test.changedAt)
                 : test.createdAt
@@ -56,6 +76,16 @@ const TestCard = (props: { test: ITest }) => {
           </div>
         </CardFooter>
       </Card>
+      {showOptions && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-800 opacity-50" onClick={handleCloseOptions}></div>
+          <Card className="relative bg-white p-8 rounded shadow-lg flex flex-col items-center justify-center">
+            <p className="text-lg mb-4">Co chcesz zrobić z testem "{test.name}"?</p>
+            <Button className="mb-4" onClick={handleSolveClick}>Rozwiąż test</Button>
+            <Button onClick={handleEditClick}>Edytuj test</Button>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,55 +2,40 @@ import React from "react";
 import Combobox from "@/components/combobox/Combobox";
 import Navbar from "@/components/navbar/Navbar";
 import { Button, Input, Label } from "@/components/ui";
-import { ICourse, IQuestion } from "@/shared/interfaces";
+import { ICourse, IQuestion, ITest } from "@/shared/interfaces";
 import { Plus } from "lucide-react";
 import EditQuestion from "./question/EditQuestion";
+import { useParams } from "react-router-dom";
+import Client from "@/api/Client";
 
 const EditTest: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const [questions, setQuestions] = React.useState<IQuestion[]>([]);
   const [courses, setCourses] = React.useState<ICourse[]>([]);
+  const [test, setTest] = React.useState<ITest>();
   const [selectedCourse, setSelectedCourse] = React.useState<ICourse | null>(
     null
   );
 
   React.useEffect(() => {
-    const mock: ICourse[] = [
-      {
-        id: "1",
-        name: "Analiza matematyczna",
-        teacher: "prof. Jan Kowalski",
-      },
-      {
-        id: "2",
-        name: "Algebra liniowa",
-        teacher: "dr inż. Anna Nowak",
-      },
-    ];
-    const mockQuestions: IQuestion[] = [
-      {
-        id: "1",
-        body: "Czy 2+2=4?",
-        imgFile: "",
-        testId: "1",
-        answers: [
-          { id: "1", body: "Tak", valid: true, questionId: "1" },
-          { id: "2", body: "Nie", valid: false, questionId: "1" },
-        ],
-      },
-      {
-        id: "2",
-        body: "Czy 2+2=5?",
-        imgFile: "",
-        testId: "1",
-        answers: [
-          { id: "3", body: "Tak", valid: false, questionId: "2" },
-          { id: "4", body: "Nie", valid: true, questionId: "2" },
-        ],
-      },
-    ];
-    setCourses(mock);
-    setQuestions(mockQuestions);
-  }, []);
+    const fetchData = async () => {
+      if (id) {
+        try {
+          const testData = await Client.getTest(id);
+          const coursesData = await Client.getCourses();
+          console.log(testData);
+          console.log(coursesData);
+          setTest(testData);
+          setQuestions(testData.questions ?? []);
+          setCourses(coursesData)
+        } catch (error) {
+          console.error("An error occurred while fetching tests:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -61,7 +46,7 @@ const EditTest: React.FC = () => {
         </div>
         <div>
           <Label>Nazwa testownika</Label>
-          <Input />
+          <Input defaultValue={test?.name}/>
         </div>
         <div>
           <Label>Wybierz kurs</Label>
@@ -77,7 +62,7 @@ const EditTest: React.FC = () => {
           <Label className="text-muted-foreground">Prowadzący</Label>
           <Input
             readOnly
-            value={selectedCourse?.teacher ?? ""}
+            value={selectedCourse?.teacher ? selectedCourse.teacher.name + selectedCourse.teacher.surname : ""}
             placeholder="Wybierz kurs żeby zobaczyć prowadzącego"
           />
         </div>
