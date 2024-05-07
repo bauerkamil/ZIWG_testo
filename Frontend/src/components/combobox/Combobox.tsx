@@ -45,7 +45,7 @@ const Combobox = <T,>(props: IComboboxProps<T>) => {
   );
 
   const getValue = React.useCallback(
-    (item: T | null): string => {
+    (item: T | undefined): string => {
       if (!item) {
         return "";
       }
@@ -63,7 +63,7 @@ const Combobox = <T,>(props: IComboboxProps<T>) => {
 
   const onSelect = (selectedKey: string) => {
     const selectedValue = items.find((item) => getKey(item) === selectedKey);
-    onItemSelected(selectedValue ?? null);
+    onItemSelected(selectedValue ?? undefined);
     setOpen(false);
   };
 

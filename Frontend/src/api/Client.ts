@@ -3,7 +3,7 @@ import { DEFAULT_EP } from "@/shared/utils/constants";
 import { ITest } from "@/shared/interfaces/ITest";
 import LocalStorage from "@/shared/utils/LocalStorage";
 import { LocalStorageElements, StatusCodes } from "@/shared/enums";
-import { ICourse, IUser } from "@/shared/interfaces";
+import { ICourse, IQuestion, IUser } from "@/shared/interfaces";
 import { redirect } from "react-router-dom";
 
 axios.interceptors.request.use((setup) => {
@@ -64,6 +64,14 @@ const Client = {
   postTest: async (test: ITest) =>
     axios
       .post<string>(`${DEFAULT_EP}/test`, test)
+      .then((response) => response.data),
+  putTest: async (test: ITest) =>
+    axios
+      .put(`${DEFAULT_EP}/test`, test)
+      .then((response) => response.data),
+  postQuestion: async (question: IQuestion) =>
+    axios
+      .post(`${DEFAULT_EP}/question`, question)
       .then((response) => response.data),
   getCourses: async () => 
     axios
