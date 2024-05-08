@@ -22,6 +22,7 @@ const EditTest: React.FC = () => {
           const testData = await Client.getTest(id);
           const coursesData = await Client.getCourses();
           setTest(testData);
+          console.log("Test data:", testData);
           setCourses(coursesData);
         } catch (error) {
           console.error("An error occurred while fetching tests:", error);

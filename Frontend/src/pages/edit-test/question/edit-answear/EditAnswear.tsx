@@ -41,7 +41,7 @@ const EditAnswear = (props: IEditAnswearProps) => {
     <div className="flex flex-row content-center gap-3 px-2 py-1 rounded hover:bg-gray-200">
       <Checkbox
         checked={answear.valid ?? false}
-        onChange={handleValidChange}
+        onClick={handleValidChange}
         className="self-center"
       />
       <Input

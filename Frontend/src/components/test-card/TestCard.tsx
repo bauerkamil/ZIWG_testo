@@ -4,14 +4,14 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { ITest } from "@/shared/interfaces/ITest";
 import { formatDate } from "@/shared/utils/helpers";
 import { useNavigate } from "react-router-dom";
 import TestCardOptions from "./test-card-options/TestCardOptions";
+import { ITestCardProps } from "./ITestCardProps";
 
-const TestCard = (props: { test: ITest, onDelete: (id: string) => void }) => {
+const TestCard = (props: ITestCardProps) => {
   const { test } = props;
-  const { onDelete } = props;
+  const { onDeleted } = props;
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -29,7 +29,7 @@ const TestCard = (props: { test: ITest, onDelete: (id: string) => void }) => {
             {test.name}
           </div>
           <div className="grow"></div>
-          <TestCardOptions id={test.id ?? ""} onDelete={onDelete} />
+          <TestCardOptions testId={test.id ?? ""} onDeleted={onDeleted} />
         </div>
       </CardHeader>
       <CardContent>

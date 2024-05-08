@@ -9,21 +9,21 @@ import {
 import { EllipsisVertical, PencilLine, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Client from "@/api/Client";
+import { ITestCardOptionsProps } from "./ITestCardOptionsProps";
 
-const TestCardOptions = (props: { id: string, onDelete: (id: string) => void }) => {
-  const { id } = props;
-  const { onDelete } = props;
+const TestCardOptions = (props: ITestCardOptionsProps) => {
+  const { testId, onDeleted } = props;
   const navigate = useNavigate();
 
   const handleDelete = () => {
-    Client.deleteTest(id).then(() => {
-      onDelete(id);
+    Client.deleteTest(testId).then(() => {
+      onDeleted(testId);
     });
   };
 
   const editTest = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    navigate(`/edit/${id}`);
+    navigate(`/edit/${testId}`);
   };
 
   const deleteTest = (event: React.MouseEvent<HTMLButtonElement>) => {
