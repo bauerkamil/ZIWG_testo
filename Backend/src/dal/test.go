@@ -61,6 +61,10 @@ func UpdateTestInDB(newTest *model.Test) error {
 		test.CourseId = newTest.CourseId
 		changed = true
 	}
+	if newTest.SchoolYear != test.SchoolYear {
+		test.SchoolYear = newTest.SchoolYear
+		changed = true
+	}
 	if changed {
 		test.ChangedBy = newTest.ChangedBy
 		test.ChangedAt = newTest.ChangedAt

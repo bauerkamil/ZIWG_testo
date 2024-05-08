@@ -33,12 +33,13 @@ func AddTestHandle(ctx *gin.Context) {
 	date := time.Now()
 	id, _ := uuid.NewV4()
 	Test := &model.Test{
-		Id:        id,
-		Name:      request.Name,
-		CreatedBy: createdBy,
-		CourseId:  request.CourseId,
-		CreatedAt: date,
-		ChangedBy: nil,
+		Id:         id,
+		Name:       request.Name,
+		CreatedBy:  createdBy,
+		CourseId:   request.CourseId,
+		CreatedAt:  date,
+		ChangedBy:  nil,
+		SchoolYear: request.SchoolYear,
 	}
 	err = dal.DB.Transaction(func(tx *gorm.DB) error {
 		err = dal.AddTestToDB(Test)
@@ -164,11 +165,12 @@ func UpdateTestHandle(ctx *gin.Context) {
 	changedBy := userId.(string)
 	changedAt := time.Now()
 	Test := &model.Test{
-		Id:        id,
-		Name:      request.Name,
-		ChangedBy: &changedBy,
-		CourseId:  request.CourseId,
-		ChangedAt: &changedAt,
+		Id:         id,
+		Name:       request.Name,
+		ChangedBy:  &changedBy,
+		CourseId:   request.CourseId,
+		ChangedAt:  &changedAt,
+		SchoolYear: request.SchoolYear,
 	}
 
 	err = dal.UpdateTestInDB(Test)
