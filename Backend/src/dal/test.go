@@ -21,6 +21,18 @@ func GetTestsFromDB() ([]model.Test, error) {
 	return tests, nil
 }
 
+func GetTestsById(courseIds []uuid.UUID) ([]model.Test, error) {
+	var tests []model.Test
+	result := DB.Preload("Course").
+		Preload("Course.Teacher").
+		Where("course_id IN ?", courseIds).
+		Find(&tests)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return tests, nil
+}
+
 func GetTestFromDB(id uuid.UUID) (*model.Test, error) {
 	var test model.Test
 	result := DB.Preload("Course").

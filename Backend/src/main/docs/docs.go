@@ -1058,6 +1058,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/test/active": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get all user active tests",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "test"
+                ],
+                "summary": "Get active tests",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/src_model_dto.ListTest"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/src_model_dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/test/{id}": {
             "get": {
                 "security": [
@@ -1353,6 +1387,9 @@ const docTemplate = `{
         "src_model_dto.FullCourse": {
             "type": "object",
             "properties": {
+                "active": {
+                    "type": "boolean"
+                },
                 "courseType": {
                     "type": "string"
                 },
