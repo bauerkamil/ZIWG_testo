@@ -76,6 +76,10 @@ const Client = {
     axios
       .put(`${DEFAULT_EP}/test/${testId}`, test)
       .then((response) => response.data),
+  deleteTest: async (testId: string) =>
+    axios
+      .delete(`${DEFAULT_EP}/test/${testId}`)
+      .then((response) => response.data),
   postQuestion: async (question: IQuestionUpdate) =>
     axios
       .post<IIdResponse>(`${DEFAULT_EP}/question`, question)

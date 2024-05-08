@@ -1,5 +1,4 @@
 import React from "react";
-import Combobox from "@/components/combobox/Combobox";
 import Navbar from "@/components/navbar/Navbar";
 import { Button, Input, Label, useToast } from "@/components/ui";
 import { ICourse, ITest } from "@/shared/interfaces";
@@ -7,6 +6,7 @@ import { Plus } from "lucide-react";
 import EditQuestion from "./question/EditQuestion";
 import { useParams } from "react-router-dom";
 import Client from "@/api/Client";
+import CourseSelector from "@/components/course-selector/CourseSelector";
 
 const EditTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -54,6 +54,10 @@ const EditTest: React.FC = () => {
     }
   };
 
+  const handleTestYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTest({ ...test, schoolYear: event.target.value });
+  };
+
   const handleQuestionDeleted = (questionId: string) => {
     setTest({
       ...test,
@@ -87,14 +91,6 @@ const EditTest: React.FC = () => {
       });
     }
   };
-
-  const getCourseString = (course: ICourse) => {
-    return `${course.name} ${course.courseType} (${course.teacher.name} ${course.teacher.surname})`;
-  };
-  const getCourseHeader = (course: ICourse) => {
-    return `${course.name} (${course.courseType})`;
-  };
-
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
@@ -111,28 +107,16 @@ const EditTest: React.FC = () => {
             onBlur={() => updateTest()}
           />
         </div>
+        <CourseSelector
+          courses={courses}
+          selectedCourse={test?.course}
+          setSelectedCourse={handleSelectedCourseChange}
+        />
         <div>
-          <Label>Wybierz kurs</Label>
-          <Combobox
-            items={courses}
-            selectedItem={test?.course}
-            onItemSelected={handleSelectedCourseChange}
-            keyPath="id"
-            getItemValue={getCourseString}
-            getSelectedItemHeader={getCourseHeader}
-            required
-          />
-        </div>
-        <div>
-          <Label className="text-muted-foreground">Prowadzący</Label>
+          <Label>Semestr</Label>
           <Input
-            readOnly
-            value={
-              test?.course?.teacher
-                ? `${test.course.teacher.name} ${test.course.teacher.surname}`
-                : ""
-            }
-            placeholder="Wybierz kurs żeby zobaczyć prowadzącego"
+            value={test?.schoolYear ?? ""}
+            onChange={handleTestYearChange}
           />
         </div>
         <div>
