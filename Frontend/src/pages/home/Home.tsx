@@ -26,6 +26,10 @@ const Home: React.FC = () => {
     fetchData();
   }, []);
 
+  const handleDelete = (id: string) => {
+    setTests(tests.filter(test => test.id !== id));
+  };
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar page={NavbarPages.Home} />
@@ -41,7 +45,7 @@ const Home: React.FC = () => {
         <div className="text-2xl">Dostępne testowniki</div>
         <div className="grid gap-4 md:grid-cols-2">
           {tests.map((test) => (
-            <TestCard key={test.id} test={test} />
+            <TestCard key={test.id} test={test} onDelete={handleDelete} />
           ))}
         </div>
       </main>

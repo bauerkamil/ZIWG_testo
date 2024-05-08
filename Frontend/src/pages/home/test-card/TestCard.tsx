@@ -9,8 +9,9 @@ import { formatDate } from "@/shared/utils/helpers";
 import { useNavigate } from "react-router-dom";
 import TestCardOptions from "./test-card-options/TestCardOptions";
 
-const TestCard = (props: { test: ITest }) => {
+const TestCard = (props: { test: ITest, onDelete: (id: string) => void }) => {
   const { test } = props;
+  const { onDelete } = props;
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -28,7 +29,7 @@ const TestCard = (props: { test: ITest }) => {
             {test.name}
           </div>
           <div className="grow"></div>
-          <TestCardOptions id={test.id ?? ""} />
+          <TestCardOptions id={test.id ?? ""} onDelete={onDelete} />
         </div>
       </CardHeader>
       <CardContent>

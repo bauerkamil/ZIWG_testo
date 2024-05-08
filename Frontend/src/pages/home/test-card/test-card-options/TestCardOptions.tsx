@@ -8,10 +8,18 @@ import {
 } from "@/components/ui";
 import { EllipsisVertical, PencilLine, Trash } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Client from "@/api/Client";
 
-const TestCardOptions = (props: { id: string }) => {
+const TestCardOptions = (props: { id: string, onDelete: (id: string) => void }) => {
   const { id } = props;
+  const { onDelete } = props;
   const navigate = useNavigate();
+
+  const handleDelete = () => {
+    Client.deleteTest(id).then(() => {
+      onDelete(id);
+    });
+  };
 
   const editTest = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -20,6 +28,7 @@ const TestCardOptions = (props: { id: string }) => {
 
   const deleteTest = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    handleDelete();
   };
 
   return (
