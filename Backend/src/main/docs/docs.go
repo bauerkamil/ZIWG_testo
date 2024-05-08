@@ -1582,23 +1582,6 @@ const docTemplate = `{
                 }
             }
         },
-        "src_model_dto.SubQuestion": {
-            "type": "object",
-            "properties": {
-                "answers": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/src_model_dto.SubAnswer"
-                    }
-                },
-                "body": {
-                    "type": "string"
-                },
-                "imgFile": {
-                    "type": "string"
-                }
-            }
-        },
         "src_model_dto.TeacherRequest": {
             "type": "object",
             "properties": {
@@ -1621,12 +1604,6 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                },
-                "questions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/src_model_dto.SubQuestion"
-                    }
                 },
                 "schoolYear": {
                     "type": "string"

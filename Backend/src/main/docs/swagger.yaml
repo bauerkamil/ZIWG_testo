@@ -190,17 +190,6 @@ definitions:
       valid:
         type: boolean
     type: object
-  src_model_dto.SubQuestion:
-    properties:
-      answers:
-        items:
-          $ref: '#/definitions/src_model_dto.SubAnswer'
-        type: array
-      body:
-        type: string
-      imgFile:
-        type: string
-    type: object
   src_model_dto.TeacherRequest:
     properties:
       name:
@@ -216,10 +205,6 @@ definitions:
         type: string
       name:
         type: string
-      questions:
-        items:
-          $ref: '#/definitions/src_model_dto.SubQuestion'
-        type: array
       schoolYear:
         type: string
     type: object

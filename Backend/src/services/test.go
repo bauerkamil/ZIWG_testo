@@ -41,27 +41,7 @@ func AddTestHandle(ctx *gin.Context) {
 		ChangedBy:  nil,
 		SchoolYear: request.SchoolYear,
 	}
-	err = dal.DB.Transaction(func(tx *gorm.DB) error {
-		err = dal.AddTestToDB(Test)
-		if err != nil {
-			return err
-		}
-		for _, question := range request.Questions {
-			newQuestion := createNewQuestion(question, id)
-			err = dal.AddQuestionToDB(&newQuestion)
-			if err != nil {
-				return err
-			}
-			for _, answer := range question.Answers {
-				newAnswer := createNewAnswer(answer, newQuestion.Id)
-				err = dal.AddAnswerToDB(&newAnswer)
-				if err != nil {
-					return err
-				}
-			}
-		}
-		return nil
-	})
+	err = dal.AddTestToDB(Test)
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
