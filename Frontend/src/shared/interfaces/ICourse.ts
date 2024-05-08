@@ -6,5 +6,5 @@ export interface ICourse {
   name: string;
   usosId: string;
   teacherId: string;
-  teacher: ITeacher
+  teacher: ITeacher;
 }

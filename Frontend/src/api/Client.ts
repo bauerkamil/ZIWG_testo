@@ -65,7 +65,9 @@ const Client = {
   getTests: async () =>
     axios.get<ITest[]>(`${DEFAULT_EP}/test`).then((response) => response.data),
   getActiveTests: async () =>
-    axios.get<ITest[]>(`${DEFAULT_EP}/test/active`).then((response) => response.data),
+    axios
+      .get<ITest[]>(`${DEFAULT_EP}/test/active`)
+      .then((response) => response.data),
   getTest: async (testId: string) =>
     axios
       .get<ITest>(`${DEFAULT_EP}/test/${testId}`)
