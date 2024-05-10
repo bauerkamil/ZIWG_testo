@@ -5,10 +5,10 @@ const StartingPage = () => {
   const { login } = useAuth();
   return (
     <main className="w-full min-h-screen lg:grid lg:grid-cols-2">
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[350px] gap-6">
+      <div className="flex items-center justify-center h-screen">
+        <div className="mx-auto grid w-[350px] gap-6 px-2 pb-24 lg:pb-0">
           <div className="grid gap-2 text-center">
-            <h1 className="text-6xl font-bold">TESTOWNIK TURBO</h1>
+            <h1 className="text-5xl md:text-6xl font-bold">TESTOWNIK TURBO</h1>
             <p className="text-balance text-muted-foreground">
               Wznieś swoją naukę na wyżyny i osiągaj sukces!
             </p>
