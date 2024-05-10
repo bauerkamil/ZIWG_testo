@@ -3,6 +3,7 @@ package services
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 	"golang.org/x/text/encoding/charmap"
@@ -14,6 +15,7 @@ import (
 	"src/model"
 	"src/model/dto"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -184,6 +186,12 @@ func UpdateTestHandle(ctx *gin.Context) {
 // @Router       /api/v1/test/{id} [delete]
 func DeleteTestHandle(ctx *gin.Context) {
 	id, err := uuid.FromString(ctx.Param("id"))
+	ap, err := GetAzureProviderInstance()
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	err = ap.DeleteFiles(id.String())
 	err = dal.DeleteTestFromDB(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		ctx.JSON(404, gin.H{"Record not found with id": id})
@@ -192,7 +200,6 @@ func DeleteTestHandle(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-
 	ctx.JSON(200, gin.H{"message": "OK"})
 }
 
@@ -264,6 +271,7 @@ func ImportTestHandle(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
+	ctx.JSON(200, gin.H{"id": testId})
 }
 
 func AddTestHandlers(router *gin.RouterGroup) {
@@ -282,18 +290,47 @@ func processArchive(path string, testId uuid.UUID) error {
 	if err != nil {
 		return err
 	}
-	return filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+	// Create a new WaitGroup
+	var wg sync.WaitGroup
+
+	// Use a buffered channel to limit the number of concurrent goroutines
+	sem := make(chan struct{}, 10) // Change 10 to the number of concurrent goroutines you want
+
+	err = filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if !info.IsDir() {
 			ext := strings.ToLower(filepath.Ext(info.Name()))
 			if ext == ".txt" {
-				err = processQuestion(path, testId, ap)
+				// Increment the WaitGroup counter
+				wg.Add(1)
+
+				// Acquire a token
+				sem <- struct{}{}
+
+				// Launch a goroutine to process the question
+				go func(path string) {
+					// Decrement the WaitGroup counter when the goroutine completes
+					defer wg.Done()
+
+					// Release a token when the goroutine completes
+					defer func() { <-sem }()
+
+					err := processQuestion(path, testId, ap)
+					if err != nil {
+						fmt.Println("Error processing question:", err)
+					}
+				}(path)
 			}
 		}
 		return nil
 	})
+
+	// Wait for all goroutines to complete
+	wg.Wait()
+
+	return err
 }
 
 func processQuestion(path string, testId uuid.UUID, ap *AzureProvider) error {
@@ -318,7 +355,7 @@ func processQuestion(path string, testId uuid.UUID, ap *AzureProvider) error {
 			return err
 		}
 		if pictureName != "" {
-			err = handleQuestionImage(path, pictureName, ap, questionModel)
+			err = handleQuestionImage(path, pictureName, ap, questionModel, testId)
 			if err != nil {
 				return err
 			}
@@ -326,7 +363,8 @@ func processQuestion(path string, testId uuid.UUID, ap *AzureProvider) error {
 		for index, answer := range answers {
 			pictureName = ""
 			if strings.HasPrefix(answer, "[img]") {
-				pictureName = answer[5 : len(answer)-6]
+				end := strings.LastIndex(answer, "[/img]")
+				pictureName = answer[5:end]
 				answer = ""
 			}
 			answerModel := createNewAnswer(dto.SubAnswer{
@@ -339,7 +377,7 @@ func processQuestion(path string, testId uuid.UUID, ap *AzureProvider) error {
 				return err
 			}
 			if pictureName != "" {
-				err = handleAnswerImage(path, pictureName, ap, answerModel)
+				err = handleAnswerImage(path, pictureName, ap, answerModel, testId, questionModel.Id)
 				if err != nil {
 					return err
 				}
@@ -349,28 +387,28 @@ func processQuestion(path string, testId uuid.UUID, ap *AzureProvider) error {
 	})
 }
 
-func handleQuestionImage(path string, pictureName string, ap *AzureProvider, questionModel model.Question) error {
+func handleQuestionImage(path string, pictureName string, ap *AzureProvider, questionModel model.Question, testId uuid.UUID) error {
 	dir := filepath.Dir(path)
 	picturePath := dir + "\\" + pictureName
 	file, err := os.Open(picturePath)
 	if err != nil {
 		return err
 	}
-	err = ap.UploadFileDirect(file, pictureName, questionModel.Id, dal.InsertImagePathToQuestionInDb)
+	err = ap.UploadFileDirect(file, pictureName, testId, questionModel.Id, nil, dal.InsertImagePathToQuestionInDb)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func handleAnswerImage(path string, pictureName string, ap *AzureProvider, answerModel model.Answer) error {
+func handleAnswerImage(path string, pictureName string, ap *AzureProvider, answerModel model.Answer, testId uuid.UUID, questionId uuid.UUID) error {
 	dir := filepath.Dir(path)
 	picturePath := dir + "\\" + pictureName
 	file, err := os.Open(picturePath)
 	if err != nil {
 		return err
 	}
-	err = ap.UploadFileDirect(file, pictureName, answerModel.Id, dal.InsertImagePathToAnswerInDb)
+	err = ap.UploadFileDirect(file, pictureName, testId, questionId, &answerModel.Id, dal.InsertImagePathToAnswerInDb)
 	if err != nil {
 		return err
 	}
@@ -390,9 +428,8 @@ func readQuestionAttr(path string) ([]string, *string, *string, error) {
 	answers := make([]string, 0)
 	for scanner.Scan() {
 		line := scanner.Text()
-
 		if questionConfig == "" && !strings.HasPrefix(line, "X") {
-			return nil, nil, nil, errors.New("invalid question file format - missing question config")
+			return nil, nil, nil, errors.New("invalid file format - missing config for question:" + path)
 		} else if questionConfig == "" {
 			questionConfig = line[1:]
 			continue
