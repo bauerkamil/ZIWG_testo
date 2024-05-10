@@ -3,8 +3,8 @@ import Navbar from "@/components/navbar/Navbar";
 import TestCard from "@/components/test-card/TestCard";
 import { Label } from "@/components/ui";
 import { Input } from "@/components/ui/input";
-import { NavbarPages } from "@/shared/enums/NavbarPages";
 import { ITest } from "@/shared/interfaces";
+import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const SearchCourse: React.FC = () => {
@@ -73,7 +73,7 @@ const SearchCourse: React.FC = () => {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <Navbar page={NavbarPages.SearchCourse} />
+      <Navbar />
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
         <div className="grid gap-2 text-center">
           <div className="text-4xl font-bold">
@@ -86,30 +86,42 @@ const SearchCourse: React.FC = () => {
         <div className="flex flex-row gap-4">
           <div className="grow">
             <Label>Nazwa testo</Label>
-            <Input
-              value={nameFilter}
-              onChange={(e) => setNameFilter(e.target.value)}
-              type="search"
-              placeholder="Wyszukaj..."
-            />
+            <div className="relative">
+              <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={nameFilter}
+                onChange={(e) => setNameFilter(e.target.value)}
+                type="search"
+                placeholder="Wyszukaj..."
+                className="pl-8"
+              />
+            </div>
           </div>
           <div className="grow">
             <Label>Prowadzący</Label>
-            <Input
-              value={teacherFilter}
-              onChange={(e) => setTeacherFilter(e.target.value)}
-              type="search"
-              placeholder="Wyszukaj..."
-            />
+            <div className="relative">
+              <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={teacherFilter}
+                onChange={(e) => setTeacherFilter(e.target.value)}
+                type="search"
+                placeholder="Wyszukaj..."
+                className="pl-8"
+              />
+            </div>
           </div>
           <div className="grow">
             <Label>Nazwa przedmiotu</Label>
-            <Input
-              value={courseFilter}
-              onChange={(e) => setCourseFilter(e.target.value)}
-              type="search"
-              placeholder="Wyszukaj..."
-            />
+            <div className="relative">
+              <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={courseFilter}
+                onChange={(e) => setCourseFilter(e.target.value)}
+                type="search"
+                placeholder="Wyszukaj..."
+                className="pl-8"
+              />
+            </div>
           </div>
         </div>
         <div className="text-2xl">Testowniki:</div>
