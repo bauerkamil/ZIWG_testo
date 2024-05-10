@@ -5,11 +5,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  LinkButton,
 } from "@/components/ui";
 import { EllipsisVertical, PencilLine, Trash } from "lucide-react";
 import Client from "@/api/Client";
 import { ITestCardOptionsProps } from "./ITestCardOptionsProps";
-import { LinkButton } from "@/components/ui/LinkButton";
 
 const TestCardOptions = (props: ITestCardOptionsProps) => {
   const { testId, onDeleted } = props;
