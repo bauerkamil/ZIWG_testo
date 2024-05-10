@@ -10,7 +10,7 @@ import (
 	"src/model/dto"
 )
 
-// AddAnswer            godoc
+// AddAnswerHandle            godoc
 // @Summary      Add answer
 // @Description  Add answer from json body
 // @Tags         answer
@@ -44,7 +44,7 @@ func AddAnswerHandle(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"id": id})
 }
 
-// GetAnswers            godoc
+// GetAnswersHandle            godoc
 // @Summary      Get answers
 // @Description  Get all answers
 // @Tags         answer
@@ -63,7 +63,7 @@ func GetAnswersHandle(ctx *gin.Context) {
 	ctx.JSON(200, answers)
 }
 
-// GetAnswer            godoc
+// GetAnswerHandle            godoc
 // @Summary      Get answer
 // @Description  Get answer by id
 // @Tags         answer
@@ -87,7 +87,7 @@ func GetAnswerHandle(ctx *gin.Context) {
 	ctx.JSON(200, answer)
 }
 
-// UpdateAnswer            godoc
+// UpdateAnswerHandle            godoc
 // @Summary      Update answer
 // @Description  Update answer by id
 // @Tags         answer
@@ -126,7 +126,7 @@ func UpdateAnswerHandle(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"message": "OK"})
 }
 
-// DeleteAnswer            godoc
+// DeleteAnswerHandle            godoc
 // @Summary      Delete answer
 // @Description  Delete answer by id
 // @Tags         answer

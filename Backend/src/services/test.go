@@ -1,17 +1,24 @@
 package services
 
 import (
+	"bufio"
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
+	"golang.org/x/text/encoding/charmap"
 	"gorm.io/gorm"
+	"mime/multipart"
+	"os"
+	"path/filepath"
 	"src/dal"
 	"src/model"
 	"src/model/dto"
+	"strings"
 	"time"
 )
 
-// AddTest            godoc
+// AddTestHandle            godoc
 // @Summary      Add test
 // @Description  Add test from json body
 // @Tags         test
@@ -49,7 +56,7 @@ func AddTestHandle(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"id": id})
 }
 
-// GetTests            godoc
+// GetTestsHandle            godoc
 // @Summary      Get tests
 // @Description  Get all tests
 // @Tags         test
@@ -72,7 +79,7 @@ func GetTestsHandle(ctx *gin.Context) {
 	ctx.JSON(200, output)
 }
 
-// GetActiveTests            godoc
+// GetActiveTestsHandle            godoc
 // @Summary      Get active tests
 // @Description  Get all user active tests
 // @Tags         test
@@ -96,7 +103,7 @@ func GetActiveTestsHandle(ctx *gin.Context) {
 	ctx.JSON(200, output)
 }
 
-// GetTest            godoc
+// GetTestHandle            godoc
 // @Summary      Get test
 // @Description  Get test by id
 // @Tags         test
@@ -120,7 +127,7 @@ func GetTestHandle(ctx *gin.Context) {
 	ctx.JSON(200, dto.ToFullTest(*test))
 }
 
-// UpdateTest            godoc
+// UpdateTestHandle            godoc
 // @Summary      Update test
 // @Description  Update test by id
 // @Tags         test
@@ -165,7 +172,7 @@ func UpdateTestHandle(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"msg": "OK"})
 }
 
-// DeleteTest            godoc
+// DeleteTestHandle            godoc
 // @Summary      Delete test
 // @Description  Delete test by id
 // @Tags         test
@@ -188,7 +195,81 @@ func DeleteTestHandle(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, gin.H{"message": "OK"})
+}
 
+// ImportTestHandle            godoc
+// @Summary      Import test
+// @Description  Import test from zip file
+// @Tags         test
+// @Produce      json
+// @Success      200  {object} dto.IdResponse
+// @Failure     400  {object} dto.ErrorResponse
+// @Failure     500  {object} dto.ErrorResponse
+// @Param			file formData file true "file"
+// @Security     BearerAuth
+// @Router       /api/v1/test/import [post]
+func ImportTestHandle(ctx *gin.Context) {
+	file, header, err := ctx.Request.FormFile("file")
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+	defer func(file multipart.File) {
+		err := file.Close()
+		if err != nil {
+			ctx.JSON(500, gin.H{"error": err.Error()})
+		}
+	}(file)
+
+	if header.Size > 10<<20 {
+		ctx.JSON(400, gin.H{"error": "File size too big"})
+		return
+	}
+
+	fileNameParts := strings.Split(header.Filename, ".")
+	if fileNameParts[len(fileNameParts)-1] != "zip" {
+		ctx.JSON(400, gin.H{"error": "File must be a zip archive"})
+		return
+	}
+
+	archiveDest, err := UnzipArchive(file, header)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	*archiveDest += "//" + fileNameParts[0]
+
+	// Read all .txt and .png files from the unzipped directory
+	err = filepath.Walk(*archiveDest, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() {
+			ext := strings.ToLower(filepath.Ext(info.Name()))
+			if ext == ".png" {
+				//data, err := os.ReadFile(path)
+				if err != nil {
+					return err
+				}
+			} else if ext == ".txt" {
+				file, err = os.Open(path)
+				reader := charmap.Windows1250.NewDecoder().Reader(file)
+				scanner := bufio.NewScanner(reader)
+
+				for scanner.Scan() {
+					fmt.Println(scanner.Text())
+				}
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
 }
 
 func AddTestHandlers(router *gin.RouterGroup) {
@@ -199,4 +280,5 @@ func AddTestHandlers(router *gin.RouterGroup) {
 	subGroup.PUT(":id", UpdateTestHandle)
 	subGroup.DELETE(":id", DeleteTestHandle)
 	subGroup.GET("active", GetActiveTestsHandle)
+	subGroup.POST("import", ImportTestHandle)
 }
