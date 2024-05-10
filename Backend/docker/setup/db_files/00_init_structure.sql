@@ -44,8 +44,7 @@ CREATE TABLE IF NOT EXISTS "system"."question"
     "id"       uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     "body"     varchar NOT NULL,
     "img_file" varchar,
-    "test_id"  uuid,
-    UNIQUE ("body", "test_id")
+    "test_id"  uuid
 );
 
 CREATE TABLE IF NOT EXISTS "system"."answer"

@@ -1097,9 +1097,18 @@ paths:
         name: file
         required: true
         type: file
-      - description: Test ID
+      - description: Test name
         in: query
-        name: testId
+        name: testName
+        required: true
+        type: string
+      - description: School year
+        in: query
+        name: schoolYear
+        type: string
+      - description: Course id
+        in: query
+        name: courseId
         required: true
         type: string
       produces:

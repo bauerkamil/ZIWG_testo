@@ -205,12 +205,17 @@ func DeleteTestHandle(ctx *gin.Context) {
 // @Failure     400  {object} dto.ErrorResponse
 // @Failure     500  {object} dto.ErrorResponse
 // @Param			file formData file true "file"
-// @Param 	  testId query string true "Test ID"
+// @Param 	  testName query string true "Test name"
+// @Param 	  schoolYear query string false "School year"
+// @Param 	  courseId query string true "Course id"
 // @Security     BearerAuth
 // @Router       /api/v1/test/import [post]
 func ImportTestHandle(ctx *gin.Context) {
 	file, header, err := ctx.Request.FormFile("file")
-	testId, _ := uuid.FromString(ctx.Query("testId"))
+	testName := ctx.Query("testName")
+	schoolYear := ctx.Query("schoolYear")
+	courseId, _ := uuid.FromString(ctx.Query("courseId"))
+	user, _ := ctx.Get("user")
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -230,6 +235,20 @@ func ImportTestHandle(ctx *gin.Context) {
 	fileNameParts := strings.Split(header.Filename, ".")
 	if fileNameParts[len(fileNameParts)-1] != "zip" {
 		ctx.JSON(400, gin.H{"error": "File must be a zip archive"})
+		return
+	}
+	testId, _ := uuid.NewV4()
+	testModel := &model.Test{
+		Id:         testId,
+		Name:       testName,
+		CreatedBy:  user.(string),
+		CourseId:   courseId,
+		CreatedAt:  time.Now(),
+		SchoolYear: schoolYear,
+	}
+	err = dal.AddTestToDB(testModel)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 

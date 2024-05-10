@@ -1258,8 +1258,21 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Test ID",
-                        "name": "testId",
+                        "description": "Test name",
+                        "name": "testName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "School year",
+                        "name": "schoolYear",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Course id",
+                        "name": "courseId",
                         "in": "query",
                         "required": true
                     }
