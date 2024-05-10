@@ -210,7 +210,7 @@ func AddImageHandle(ctx *gin.Context) {
 		return
 	}
 
-	err = azureProvider.UploadFile(ctx, id)
+	err = azureProvider.UploadFile(ctx, id, dal.InsertImagePathToQuestionInDb)
 	if err != nil {
 		var ginErr *gin.Error
 		if errors.As(err, &ginErr) {
@@ -248,7 +248,7 @@ func DeleteImageHandle(ctx *gin.Context) {
 		return
 	}
 
-	err = azureProvider.DeleteFile(id)
+	err = azureProvider.DeleteFile(id, dal.ClearImagePathFromQuestionInDb)
 	if err != nil {
 		var ginErr *gin.Error
 		if errors.As(err, &ginErr) {

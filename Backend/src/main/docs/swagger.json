@@ -1334,6 +1334,9 @@
                 "id": {
                     "type": "string"
                 },
+                "imgFile": {
+                    "type": "string"
+                },
                 "questionId": {
                     "type": "string"
                 },
@@ -1409,6 +1412,9 @@
             "type": "object",
             "properties": {
                 "body": {
+                    "type": "string"
+                },
+                "imgFile": {
                     "type": "string"
                 },
                 "questionId": {
@@ -1616,6 +1622,9 @@
             "type": "object",
             "properties": {
                 "body": {
+                    "type": "string"
+                },
+                "imgFile": {
                     "type": "string"
                 },
                 "valid": {

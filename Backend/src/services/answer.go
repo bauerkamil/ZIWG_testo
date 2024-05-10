@@ -2,9 +2,11 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
+	"net/http"
 	"src/dal"
 	"src/model"
 	"src/model/dto"
@@ -34,6 +36,7 @@ func AddAnswerHandle(ctx *gin.Context) {
 		Body:       request.Body,
 		QuestionId: request.QuestionId,
 		Valid:      request.Valid,
+		ImgFile:    request.ImgFile,
 	}
 	err = dal.AddAnswerToDB(answer)
 	if err != nil {
@@ -113,6 +116,7 @@ func UpdateAnswerHandle(ctx *gin.Context) {
 		Body:       request.Body,
 		Valid:      request.Valid,
 		QuestionId: request.QuestionId,
+		ImgFile:    request.ImgFile,
 	}
 	err = dal.UpdateAnswerInDB(answer)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -152,6 +156,83 @@ func DeleteAnswerHandle(ctx *gin.Context) {
 
 }
 
+// AddAnswerImageHandle            godoc
+// @Summary      Add image to answer
+// @Description  Add image to answer by id
+// @Tags         image
+// @Produce      json
+// @Param        id  path  string  true  "Answer ID"
+// @Param			file formData file true "file"
+// @Success      200  {object} dto.BaseResponse
+// @Failure  404  {object} dto.ErrorResponse
+// @Failure  500  {object} dto.ErrorResponse
+// @Security     BearerAuth
+// @Router       /api/v1/answer/{id}/image [post]
+func AddAnswerImageHandle(ctx *gin.Context) {
+	azureProvider, err := GetAzureProviderInstance()
+	if err != nil {
+		fmt.Printf("Failed to create AzureProvider: %v\n", err)
+		return
+	}
+
+	id, err := uuid.FromString(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = azureProvider.UploadFile(ctx, id, dal.InsertImagePathToAnswerInDb)
+	if err != nil {
+		var ginErr *gin.Error
+		if errors.As(err, &ginErr) {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		} else {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "OK"})
+}
+
+// DeleteAnswerImageHandle            godoc
+// @Summary      Delete image from answer
+// @Description  Delete image from answer by id
+// @Tags         image
+// @Produce      json
+// @Param        id  path  string  true  "Question ID"
+// @Success      200  {object} dto.BaseResponse
+// @Failure  404  {object} dto.ErrorResponse
+// @Failure  500  {object} dto.ErrorResponse
+// @Security     BearerAuth
+// @Router       /api/v1/answer/{id}/image [delete]
+func DeleteAnswerImageHandle(ctx *gin.Context) {
+	azureProvider, err := GetAzureProviderInstance()
+	if err != nil {
+		fmt.Printf("Failed to create AzureProvider: %v\n", err)
+		return
+	}
+
+	id, err := uuid.FromString(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = azureProvider.DeleteFile(id, dal.ClearImagePathFromAnswerInDb)
+	if err != nil {
+		var ginErr *gin.Error
+		if errors.As(err, &ginErr) {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		} else {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	}
+	ctx.JSON(http.StatusOK, gin.H{"message": "OK"})
+}
+
 func AddAnswerHandlers(router *gin.RouterGroup) {
 	var subGroup = router.Group("/answer", RequireAuth)
 	subGroup.POST("", AddAnswerHandle)
@@ -159,4 +240,6 @@ func AddAnswerHandlers(router *gin.RouterGroup) {
 	subGroup.GET(":id", GetAnswerHandle)
 	subGroup.PUT(":id", UpdateAnswerHandle)
 	subGroup.DELETE(":id", DeleteAnswerHandle)
+	subGroup.POST(":id/image", AddAnswerImageHandle)
+	subGroup.DELETE(":id/image", DeleteAnswerImageHandle)
 }

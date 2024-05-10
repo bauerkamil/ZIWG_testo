@@ -62,7 +62,7 @@ func UnzipArchive(file multipart.File, header *multipart.FileHeader) (*string, e
 		}
 
 		if zipFile.FileInfo().IsDir() {
-			os.MkdirAll(destPath, os.ModePerm)
+			err = os.MkdirAll(destPath, os.ModePerm)
 		} else {
 			if err = os.MkdirAll(filepath.Dir(destPath), os.ModePerm); err != nil {
 				return nil, err
@@ -81,8 +81,8 @@ func UnzipArchive(file multipart.File, header *multipart.FileHeader) (*string, e
 			_, err = io.Copy(outFile, rc)
 
 			// Close the file without defer to close before next iteration of loop
-			outFile.Close()
-			rc.Close()
+			err = outFile.Close()
+			err = rc.Close()
 
 			if err != nil {
 				return nil, err

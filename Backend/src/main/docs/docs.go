@@ -1342,6 +1342,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "imgFile": {
+                    "type": "string"
+                },
                 "questionId": {
                     "type": "string"
                 },
@@ -1417,6 +1420,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "body": {
+                    "type": "string"
+                },
+                "imgFile": {
                     "type": "string"
                 },
                 "questionId": {
@@ -1624,6 +1630,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "body": {
+                    "type": "string"
+                },
+                "imgFile": {
                     "type": "string"
                 },
                 "valid": {
