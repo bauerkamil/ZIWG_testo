@@ -259,61 +259,103 @@ func AddTestHandlers(router *gin.RouterGroup) {
 }
 
 func processArchive(path string, testId uuid.UUID) error {
+	ap, err := GetAzureProviderInstance()
+	if err != nil {
+		return err
+	}
 	return filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-
 		if !info.IsDir() {
 			ext := strings.ToLower(filepath.Ext(info.Name()))
 			if ext == ".txt" {
-				err = processQuestion(path, testId)
+				err = processQuestion(path, testId, ap)
 			}
 		}
 		return nil
 	})
 }
 
-func processQuestion(path string, testId uuid.UUID) error {
+func processQuestion(path string, testId uuid.UUID, ap *AzureProvider) error {
 	answers, questionConfig, body, err := readQuestionAttr(path)
 	if err != nil {
 		return err
+	}
+	var pictureName = ""
+	if strings.HasPrefix(*body, "[img]") {
+		bodyLen := len(*body)
+		pictureName = (*body)[5 : bodyLen-6]
+		*body = ""
 	}
 	subQuestion := dto.SubQuestion{
 		Body:    *body,
 		ImgFile: "",
 	}
-	//dir := filepath.Dir(path)
-
 	questionModel := createNewQuestion(subQuestion, testId)
 	return dal.DB.Transaction(func(tx *gorm.DB) error {
 		err = dal.AddQuestionToDB(&questionModel)
 		if err != nil {
 			return err
 		}
-		for index, answer := range answers {
-			var answerModel model.Answer
-			if strings.HasPrefix(answer, "[img]") {
-				answerModel = createNewAnswer(dto.SubAnswer{
-					Body:    "",
-					Valid:   (*questionConfig)[index] == '1',
-					ImgFile: "",
-				}, questionModel.Id)
-			} else {
-				answerModel = createNewAnswer(dto.SubAnswer{
-					Body:    answer,
-					Valid:   (*questionConfig)[index] == '1',
-					ImgFile: "",
-				}, questionModel.Id)
-			}
-
-			err = dal.AddAnswerToDB(&answerModel)
+		if pictureName != "" {
+			err = handleQuestionImage(path, pictureName, ap, questionModel)
 			if err != nil {
 				return err
 			}
 		}
+		for index, answer := range answers {
+			pictureName = ""
+			if strings.HasPrefix(answer, "[img]") {
+				pictureName = answer[5 : len(answer)-6]
+				answer = ""
+			}
+			answerModel := createNewAnswer(dto.SubAnswer{
+				Body:    answer,
+				Valid:   (*questionConfig)[index] == '1',
+				ImgFile: "",
+			}, questionModel.Id)
+			err = dal.AddAnswerToDB(&answerModel)
+			if err != nil {
+				return err
+			}
+			if pictureName != "" {
+				err = handleAnswerImage(path, pictureName, ap, answerModel)
+				if err != nil {
+					return err
+				}
+			}
+		}
 		return nil
 	})
+}
+
+func handleQuestionImage(path string, pictureName string, ap *AzureProvider, questionModel model.Question) error {
+	dir := filepath.Dir(path)
+	picturePath := dir + "\\" + pictureName
+	file, err := os.Open(picturePath)
+	if err != nil {
+		return err
+	}
+	err = ap.UploadFileDirect(file, pictureName, questionModel.Id, dal.InsertImagePathToQuestionInDb)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func handleAnswerImage(path string, pictureName string, ap *AzureProvider, answerModel model.Answer) error {
+	dir := filepath.Dir(path)
+	picturePath := dir + "\\" + pictureName
+	file, err := os.Open(picturePath)
+	if err != nil {
+		return err
+	}
+	err = ap.UploadFileDirect(file, pictureName, answerModel.Id, dal.InsertImagePathToAnswerInDb)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func readQuestionAttr(path string) ([]string, *string, *string, error) {
@@ -346,8 +388,4 @@ func readQuestionAttr(path string) ([]string, *string, *string, error) {
 		answers = append(answers, answerBody)
 	}
 	return answers, &questionConfig, &body, nil
-}
-
-func handleImageItem(itemId uuid.UUID, filePath string) error {
-	return nil
 }

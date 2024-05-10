@@ -107,6 +107,24 @@ func (ap *AzureProvider) UploadFile(ctx *gin.Context, id uuid.UUID,
 	return callback(id, blobURLStr)
 }
 
+func (ap *AzureProvider) UploadFileDirect(file multipart.File, filename string, id uuid.UUID,
+	callback func(id uuid.UUID, path string) error) error {
+	c := context.Background()
+	fileNameParts := strings.Split(filename, ".")
+	blobURL := ap.containerURL.NewBlockBlobURL(id.String() + "." + fileNameParts[len(fileNameParts)-1])
+
+	_, err := azblob.UploadStreamToBlockBlob(c, file, blobURL, azblob.UploadStreamToBlockBlobOptions{
+		BufferSize: int(ap.maxFileSize),
+	})
+	if err != nil {
+		return err
+	}
+
+	blobURLStr := blobURL.URL().Path
+	blobURLStr = os.Getenv("AZURE_SA_URL") + blobURLStr
+	return callback(id, blobURLStr)
+}
+
 func (ap *AzureProvider) DeleteFile(id uuid.UUID, callback func(id uuid.UUID) error) error {
 	c := context.Background()
 	marker := azblob.Marker{}
