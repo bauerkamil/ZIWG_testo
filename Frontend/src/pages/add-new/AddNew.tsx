@@ -25,7 +25,7 @@ const AddNew: React.FC = () => {
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
       <main className="w-full min-h-screen items-center justify-center align-items-start py-12">
-        <div className="mx-auto grid w-[550px] gap-6">
+        <div className="mx-auto grid md:w-[550px] w-full p-4 gap-6">
           <div className="grid gap-2 text-center">
             <h1 className="text-6xl font-bold">DODAJ NOWE PYTANIA</h1>
             <p className="text-balance text-muted-foreground">
