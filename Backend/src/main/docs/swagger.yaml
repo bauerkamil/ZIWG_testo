@@ -367,6 +367,68 @@ paths:
       summary: Update answer
       tags:
       - answer
+  /api/v1/answer/{id}/image:
+    delete:
+      description: Delete image from answer by id
+      parameters:
+      - description: Question ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/src_model_dto.BaseResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete image from answer
+      tags:
+      - image
+    post:
+      description: Add image to answer by id
+      parameters:
+      - description: Answer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/src_model_dto.BaseResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/src_model_dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add image to answer
+      tags:
+      - image
   /api/v1/course:
     get:
       description: Get all courses
@@ -1035,6 +1097,11 @@ paths:
         name: file
         required: true
         type: file
+      - description: Test ID
+        in: query
+        name: testId
+        required: true
+        type: string
       produces:
       - application/json
       responses:

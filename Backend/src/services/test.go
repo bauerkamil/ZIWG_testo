@@ -3,7 +3,6 @@ package services
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 	"golang.org/x/text/encoding/charmap"
@@ -206,10 +205,12 @@ func DeleteTestHandle(ctx *gin.Context) {
 // @Failure     400  {object} dto.ErrorResponse
 // @Failure     500  {object} dto.ErrorResponse
 // @Param			file formData file true "file"
+// @Param 	  testId query string true "Test ID"
 // @Security     BearerAuth
 // @Router       /api/v1/test/import [post]
 func ImportTestHandle(ctx *gin.Context) {
 	file, header, err := ctx.Request.FormFile("file")
+	testId, _ := uuid.FromString(ctx.Query("testId"))
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -238,33 +239,7 @@ func ImportTestHandle(ctx *gin.Context) {
 		return
 	}
 	*archiveDest += "//" + fileNameParts[0]
-
-	// Read all .txt and .png files from the unzipped directory
-	err = filepath.Walk(*archiveDest, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if !info.IsDir() {
-			ext := strings.ToLower(filepath.Ext(info.Name()))
-			if ext == ".png" {
-				//data, err := os.ReadFile(path)
-				if err != nil {
-					return err
-				}
-			} else if ext == ".txt" {
-				file, err = os.Open(path)
-				reader := charmap.Windows1250.NewDecoder().Reader(file)
-				scanner := bufio.NewScanner(reader)
-
-				for scanner.Scan() {
-					fmt.Println(scanner.Text())
-				}
-			}
-		}
-
-		return nil
-	})
+	err = processArchive(*archiveDest, testId)
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
@@ -281,4 +256,98 @@ func AddTestHandlers(router *gin.RouterGroup) {
 	subGroup.DELETE(":id", DeleteTestHandle)
 	subGroup.GET("active", GetActiveTestsHandle)
 	subGroup.POST("import", ImportTestHandle)
+}
+
+func processArchive(path string, testId uuid.UUID) error {
+	return filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() {
+			ext := strings.ToLower(filepath.Ext(info.Name()))
+			if ext == ".txt" {
+				err = processQuestion(path, testId)
+			}
+		}
+		return nil
+	})
+}
+
+func processQuestion(path string, testId uuid.UUID) error {
+	answers, questionConfig, body, err := readQuestionAttr(path)
+	if err != nil {
+		return err
+	}
+	subQuestion := dto.SubQuestion{
+		Body:    *body,
+		ImgFile: "",
+	}
+	//dir := filepath.Dir(path)
+
+	questionModel := createNewQuestion(subQuestion, testId)
+	return dal.DB.Transaction(func(tx *gorm.DB) error {
+		err = dal.AddQuestionToDB(&questionModel)
+		if err != nil {
+			return err
+		}
+		for index, answer := range answers {
+			var answerModel model.Answer
+			if strings.HasPrefix(answer, "[img]") {
+				answerModel = createNewAnswer(dto.SubAnswer{
+					Body:    "",
+					Valid:   (*questionConfig)[index] == '1',
+					ImgFile: "",
+				}, questionModel.Id)
+			} else {
+				answerModel = createNewAnswer(dto.SubAnswer{
+					Body:    answer,
+					Valid:   (*questionConfig)[index] == '1',
+					ImgFile: "",
+				}, questionModel.Id)
+			}
+
+			err = dal.AddAnswerToDB(&answerModel)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
+
+func readQuestionAttr(path string) ([]string, *string, *string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	reader := charmap.Windows1250.NewDecoder().Reader(file)
+	scanner := bufio.NewScanner(reader)
+
+	questionConfig := ""
+	body := ""
+	answers := make([]string, 0)
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if questionConfig == "" && !strings.HasPrefix(line, "X") {
+			return nil, nil, nil, errors.New("invalid question file format - missing question config")
+		} else if questionConfig == "" {
+			questionConfig = line[1:]
+			continue
+		}
+
+		if body == "" {
+			body = line
+			continue
+		}
+		//strip line before append
+		answerBody := strings.TrimSpace(line)
+		answers = append(answers, answerBody)
+	}
+	return answers, &questionConfig, &body, nil
+}
+
+func handleImageItem(itemId uuid.UUID, filePath string) error {
+	return nil
 }
