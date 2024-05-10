@@ -5,9 +5,8 @@ import { IAnswearSolved, IQuestion, ITest } from "@/shared/interfaces";
 import { deepCopy, shuffle } from "@/shared/utils/helpers";
 import SolveQuestion from "./solve-question/SolveQuestion";
 import QuestionSummary from "./question-summary/QuestionSummary";
-import { Button } from "@/components/ui";
+import { Button, LinkButton } from "@/components/ui";
 import Client from "@/api/Client";
-import { LinkButton } from "@/components/ui/LinkButton";
 
 const SolveTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
