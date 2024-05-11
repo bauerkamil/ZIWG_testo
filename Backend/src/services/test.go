@@ -389,7 +389,7 @@ func processQuestion(path string, testId uuid.UUID, ap *AzureProvider) error {
 
 func handleQuestionImage(path string, pictureName string, ap *AzureProvider, questionModel model.Question, testId uuid.UUID) error {
 	dir := filepath.Dir(path)
-	picturePath := dir + "\\" + pictureName
+	picturePath := filepath.Join(dir, pictureName)
 	file, err := os.Open(picturePath)
 	if err != nil {
 		return err
@@ -403,7 +403,7 @@ func handleQuestionImage(path string, pictureName string, ap *AzureProvider, que
 
 func handleAnswerImage(path string, pictureName string, ap *AzureProvider, answerModel model.Answer, testId uuid.UUID, questionId uuid.UUID) error {
 	dir := filepath.Dir(path)
-	picturePath := dir + "\\" + pictureName
+	picturePath := filepath.Join(dir, pictureName)
 	file, err := os.Open(picturePath)
 	if err != nil {
 		return err
