@@ -279,7 +279,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.BaseResponse"
+                            "$ref": "#/definitions/src_model_dto.UrlResponse"
                         }
                     },
                     "404": {
@@ -834,7 +834,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.BaseResponse"
+                            "$ref": "#/definitions/src_model_dto.UrlResponse"
                         }
                     },
                     "404": {
@@ -1281,7 +1281,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/src_model_dto.IdResponse"
+                            "$ref": "#/definitions/src_model_dto.LogResponse"
                         }
                     },
                     "400": {
@@ -1723,6 +1723,20 @@ const docTemplate = `{
                 }
             }
         },
+        "src_model_dto.LogResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "logs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "src_model_dto.QuestionRequest": {
             "type": "object",
             "properties": {
@@ -1781,6 +1795,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "schoolYear": {
+                    "type": "string"
+                }
+            }
+        },
+        "src_model_dto.UrlResponse": {
+            "type": "object",
+            "properties": {
+                "url": {
                     "type": "string"
                 }
             }
