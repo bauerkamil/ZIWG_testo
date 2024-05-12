@@ -5,12 +5,15 @@ import Navbar from "@/components/navbar/Navbar";
 import TestCard from "../../components/test-card/TestCard";
 import Client from "@/api/Client";
 import { ITest } from "@/shared/interfaces";
+import Loader from "@/components/loader/Loader";
 
 const Home: React.FC = () => {
   const { user } = useAuth();
   const [tests, setTests] = useState<ITest[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const testsData = await Client.Tests.getActiveTests();
@@ -19,6 +22,8 @@ const Home: React.FC = () => {
         setTests(testsData);
       } catch (error) {
         console.error("An error occurred while fetching tests:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -51,6 +56,7 @@ const Home: React.FC = () => {
           ))}
         </div>
       </main>
+      <Loader isLoading={isLoading} />
     </div>
   );
 };

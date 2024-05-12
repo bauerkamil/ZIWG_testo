@@ -1,4 +1,5 @@
 import Client from "@/api/Client";
+import Loader from "@/components/loader/Loader";
 import Navbar from "@/components/navbar/Navbar";
 import TestCard from "@/components/test-card/TestCard";
 import { Label } from "@/components/ui";
@@ -13,12 +14,14 @@ const SearchCourse: React.FC = () => {
   const [nameFilter, setNameFilter] = useState<string>("");
   const [teacherFilter, setTeacherFilter] = useState<string>("");
   const [courseFilter, setCourseFilter] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDeleted = (id: string) => {
     setTests(tests.filter((test) => test.id !== id));
   };
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const testsData = await Client.Tests.getTests();
@@ -27,6 +30,8 @@ const SearchCourse: React.FC = () => {
         setTests(testsData);
       } catch (error) {
         console.error("An error occurred while fetching tests:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -131,6 +136,7 @@ const SearchCourse: React.FC = () => {
           ))}
         </div>
       </main>
+      <Loader isLoading={isLoading} />
     </div>
   );
 };

@@ -7,6 +7,7 @@ import EditQuestion from "./question/EditQuestion";
 import { useParams } from "react-router-dom";
 import Client from "@/api/Client";
 import CourseSelector from "@/components/course-selector/CourseSelector";
+import Loader from "@/components/loader/Loader";
 
 const EditTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,12 +17,14 @@ const EditTest: React.FC = () => {
     courseId: "",
     schoolYear: "",
   });
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const { toast } = useToast();
 
   React.useEffect(() => {
     const fetchData = async () => {
       if (id) {
+        setIsLoading(true);
         try {
           const testData = await Client.Tests.getTest(id);
           const coursesData = await Client.Courses.getCourses();
@@ -30,6 +33,8 @@ const EditTest: React.FC = () => {
           setCourses(coursesData);
         } catch (error) {
           console.error("An error occurred while fetching tests:", error);
+        } finally {
+          setIsLoading(false);
         }
       }
     };
@@ -153,6 +158,7 @@ const EditTest: React.FC = () => {
           <Plus className="h-5 w-5" /> Dodaj nowe pytanie
         </Button>
       </main>
+      <Loader isLoading={isLoading} />
     </div>
   );
 };

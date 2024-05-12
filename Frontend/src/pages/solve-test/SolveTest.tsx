@@ -7,6 +7,7 @@ import SolveQuestion from "./solve-question/SolveQuestion";
 import QuestionSummary from "./question-summary/QuestionSummary";
 import { Button, LinkButton } from "@/components/ui";
 import Client from "@/api/Client";
+import Loader from "@/components/loader/Loader";
 
 const SolveTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,10 +19,12 @@ const SolveTest: React.FC = () => {
   const [solvedQuestions, setSolvedQuestions] = React.useState<IQuestion[]>([]);
   const [currentQuestion, setCurrentQuestion] =
     React.useState<IQuestion | null>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
       if (id) {
+        setIsLoading(true);
         try {
           const testData = await Client.Tests.getTest(id);
           console.log(testData);
@@ -29,6 +32,8 @@ const SolveTest: React.FC = () => {
           setQuestionsToSolve(shuffle(testData.questions ?? []));
         } catch (error) {
           console.error("An error occurred while fetching tests:", error);
+        } finally {
+          setIsLoading(false);
         }
       }
     };
@@ -128,6 +133,7 @@ const SolveTest: React.FC = () => {
             </div>
           )}
       </main>
+      <Loader isLoading={isLoading} />
     </div>
   );
 };
