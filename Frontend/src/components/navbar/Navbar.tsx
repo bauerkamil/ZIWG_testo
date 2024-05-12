@@ -1,4 +1,4 @@
-import { Atom, Menu } from "lucide-react";
+import { GraduationCap, Menu } from "lucide-react";
 import { Link, matchPath, useLocation } from "react-router-dom";
 import UserMenu from "./menu/UserMenu";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,7 @@ const Navbar = () => {
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 lg:px-6 z-10">
       <nav className="hidden flex-col gap-6 text-lg font-medium lg:flex lg:flex-row lg:items-center lg:gap-5 lg:text-sm lg:gap-6">
         <Link to="/home">
-          <Atom />
+          <GraduationCap />
         </Link>
         <Link
           to="/home"
@@ -60,7 +60,7 @@ const Navbar = () => {
         </SheetTrigger>
         <SheetContent side="left">
           <nav className="grid gap-6 text-lg font-medium">
-            <Atom />
+            <GraduationCap />
             <Link
               to="/home"
               className={cn(
