@@ -36,30 +36,18 @@ const AddNewPopup = (props: IAddNewPopupProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const handleTestNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTest({
-      name: event.target.value,
-      courseId: test?.courseId ?? "",
-      schoolYear: test?.schoolYear ?? "",
-    });
+    setTest({ ...test, name: event.target.value });
   };
 
   const handleSelectedCourseChange = (course: ICourse | undefined) => {
     if (course?.id !== test?.courseId && course?.id) {
-      setTest({
-        name: test?.name ?? "",
-        courseId: course.id,
-        schoolYear: test?.schoolYear ?? "",
-      });
+      setTest({ ...test, courseId: course.id });
       setSelectedCourse(course);
     }
   };
 
   const handleTestYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTest({
-      name: test?.name ?? "",
-      courseId: test?.courseId ?? "",
-      schoolYear: event.target.value,
-    });
+    setTest({ ...test, schoolYear: event.target.value });
   };
 
   const isAddDisabled = (): boolean => {
@@ -71,12 +59,12 @@ const AddNewPopup = (props: IAddNewPopupProps) => {
   const addTest = () => {
     setIsLoading(true);
     if (manual) {
-      Client.postTest(test).then((response) => {
+      Client.Tests.postTest(test).then((response) => {
         setIsLoading(false);
         navigate(`/edit/${response.id}`);
       });
     } else if (zipFile) {
-      Client.postTestZipFile(test, zipFile).then((response) => {
+      Client.Tests.postTestZipFile(test, zipFile).then((response) => {
         setIsLoading(false);
         navigate(`/edit/${response.id}`);
       });
@@ -97,7 +85,7 @@ const AddNewPopup = (props: IAddNewPopupProps) => {
             </DialogDescription>
           )}
         </DialogHeader>
-        <div className="flex flex-col gap-4 md:gap-8 md:p-8">
+        <div className="flex flex-col gap-4 lg:gap-8 lg:p-8">
           <div>
             <Label>Nazwa testownika</Label>
             <Input

@@ -11,7 +11,11 @@ import CourseSelector from "@/components/course-selector/CourseSelector";
 const EditTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [courses, setCourses] = React.useState<ICourse[]>([]);
-  const [test, setTest] = React.useState<ITest>();
+  const [test, setTest] = React.useState<ITest>({
+    name: "",
+    courseId: "",
+    schoolYear: "",
+  });
 
   const { toast } = useToast();
 
@@ -19,8 +23,8 @@ const EditTest: React.FC = () => {
     const fetchData = async () => {
       if (id) {
         try {
-          const testData = await Client.getTest(id);
-          const coursesData = await Client.getCourses();
+          const testData = await Client.Tests.getTest(id);
+          const coursesData = await Client.Courses.getCourses();
           setTest(testData);
           console.log("Test data:", testData);
           setCourses(coursesData);
@@ -35,7 +39,7 @@ const EditTest: React.FC = () => {
 
   const updateTest = (courseId?: string) => {
     if (test?.id && (courseId || test.course?.id)) {
-      return Client.putTest(test.id, {
+      return Client.Tests.putTest(test.id, {
         name: test.name ?? "",
         courseId: courseId ?? test.course?.id ?? "",
         schoolYear: test.schoolYear ?? "",
@@ -90,7 +94,7 @@ const EditTest: React.FC = () => {
         imgFile: "",
         answers: [],
       };
-      Client.postQuestion(newQuestion).then((response) => {
+      Client.Questions.postQuestion(newQuestion).then((response) => {
         setTest({
           ...test,
           questions: [
@@ -104,7 +108,7 @@ const EditTest: React.FC = () => {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
-      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+      <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-8 lg:p-8">
         <div className="grid gap-2 text-center py-2">
           <div className="text-4xl">Edytuj testownik</div>
         </div>

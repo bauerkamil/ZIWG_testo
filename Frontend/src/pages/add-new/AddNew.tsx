@@ -10,7 +10,7 @@ const AddNew: React.FC = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const coursesData = await Client.getCourses();
+        const coursesData = await Client.Courses.getCourses();
         setCourses(coursesData);
       } catch (error) {
         console.error("An error occurred while fetching courses:", error);
