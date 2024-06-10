@@ -5,7 +5,7 @@ import { IAnswearSolved, IQuestion, ITest } from "@/shared/interfaces";
 import { deepCopy, shuffle } from "@/shared/utils/helpers";
 import SolveQuestion from "./solve-question/SolveQuestion";
 import QuestionSummary from "./question-summary/QuestionSummary";
-import { Button, LinkButton } from "@/components/ui";
+import { Button, LinkButton, Progress } from "@/components/ui";
 import Client from "@/api/Client";
 import Loader from "@/components/loader/Loader";
 
@@ -19,6 +19,8 @@ const SolveTest: React.FC = () => {
   const [solvedQuestions, setSolvedQuestions] = React.useState<IQuestion[]>([]);
   const [currentQuestion, setCurrentQuestion] =
     React.useState<IQuestion | null>();
+  const [counter, setCounter] = React.useState<number>(0);
+  const [numberOfQuestions, setNumberOfQuestions] = React.useState<number>(0);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
@@ -29,6 +31,7 @@ const SolveTest: React.FC = () => {
           const testData = await Client.Tests.getTest(id);
           console.log(testData);
           setTest(testData);
+          setNumberOfQuestions(testData.questions?.length || 0);
           setQuestionsToSolve(shuffle(testData.questions ?? []));
         } catch (error) {
           console.error("An error occurred while fetching tests:", error);
@@ -76,6 +79,7 @@ const SolveTest: React.FC = () => {
     finish(answearsSolved);
     if (correct) {
       setQuestionsToSolve((prev) => prev.slice(1));
+      setCounter(counter + 1);
     } else {
       setQuestionsToSolve((prev) => shuffle(prev));
     }
@@ -83,6 +87,7 @@ const SolveTest: React.FC = () => {
 
   const handleSkip = () => {
     finish();
+    setCounter(counter + 1);
     setQuestionsToSolve((prev) => prev.slice(1));
   };
 
@@ -94,11 +99,12 @@ const SolveTest: React.FC = () => {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
+      <Progress value={(counter * 100) / numberOfQuestions} />
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-8 lg:p-8">
         <div className="flex items-center justify-center text-center">
           <div className="flex flex-col lg:flex-row flex-grow gap-2 lg:gap-8 justify-between">
             <div className="grow" />
-            <div className="font-semibold leading-none tracking-tight text-2xl ">
+            <div className="font-semibold leading-none tracking-tight text-xl md:text-2xl ">
               {test?.name}
             </div>
             <div className="grow" />
