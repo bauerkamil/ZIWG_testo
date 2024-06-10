@@ -8,6 +8,8 @@ import QuestionSummary from "./question-summary/QuestionSummary";
 import { Button, LinkButton, Progress } from "@/components/ui";
 import Client from "@/api/Client";
 import Loader from "@/components/loader/Loader";
+import LocalStorage from "@/shared/utils/LocalStorage";
+import { LocalStorageElements } from "@/shared/enums";
 
 const SolveTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +22,9 @@ const SolveTest: React.FC = () => {
   const [currentQuestion, setCurrentQuestion] =
     React.useState<IQuestion | null>();
   const [counter, setCounter] = React.useState<number>(0);
+  const [repeatCount, setRepeatCount] = React.useState<number>(0);
+  const [solvedCount, setSolvedCount] = React.useState<number>(0);
+  const [solvedIds] = React.useState<string[]>([]);
   const [numberOfQuestions, setNumberOfQuestions] = React.useState<number>(0);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -31,8 +36,17 @@ const SolveTest: React.FC = () => {
           const testData = await Client.Tests.getTest(id);
           console.log(testData);
           setTest(testData);
-          setNumberOfQuestions(testData.questions?.length || 0);
-          setQuestionsToSolve(shuffle(testData.questions ?? []));
+          const count =
+            LocalStorage.getStoredValue<number>(
+              LocalStorageElements.RepeatCount
+            ) ?? 2;
+          setRepeatCount(count);
+          let questions: IQuestion[] = [];
+          setNumberOfQuestions((testData.questions?.length ?? 0) * count);
+          for (let i = 0; i < count; i++) {
+            questions = [...questions, ...(testData.questions ?? [])];
+          }
+          setQuestionsToSolve(shuffle(questions));
         } catch (error) {
           console.error("An error occurred while fetching tests:", error);
         } finally {
@@ -45,12 +59,18 @@ const SolveTest: React.FC = () => {
   }, [id]);
 
   React.useEffect(() => {
-    setCurrentQuestion(
+    const newQuestion =
       questionsToSolve && questionsToSolve.length > 0
         ? questionsToSolve[0]
-        : null
-    );
+        : null;
+    setCurrentQuestion(newQuestion);
   }, [questionsToSolve]);
+
+  React.useEffect(() => {
+    setSolvedCount(
+      solvedIds.filter((x) => x === currentQuestion?.id).length + 1
+    );
+  }, [currentQuestion, solvedIds]);
 
   const finish = (answearsSolved?: IAnswearSolved[]) => {
     if (
@@ -63,6 +83,8 @@ const SolveTest: React.FC = () => {
       }
       solvedQuestions.push(questionCpy);
     }
+
+    solvedIds.push(currentQuestion?.id || "");
 
     currentQuestion?.answers.forEach(
       (answear) => ((answear as IAnswearSolved).selected = false)
@@ -119,6 +141,8 @@ const SolveTest: React.FC = () => {
             question={currentQuestion}
             onNext={handleNext}
             onSkip={handleSkip}
+            repeatCount={repeatCount}
+            solvedCount={solvedCount}
           />
         )}
         {test?.questions?.length === solvedQuestions.length &&
