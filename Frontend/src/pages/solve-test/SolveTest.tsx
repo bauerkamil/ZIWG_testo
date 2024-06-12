@@ -10,6 +10,7 @@ import Client from "@/api/Client";
 import Loader from "@/components/loader/Loader";
 import LocalStorage from "@/shared/utils/LocalStorage";
 import { LocalStorageElements } from "@/shared/enums";
+import { DEFAULT_QUESTION_COUNT } from "@/shared/utils/constants";
 
 const SolveTest: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,7 +32,7 @@ const SolveTest: React.FC = () => {
   const setQuestions = (newQuestions: IQuestion[]) => {
     const count =
       LocalStorage.getStoredValue<number>(LocalStorageElements.RepeatCount) ??
-      2;
+      DEFAULT_QUESTION_COUNT;
     let questions: IQuestion[] = [];
     setNumberOfQuestions((newQuestions?.length ?? 0) * count);
     for (let i = 0; i < count; i++) {
