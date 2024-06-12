@@ -24,9 +24,21 @@ const SolveTest: React.FC = () => {
   const [counter, setCounter] = React.useState<number>(0);
   const [leftToSolve, setLeftToSolve] = React.useState<number>(0);
   const [solvedCount, setSolvedCount] = React.useState<number>(0);
-  const [solvedIds] = React.useState<string[]>([]);
+  const [solvedIds, setSolvedIds] = React.useState<string[]>([]);
   const [numberOfQuestions, setNumberOfQuestions] = React.useState<number>(0);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  const setQuestions = (newQuestions: IQuestion[]) => {
+    const count =
+      LocalStorage.getStoredValue<number>(LocalStorageElements.RepeatCount) ??
+      2;
+    let questions: IQuestion[] = [];
+    setNumberOfQuestions((newQuestions?.length ?? 0) * count);
+    for (let i = 0; i < count; i++) {
+      questions = [...questions, ...(newQuestions ?? [])];
+    }
+    setQuestionsToSolve(shuffle(questions));
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -36,16 +48,7 @@ const SolveTest: React.FC = () => {
           const testData = await Client.Tests.getTest(id);
           console.log(testData);
           setTest(testData);
-          const count =
-            LocalStorage.getStoredValue<number>(
-              LocalStorageElements.RepeatCount
-            ) ?? 2;
-          let questions: IQuestion[] = [];
-          setNumberOfQuestions((testData.questions?.length ?? 0) * count);
-          for (let i = 0; i < count; i++) {
-            questions = [...questions, ...(testData.questions ?? [])];
-          }
-          setQuestionsToSolve(shuffle(questions));
+          setQuestions(testData.questions ?? []);
         } catch (error) {
           console.error("An error occurred while fetching tests:", error);
         } finally {
@@ -113,8 +116,10 @@ const SolveTest: React.FC = () => {
   };
 
   const handleRefresh = () => {
-    setQuestionsToSolve(shuffle(test?.questions || []));
+    setQuestions(shuffle(test?.questions ?? []));
     setSolvedQuestions([]);
+    setSolvedIds([]);
+    setCounter(0);
   };
 
   return (
