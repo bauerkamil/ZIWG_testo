@@ -35,17 +35,13 @@ func AddTestHandle(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	userId, _ := ctx.Get("user")
-	createdBy := userId.(string)
 	date := time.Now()
 	id, _ := uuid.NewV4()
 	Test := &model.Test{
 		Id:         id,
 		Name:       request.Name,
-		CreatedBy:  createdBy,
 		CourseId:   request.CourseId,
 		CreatedAt:  date,
-		ChangedBy:  nil,
 		SchoolYear: request.SchoolYear,
 	}
 	err = dal.AddTestToDB(Test)
@@ -74,7 +70,7 @@ func GetTestsHandle(ctx *gin.Context) {
 	//loop over tests and convert to listTest
 	output := make([]dto.ListTest, len(tests))
 	for i, test := range tests {
-		output[i] = dto.ToListTest(test)
+		output[i] = dto.ToListTest(test, dal.GetCountForTest(test.Id))
 	}
 	ctx.JSON(200, output)
 }
@@ -98,7 +94,7 @@ func GetActiveTestsHandle(ctx *gin.Context) {
 	//loop over tests and convert to listTest
 	output := make([]dto.ListTest, len(tests))
 	for i, test := range tests {
-		output[i] = dto.ToListTest(test)
+		output[i] = dto.ToListTest(test, dal.GetCountForTest(test.Id))
 	}
 	ctx.JSON(200, output)
 }
@@ -148,13 +144,10 @@ func UpdateTestHandle(ctx *gin.Context) {
 		return
 	}
 	id, err := uuid.FromString(ctx.Param("id"))
-	userId, _ := ctx.Get("user")
-	changedBy := userId.(string)
 	changedAt := time.Now()
 	Test := &model.Test{
 		Id:         id,
 		Name:       request.Name,
-		ChangedBy:  &changedBy,
 		CourseId:   request.CourseId,
 		ChangedAt:  &changedAt,
 		SchoolYear: request.SchoolYear,
@@ -221,7 +214,6 @@ func ImportTestHandle(ctx *gin.Context) {
 	testName := ctx.Query("testName")
 	schoolYear := ctx.Query("schoolYear")
 	courseId, _ := uuid.FromString(ctx.Query("courseId"))
-	user, _ := ctx.Get("user")
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -247,7 +239,6 @@ func ImportTestHandle(ctx *gin.Context) {
 	testModel := &model.Test{
 		Id:         testId,
 		Name:       testName,
-		CreatedBy:  user.(string),
 		CourseId:   courseId,
 		CreatedAt:  time.Now(),
 		SchoolYear: schoolYear,
