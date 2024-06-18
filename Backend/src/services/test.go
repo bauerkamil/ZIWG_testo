@@ -327,9 +327,12 @@ func processArchive(path string, testId uuid.UUID) ([]string, error) {
 
 func processQuestion(path string, testId uuid.UUID, ap *AzureProvider) (string, error) {
 	answers, questionConfig, body, err := readQuestionAttr(path)
-
 	if err != nil {
 		return err.Error(), err
+	}
+	if len(*questionConfig) != len(answers) {
+		return "Number of answers does not correspond with question config for file " + path,
+			errors.New("invalid question format")
 	}
 	var pictureName = ""
 	if strings.HasPrefix(*body, "[img]") {

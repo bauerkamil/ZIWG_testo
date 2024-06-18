@@ -26,6 +26,7 @@ func GetTestsById(courseIds []uuid.UUID) ([]model.Test, error) {
 	result := DB.Preload("Course").
 		Preload("Course.Teacher").
 		Where("course_id IN ?", courseIds).
+		Order("created_at DESC").
 		Find(&tests)
 	if result.Error != nil {
 		return nil, result.Error
