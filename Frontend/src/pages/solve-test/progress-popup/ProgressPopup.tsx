@@ -46,7 +46,9 @@ const ProgressPopup = (props: IProgressPopupProps) => {
           <Button variant="outline" onClick={onClose}>
             Nie
           </Button>
-          <Button onClick={onConfirmClick}>Tak</Button>
+          <Button onClick={onConfirmClick} autoFocus>
+            Tak
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

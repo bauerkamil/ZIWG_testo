@@ -162,12 +162,17 @@ const SolveTest: React.FC = () => {
     if (progress && progress.length > 0) {
       setSolvedQuestions(progress);
       setCounter(progress.length + 1);
+      let wrongCount = 0;
       progress.forEach((question) => {
         if (question.skipped || question.correct) {
           const index = questionsToSolve.findIndex((x) => x.id === question.id);
           questionsToSolve.splice(index, 1);
         }
+        if (!question.skipped && !question.correct) {
+          wrongCount++;
+        }
       });
+      setNumberOfQuestions(numberOfQuestions + wrongCount);
     }
   };
 
