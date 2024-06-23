@@ -220,8 +220,7 @@ const SolveTest: React.FC = () => {
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
       <Progress value={(counter * 100) / totalNumberOfQuestions} />
-      <div className="flex flex-row md:flex-col gap-2 md:gap-0 items-end mx-2 text-xs">
-        <div className="flex-grow" />
+      <div className="flex flex-row gap-2 md:gap-4 justify-end items-center mx-2 text-xs">
         <div className="flex flex-row">
           <p className="text-muted-foreground">
             Opanowane <p className="hidden md:inline-flex">pytania</p>:&nbsp;
