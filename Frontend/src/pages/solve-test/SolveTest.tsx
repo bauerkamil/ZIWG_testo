@@ -41,18 +41,22 @@ const SolveTest: React.FC = () => {
   const [counter, setCounter] = React.useState<number>(1);
   const [leftToSolve, setLeftToSolve] = React.useState<number>(0);
   const [solvedCount, setSolvedCount] = React.useState<number>(0);
-  const [numberOfQuestions, setNumberOfQuestions] = React.useState<number>(0);
+  const [totalNumberOfQuestions, setTotalNumberOfQuestions] =
+    React.useState<number>(0);
+  const [masteredQuestions, setMasteredQuestions] = React.useState<number>(0);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [confirmProgressOpen, setConfirmProgressOpen] =
     React.useState<boolean>(false);
+  const [repeatCount, setRepeatCount] = React.useState<number>(1);
 
-  const setQuestions = (newQuestions: IQuestion[], testId?: string) => {
-    const count =
-      LocalStorage.getStoredValue<number>(LocalStorageElements.RepeatCount) ??
-      DEFAULT_QUESTION_COUNT;
+  const setQuestions = (
+    newQuestions: IQuestion[],
+    countRepeat: number,
+    testId?: string
+  ) => {
     let questions: IQuestion[] = [];
-    setNumberOfQuestions((newQuestions?.length ?? 0) * count);
-    for (let i = 0; i < count; i++) {
+    setTotalNumberOfQuestions((newQuestions?.length ?? 0) * countRepeat);
+    for (let i = 0; i < countRepeat; i++) {
       questions = [...questions, ...(newQuestions ?? [])];
     }
     setQuestionsToSolve(shuffle(questions));
@@ -67,6 +71,13 @@ const SolveTest: React.FC = () => {
   };
 
   React.useEffect(() => {
+    const count =
+      LocalStorage.getStoredValue<number>(LocalStorageElements.RepeatCount) ??
+      DEFAULT_QUESTION_COUNT;
+    setRepeatCount(count);
+  }, []);
+
+  React.useEffect(() => {
     const fetchData = async () => {
       if (id) {
         setIsLoading(true);
@@ -74,7 +85,7 @@ const SolveTest: React.FC = () => {
           const testData = await Client.Tests.getTest(id);
           console.log(testData);
           setTest(testData);
-          setQuestions(testData.questions ?? [], testData.id);
+          setQuestions(testData.questions ?? [], repeatCount, testData.id);
         } catch (error) {
           console.error("An error occurred while fetching tests:", error);
         } finally {
@@ -84,7 +95,7 @@ const SolveTest: React.FC = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, repeatCount]);
 
   React.useEffect(() => {
     const newQuestion =
@@ -107,8 +118,10 @@ const SolveTest: React.FC = () => {
     answersSolved?: IAnswerSolved[],
     skipped = false
   ): boolean => {
-    if (counter !== numberOfQuestions) {
+    if (counter < totalNumberOfQuestions) {
       setCounter(counter + 1);
+    } else {
+      LocalStorage.removeStoredItem(LocalStorageElements.Progress + test?.id);
     }
     if (currentQuestion) {
       const solvedQuestion: IQuestionSolved = {
@@ -124,10 +137,12 @@ const SolveTest: React.FC = () => {
       };
 
       solvedQuestions.push(solvedQuestion);
-      LocalStorage.setStoredValue<IQuestionSolved[]>(
-        LocalStorageElements.Progress + test?.id,
-        solvedQuestions
-      );
+      if (counter < totalNumberOfQuestions) {
+        LocalStorage.setStoredValue<IQuestionSolved[]>(
+          LocalStorageElements.Progress + test?.id,
+          solvedQuestions
+        );
+      }
       return solvedQuestion.correct;
     }
     return false;
@@ -136,20 +151,26 @@ const SolveTest: React.FC = () => {
   const handleNext = (answersSolved: IAnswerSolved[]) => {
     const correct = finish(answersSolved);
     if (correct) {
+      if (leftToSolve === 1) {
+        setMasteredQuestions(masteredQuestions + 1);
+      }
       setQuestionsToSolve((prev) => prev.slice(1));
     } else {
       setQuestionsToSolve((prev) => shuffle(prev));
-      setNumberOfQuestions((prev) => prev + 1);
+      setTotalNumberOfQuestions((prev) => prev + 1);
     }
   };
 
   const handleSkip = () => {
     finish([], true);
+    if (leftToSolve === 1) {
+      setMasteredQuestions(masteredQuestions + 1);
+    }
     setQuestionsToSolve((prev) => prev.slice(1));
   };
 
   const handleRefresh = () => {
-    setQuestions(shuffle(test?.questions ?? []));
+    setQuestions(shuffle(test?.questions ?? []), repeatCount);
     setSolvedQuestions([]);
     setCounter(1);
   };
@@ -172,21 +193,43 @@ const SolveTest: React.FC = () => {
           wrongCount++;
         }
       });
-      setNumberOfQuestions(numberOfQuestions + wrongCount);
+      test?.questions?.forEach((question) => {
+        if (
+          progress.filter((x) => x.id === question.id).length === repeatCount
+        ) {
+          setMasteredQuestions((prev) => prev + 1);
+        }
+      });
+      setTotalNumberOfQuestions(totalNumberOfQuestions + wrongCount);
     }
   };
 
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Navbar />
-      <Progress value={(counter * 100) / numberOfQuestions} />
-      <div className="flex flex-col items-end mx-2">
-        <p className="text-primary text-xs md:text-sm">
-          {counter}/{numberOfQuestions}
-        </p>
+      <Progress value={(counter * 100) / totalNumberOfQuestions} />
+      <div className="flex flex-row md:flex-col gap-2 md:gap-0 items-end mx-2 text-xs">
+        <div className="flex-grow" />
+        <div className="flex flex-row">
+          <p className="text-muted-foreground">
+            Opanowane <p className="hidden md:inline-flex">pytania</p>:&nbsp;
+          </p>
+          <p>
+            {masteredQuestions}/{test?.questions?.length ?? 0}
+          </p>
+        </div>
+        <div className="flex flex-row">
+          <p className="text-muted-foreground">
+            Wszystkie <p className="hidden md:inline-flex">pytania</p>
+            :&nbsp;
+          </p>
+          <p className="text-primary">
+            {counter}/{totalNumberOfQuestions}
+          </p>
+        </div>
       </div>
       <div className="flex flex-1 flex-col gap-4 lg:gap-8 mx-4 mb-4 md:mx-16 lg:mx-32">
-        <div className="flex items-center justify-center text-center">
+        <div className="flex items-center justify-center text-center mt-2">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
