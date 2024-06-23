@@ -55,7 +55,6 @@ const SolveTest: React.FC = () => {
     testId?: string
   ) => {
     let questions: IQuestion[] = [];
-    setTotalNumberOfQuestions((newQuestions?.length ?? 0) * countRepeat);
     for (let i = 0; i < countRepeat; i++) {
       questions = [...questions, ...(newQuestions ?? [])];
     }
@@ -83,7 +82,6 @@ const SolveTest: React.FC = () => {
         setIsLoading(true);
         try {
           const testData = await Client.Tests.getTest(id);
-          console.log(testData);
           setTest(testData);
           setQuestions(testData.questions ?? [], repeatCount, testData.id);
         } catch (error) {
@@ -112,6 +110,7 @@ const SolveTest: React.FC = () => {
     setLeftToSolve(
       questionsToSolve.filter((x) => x.id === currentQuestion?.id).length
     );
+    setTotalNumberOfQuestions(questionsToSolve.length + solvedQuestions.length);
   }, [currentQuestion, questionsToSolve, solvedQuestions]);
 
   const finish = (
@@ -157,7 +156,6 @@ const SolveTest: React.FC = () => {
       setQuestionsToSolve((prev) => prev.slice(1));
     } else {
       setQuestionsToSolve((prev) => shuffle(prev));
-      setTotalNumberOfQuestions((prev) => prev + 1);
     }
   };
 
@@ -169,10 +167,29 @@ const SolveTest: React.FC = () => {
     setQuestionsToSolve((prev) => prev.slice(1));
   };
 
+  const handlePrev = () => {
+    const lastSolvedQuestion = solvedQuestions[solvedQuestions.length - 1];
+    const lastTestQuestion =
+      test?.questions?.find((x) => x.id === lastSolvedQuestion.id) ?? null;
+
+    if (lastTestQuestion) {
+      if (lastSolvedQuestion.correct || lastSolvedQuestion.skipped) {
+        if (
+          !questionsToSolve.find((x) => x.id === lastTestQuestion.id) &&
+          masteredQuestions > 0
+        ) {
+          setMasteredQuestions((prev) => prev - 1);
+        }
+      }
+      setQuestionsToSolve((prev) => [lastTestQuestion, ...prev]);
+    }
+  };
+
   const handleRefresh = () => {
     setQuestions(shuffle(test?.questions ?? []), repeatCount);
     setSolvedQuestions([]);
     setCounter(1);
+    setMasteredQuestions(0);
   };
 
   const onProgressLoad = () => {
@@ -183,14 +200,10 @@ const SolveTest: React.FC = () => {
     if (progress && progress.length > 0) {
       setSolvedQuestions(progress);
       setCounter(progress.length + 1);
-      let wrongCount = 0;
       progress.forEach((question) => {
         if (question.skipped || question.correct) {
           const index = questionsToSolve.findIndex((x) => x.id === question.id);
           questionsToSolve.splice(index, 1);
-        }
-        if (!question.skipped && !question.correct) {
-          wrongCount++;
         }
       });
       test?.questions?.forEach((question) => {
@@ -200,7 +213,6 @@ const SolveTest: React.FC = () => {
           setMasteredQuestions((prev) => prev + 1);
         }
       });
-      setTotalNumberOfQuestions(totalNumberOfQuestions + wrongCount);
     }
   };
 
@@ -255,6 +267,8 @@ const SolveTest: React.FC = () => {
                 question={currentQuestion}
                 onNext={handleNext}
                 onSkip={handleSkip}
+                onPrev={handlePrev}
+                isPrevDisabled={counter === 1}
                 leftToSolve={leftToSolve}
                 solvedCount={solvedCount}
               />
