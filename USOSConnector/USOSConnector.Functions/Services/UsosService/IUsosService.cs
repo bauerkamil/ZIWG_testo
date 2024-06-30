@@ -31,4 +31,11 @@ public interface IUsosService
         string token, 
         string secret, 
         CancellationToken cancellationToken);
+
+    Task<SearchCoursesDto> SearchForCoursesAsync(
+        string token, 
+        string secret, 
+        string searchQuery, 
+        PaginationDto pagedRequest,
+        CancellationToken cancellationToken);
 }

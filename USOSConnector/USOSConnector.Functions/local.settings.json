@@ -7,7 +7,7 @@
         "JWT__ExpiryMinutes": 120,
         "USOS__ConsumerKey": null,
         "USOS__ConsumerSecret": null,
-        "USOS__CallbackUrl": "http://localhost:7071/api/callback",
+        "USOS__CallbackUrl": "http://localhost:7071/api/token",
         "USOS__ApiUrl": "https://apps.usos.pwr.edu.pl"
     }
 }
