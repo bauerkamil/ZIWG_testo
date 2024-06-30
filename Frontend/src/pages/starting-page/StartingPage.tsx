@@ -1,8 +1,20 @@
+import React from "react";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/shared/hooks/auth/useAuth";
+import { Info } from "lucide-react";
 
 const StartingPage = () => {
   const { login } = useAuth();
+  const [isInfoOpen, setIsInfoOpen] = React.useState(false);
+
+  const onInfo = () => {
+    setIsInfoOpen(true);
+  };
+  const onOpenChange = (open: boolean) => {
+    setIsInfoOpen(open);
+  };
+
   return (
     <main className="w-full min-h-screen lg:grid lg:grid-cols-2">
       <div className="flex items-center justify-center h-screen">
@@ -13,8 +25,30 @@ const StartingPage = () => {
               Wznieś swoją naukę na wyżyny i osiągaj sukces!
             </p>
           </div>
-          <div className="grid gap-8 mt-4">
-            <Button onClick={login}>Zaloguj poprzez USOS</Button>
+          <div className="flex flex-row items-center justify-center gap-2 mt-4">
+            <Button className="flex-grow" onClick={login}>
+              Zaloguj poprzez USOS
+            </Button>
+            <HoverCard open={isInfoOpen} onOpenChange={onOpenChange}>
+              <HoverCardTrigger asChild>
+                <Button
+                  variant="ghost"
+                  onMouseOver={onInfo}
+                  onClick={onInfo}
+                  className="rounded-full"
+                  size="icon"
+                >
+                  <Info />
+                </Button>
+              </HoverCardTrigger>
+              <HoverCardContent>
+                <p className="text-center">
+                  Dane pobierane z systemu USOS wykorzystywane są w celu
+                  uzyskania aktualnych kursów użytkownika. Dane nie są
+                  gromadzone.
+                </p>
+              </HoverCardContent>
+            </HoverCard>
           </div>
         </div>
       </div>
