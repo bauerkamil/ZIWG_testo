@@ -11,5 +11,12 @@ public static class Usos
         public const string Authorize = "/services/oauth/authorize";
         public const string UserCourses = "/services/courses/user";
         public const string UserInfo = "/services/users/user";
+        public const string CoursesSearch = "/services/courses/search";
+    }
+
+    public static class AllowedLanguageCodes
+    {
+        public const string PL = "pl";
+        public const string EN = "en";
     }
 }

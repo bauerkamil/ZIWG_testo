@@ -86,13 +86,13 @@ public class CoursesTrigger
     }
 
     private static CoursesResponseDto MapToCourseDto(
-        UserTermsTerm t, 
+        UserTermsTerm term, 
         UserCoursesCourseEditions[] courseEditions) => new CoursesResponseDto
         {
-            Id = t.Id,
-            Name = t.Name.Pl,
-            StartDate = t.StartDate,
-            EndDate = t.EndDate,
+            Id = term.Id,
+            Name = term.Name.Pl,
+            StartDate = term.StartDate,
+            EndDate = term.EndDate,
             Courses = courseEditions.Select(c => new CoursesResponseCourse
                 {
                     Id = c.CurseId,
