@@ -164,7 +164,36 @@ public class UsosService : IUsosService
 
         return userInfoResult;
     }
-    
+
+    public async Task<SearchCoursesDto> SearchForCoursesAsync(
+        string token, 
+        string secret, 
+        string searchQuery, 
+        PaginationDto pagedRequest,
+        CancellationToken cancellationToken)
+    {
+        var query = new Dictionary<string, string>
+        {
+            ["oauth_token"] = token,
+            ["lang"] = Usos.AllowedLanguageCodes.PL,
+            ["name"] = Uri.EscapeDataString(searchQuery),
+            ["fields"] = Uri.EscapeDataString("course_id|name"),
+            ["start"] = ((pagedRequest.PageNumber - 1) * pagedRequest.PageSize).ToString(),
+            ["num"] = pagedRequest.PageSize.ToString()
+        };
+
+        var coursesSearchResponse = await CallEndpointAsync(
+            Usos.Endpoints.CoursesSearch,
+            query, 
+            secret, 
+            cancellationToken);
+
+        var searchCoursesResult = await coursesSearchResponse.Content.ReadFromJsonAsync<SearchCoursesDto>(cancellationToken);
+        ArgumentNullException.ThrowIfNull(searchCoursesResult);
+
+        return searchCoursesResult;
+    }
+
     private async Task<HttpResponseMessage> CallEndpointAsync(
         string endpoint,
         Dictionary<string, string> query, 
