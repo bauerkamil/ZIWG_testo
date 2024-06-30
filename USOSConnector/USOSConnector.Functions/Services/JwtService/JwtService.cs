@@ -77,7 +77,7 @@ public class JwtService : IJwtService
 
         if (tokenHandler.ReadToken(token) is not JwtSecurityToken securityToken)
         {
-            throw new SecurityTokenException("Invalid token.");
+            throw new SecurityTokenMalformedException("Invalid token.");
         }
 
         return new UserClaimsDto
